@@ -23,8 +23,7 @@ class SaleOrderLine(models.Model):
     
     def utilidad_unitaria(self):
         for line in self:
-            line.utilidad_unitaria = line.price_unit * 
-                	(line.utilidad_porcentaje/100)
+            line.utilidad_unitaria = line.price_unit * (line.utilidad_porcentaje/100.0)
     
     def precio_venta(self):
         for line in self:
