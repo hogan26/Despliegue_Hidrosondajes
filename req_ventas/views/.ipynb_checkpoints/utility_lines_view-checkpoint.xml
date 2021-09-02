@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
   <data>
-    <record model="ir.ui.view" id="sale_order_form_utility">
+    <record id="sale_order_form_utility" model="ir.ui.view">
       <field name="name">sale.order.form.utility</field>
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_order_form"/>
