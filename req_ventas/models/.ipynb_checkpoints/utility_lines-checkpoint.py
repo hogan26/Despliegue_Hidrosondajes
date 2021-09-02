@@ -63,7 +63,7 @@ class SaleOrderLine(models.Model):
     precio_venta = fields.Monetary(string="Precio de venta",
                                   compute=precio_venta)
     monto_final = fields.Monetary(string="Monto final", compute=monto_final)
-    margen_total = fields.Montery(string="Margen", compute=margen_total)
+    margen_total = fields.Monetary(string="Margen", compute=margen_total)
             
         
 
