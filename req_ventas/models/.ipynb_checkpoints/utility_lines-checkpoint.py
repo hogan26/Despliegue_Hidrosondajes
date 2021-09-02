@@ -23,8 +23,7 @@ class SaleOrderLine(models.Model):
     
     def utilidad_unitaria(self):
         for line in self:
-            line.utilidad_unitaria = line.price_unit * 
-                	(line.utilidad_porcentaje/100)
+            line.utilidad_unitaria = line.price_unit * (line.utilidad_porcentaje/100.0)
     
     def precio_venta(self):
         for line in self:
@@ -55,10 +54,8 @@ class SaleOrderLine(models.Model):
                 'price_total':taxes['total_included'],
                 'price_subtotal':taxes['total_excluded'],
             })
-            if self.env.context.get('import_file',False) and not 
-            self.env.user.user_has_groups('account.group_account_manager'):
-                line.tax_id.invalidate_cache(['invoice_repartition_line_ids'],
-                                            [line.tax_id.id])
+            if self.env.context.get('import_file',False) and not self.env.user.user_has_groups('account.group_account_manager'):
+                line.tax_id.invalidate_cache(['invoice_repartition_line_ids'],[line.tax_id.id])
     
     utilidad_porcentaje = fields.Float(string="Utilidad (%)", default=45)
     utilidad_unitaria = fields.Monetary(string="U. unitaria ($)",
