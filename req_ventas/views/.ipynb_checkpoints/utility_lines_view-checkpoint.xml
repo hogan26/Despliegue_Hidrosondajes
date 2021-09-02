@@ -7,15 +7,15 @@
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_order_form"/>
       <field name="arch" type="xml">
-          <xpath exp="//tree/field[@name='price_unit']" position="after">
+          <xpath expr="//tree/field[@name='price_unit']" position="after">
             <field name="utilidad_porcentaje"/>
             <field name="precio_venta"/>
             <field name="monto_final" invisible="1"/>
           </xpath>
-          <xpath exp="//tree/field[@name='price_subtotal']" position="after">
+          <xpath expr="//tree/field[@name='price_subtotal']" position="after">
             <field name="margen_total"/>            
           </xpath>
-          <xpath exp="//field[@name='amount_total']" position="after">
+          <xpath expr="//field[@name='amount_total']" position="after">
               <div class="oe_subtotal_footer_separator oe_inline o_td_label"/>
             <field name="suma_margen"/>
           </xpath>          
