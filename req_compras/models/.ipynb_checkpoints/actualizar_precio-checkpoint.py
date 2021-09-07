@@ -33,3 +33,4 @@ class ActualizarPrecio(models.Model):
             else:
                 order.write({'state': 'to approve'})
         return True
+    
