@@ -22,5 +22,6 @@
         # 'security/ir.model.access.csv',
         'views/fijar_proveedor_form_view.xml',
         'views/fijar_proveedor_tree_view.xml',
+        'views/line_discount_view.xml',
     ],    
 }
