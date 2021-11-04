@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 
 
-class req_inventario(models.Model):
+class ProducTemplate(models.Model):
     _inherit='product.template'
     
     last_update_pricelist_date = fields.Date(string='Ultima actulizacion de precio')
