@@ -23,6 +23,8 @@ class ActualizarPrecio(models.Model):
                     if proveedor.fijar_proveedor:
                         nuevo_precio = line.price_unit
                         line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                        line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
+                        line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
                         continue
                     else:                        
                         continue
