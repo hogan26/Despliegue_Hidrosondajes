@@ -8,7 +8,7 @@
       <field name="inherit_id" ref="sale.view_order_form"/>
       <field name="arch" type="xml">
           <xpath expr="//field[@name='x_servicios_requeridos']" position="replace">
-            <field name="payment_terms_id"/>
+            <field name="payment_term_id"/>
           </xpath>
           <xpath expr="//tree/field[@name='price_unit']" position="after">
             <field name="utilidad_porcentaje"/>
