@@ -112,5 +112,5 @@ class LastUpdatePrice(models.Model):
 class LastUpdatePriceLine(models.Model):
     _inherit='sale.order.line'
     
-    last_update_price_date = fields.Date('product_template_id.last_update_price_date',readonly=True)
-    last_update_price_partner = fields.Char('product_template_id.last_update_price_partner',readonly=True)
+    last_update_price_date = fields.Date(related='product_template_id.last_update_price_date',readonly=True)
+    last_update_price_partner = fields.Many2One('res.partner',related='product_template_id.last_update_price_partner',readonly=True)
