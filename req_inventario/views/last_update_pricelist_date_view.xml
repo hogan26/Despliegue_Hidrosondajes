@@ -9,7 +9,7 @@
       <field name="arch" type="xml">
           <xpath expr="//field[@name='uom_po_id']" position="after">            
             <field name="last_update_pricelist_date"/>
-            <field name="last_update_pricelist_partner"/>
+            <field name="last_update_pricelist_partner" attrs="{'readonly': False}"/>
           </xpath>                    
       </field>          
     </record>

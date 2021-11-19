@@ -24,8 +24,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        #'views/views.xml',
+        # 'security/ir.model.access.csv',        
         'views/automatic_quotations_inputs_view.xml',
     ],    
 }

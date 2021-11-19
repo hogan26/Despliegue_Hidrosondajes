@@ -50,15 +50,17 @@ class SaleOrderLine(models.Model):
                 'price_subtotal': taxes['total_excluded'],
             })
             if self.env.context.get('import_file', False) and not self.env.user.user_has_groups('account.group_account_manager'):
-                line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])                
+                line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])                   
+    
                 
-    utilidad_porcentaje = fields.Float(string="Utilidad (%)", default=45)
+    utilidad_porcentaje = fields.Float(string="Utilidad (%)",default=45)
     utilidad_unitaria = fields.Monetary(string="U. unitaria ($)",
                                        compute=utilidad_unitaria)
     precio_venta = fields.Monetary(string="Precio de venta",
                                   compute=precio_venta)
     monto_final = fields.Monetary(string="Monto final", compute=monto_final)
     margen_total = fields.Monetary(string="Margen", compute=margen_total)
+    
             
         
 
