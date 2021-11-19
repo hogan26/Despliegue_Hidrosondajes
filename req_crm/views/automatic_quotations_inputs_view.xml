@@ -7,9 +7,111 @@
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="crm.crm_lead_view_form"/>
       <field name="arch" type="xml">
-          <xpath expr="//field[@name='x_tipo_corona']" position="replace">            
-            <field name="corona"/>
-          </xpath>                    
+          <xpath expr="//group[1]/group[4]" position="after">                          
+            <group>
+                <field name="x_servicios_requeridos"/>
+                <field name="x_enviar_wsp"/>
+                <field name="x_tipo_instalacion"/>
+                <field name="x_otro"/>
+            </group>
+          </xpath> 
+          <xpath expr="//notebook/page[1]" position="before">            
+            <page string="Servicio 1">
+                <group>
+                    <field name="x_tipo_servicio"/>
+                    <field name="x_diametro"/>
+                    <field name="x_profundidad"/>
+                    <field name="x_faena"/>
+                    <field name="x_valorxmt"/>
+                    <field name="prueba_bombeo"/>
+                    <field name="x_valorpb"/>
+                    <field name="x_insc_dga"/>
+                    <field name="corona"/>
+                    <!--<field name="x_valor_corona"/>-->
+                    <field name="x_duracion"/>
+                </group>
+            </page>
+            <page string="Servicio 2">
+                <group>
+                    <field name="x_caudal_fl"/>
+                    <field name="x_hp_fl"/>
+                    <field name="x_bomba_crm"/>
+                    <field name="x_motor_crm"/>
+                    <field name="tablero"/>
+                    <field name="x_tipo_caneria"/>
+                    <field name="x_pul_canerias_s2"/>
+                    <field name="x_impulsion"/>
+                    <field name="x_altura"/>
+                    <field name="x_voltaje"/>
+                    <field name="x_valor_instalacion"/>
+                    <field name="x_duracion_s2"/>
+                    <field name="x_valor_referencia"/>
+                </group>
+            </page>
+            <page string="Servicio 3">
+                <group>
+                    <field name="x_estanque"/>
+                    <field name="x_superficie"/>
+                    <field name="x_enterrado_s3"/>
+                    <field name="x_bombacen_hp_fl"/>
+                    <field name="x_hidropack"/>
+                    <field name="x_controlpress"/>
+                    <field name="x_cloracion"/>
+                    <field name="x_valor_instalacion_s3"/>
+                    <field name="x_duracion_s3"/>
+                    <field name="x_valor_referencia_s3"/>
+                </group>
+            </page>
+            <page string="Servicio 4 (Casos especiales)">
+                <group>
+                    <field name="x_servicio4"/>
+                    <field name="x_precios4"/>
+                </group>
+            </page>
+            <page string="Servicio 5 (Diagnóstico)">
+                <group>
+                    <field name="x_idakm"/>
+                    <field name="x_duracionhrs"/>
+                    <field name="x_num_personas"/>
+                    <field name="x_sin_camion"/>
+                    <field name="x_con_camion"/>
+                    <field name="x_num_vehiculos"/>
+                </group>
+            </page>
+            <page string="Servicio 6 (Limpieza)">
+                <group>
+                    <field name="x_mt_estimado"/>
+                </group>  
+                <group string="Traslado">
+                    <field name="x_idakms6"/>
+                </group>
+                <group string="Extracción de bomba">
+                    <field name="x_dias_s6"/>
+                    <field name="x_personas_s6"/>
+                </group>
+                <group string="Limpieza">
+                    <field name="x_dias_s6_lim"/>
+                    <field name="x_num_perforadores"/>
+                    <field name="x_num_soldadores"/>
+                    <field name="x_num_ayudantes"/>
+                </group>
+                <group string="Instalación bomba">
+                    <field name="x_dias_s6_ib"/>
+                    <field name="x_num_personas_ib"/>
+                </group>
+            </page>
+            <page string="Formato de pagos">
+                <group>
+                    <field name="x_abono"/>
+                    <field name="x_abono_monto"/>
+                    <label for="x_cuotas" string="0 - A convenir"/>
+                    <label for="x_cuotas" string="1 - Contra entrega"/>
+                    <label for="x_cuotas" string="2+ - Cuotas en cheque"/>
+                    <field name="x_cuotas"/>
+                    <field name="x_comentarios"/>
+                </group>
+            </page>
+          </xpath>
       </field>          
     </record>
   </data>
