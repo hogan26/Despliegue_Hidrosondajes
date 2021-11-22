@@ -26,5 +26,6 @@
         #'security/ir.model.access.csv',
         'views/utility_lines_view.xml',
         'views/last_update_price_partner.xml',
+        #'views/sale_order_template_id_prueba.xml',
     ],    
 }
