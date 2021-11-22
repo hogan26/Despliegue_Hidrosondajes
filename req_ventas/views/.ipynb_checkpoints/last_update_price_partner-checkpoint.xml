@@ -13,10 +13,12 @@
             <field name="x_fecha_retiro" attrs="{'invisible': [('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])],'required':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])]}"/>            
           </xpath>                    
           <!-- campo servicios requeridos para filtrar todas las versiones del presupuesto (campo importante) -->
+          <xpath expr="//field[@name='partner_shipping_id']" position="after">              
+            <field name="sale_order_template_id_prueba"/>
+          </xpath> 
           <xpath expr="//group[1]/group[2]" position="after">
             <group>
-              <field name="x_servicios_requeridos"/>
-              <field name="sale_order_template_id_prueba"/> 
+              <field name="x_servicios_requeridos"/>               
             </group>          
           </xpath>
           <!-- encabezados para las cotizaciones en base al select de servicios requeridos -->
@@ -105,8 +107,8 @@
                     <field name="x_encabezado_coti3"/>
                   </div>
                   <div>
-                    - <label for="x_prueba_bombeo"></label>
-                    <field name="x_prueba_bombeo"/>
+                    - <label for="prueba_bombeo"></label>
+                    <field name="prueba_bombeo"/>
                   </div>  
                 </div>
                 <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1s2','s1s2s3'])]}">

@@ -36,19 +36,17 @@ class SaleOrder(models.Model):
     
             
     #onchange de plantillas de presupuesto
-
     sale_order_template_id_prueba = fields.Many2one(
         'sale.order.template', 'prueba de cotizaciones',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")     
-
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")  
+    
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-
     
     #para ordenes de trabajo
     x_equipo_asignado = fields.Selection([('eqp21','Equipo 21'),('eqp22','Equipo 22'),('eqp23','Equipo 23'),('eqp24','Equipo 24'),('eqb1','Equipo Bombas 1'),('eqb2','Equipo Bombas 2'),('eqb3','Equipo Bombas 3')],string='Equipo asignado')
@@ -71,6 +69,7 @@ class SaleOrder(models.Model):
     corona = fields.Many2one('product.template',related='opportunity_id.corona',string='Corona')
     x_valor_corona = fields.Integer(related='opportunity_id.x_valor_corona',string='Valor corona')
     x_duracion_s1 = fields.Integer(related='opportunity_id.x_duracion',string='Duracion')
+    prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo')
     #servicio 2
     x_caudal_crm = fields.Integer(related='opportunity_id.x_caudal_fl',string='Caudal')
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
@@ -128,7 +127,6 @@ class SaleOrder(models.Model):
     x_encabezado_coti4 = fields.Html(string='encabezado coti 4',default = _get_default_enc4)
     x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)
     
-
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
         _logger.info('entra exitosamente - metodo en req_ventas')
@@ -256,15 +254,16 @@ class SaleOrder(models.Model):
                                     'utilidad_porcentaje': 0,
                                 })
 
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
+                            if line.product_id.product_tmpl_id.id != 2211:    
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.pricelist_id, 
+                                        line.product_id, 
+                                        line.product_uom_id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data)) 
-                            seleccionado=1
+                                order_lines.append((0, 0, data)) 
+                                seleccionado=1
                     
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS':
                         entra_categoria=1
@@ -601,7 +600,8 @@ class SaleOrder(models.Model):
                             fields.Date.context_today(self)))
                         
                     order_lines.append((0, 0, data))
-
+            else:
+                order_lines.append((0, 0, data))
         self.order_line = order_lines
         self.order_line._compute_tax_id()
 
@@ -619,7 +619,7 @@ class SaleOrder(models.Model):
 
         if template.note:
             self.note = template.note
-
+    
     
     
     #metodo que no sirve, no entra a este metodo
