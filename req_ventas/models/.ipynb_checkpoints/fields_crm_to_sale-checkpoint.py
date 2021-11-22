@@ -36,11 +36,17 @@ class SaleOrder(models.Model):
     
             
     #onchange de plantillas de presupuesto
+    sale_order_template_id_prueba = fields.Many2one(
+        'sale.order.template', 'prueba de cotizaciones',
+        readonly=True, check_company=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")      
+
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")    
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     
     #para ordenes de trabajo
     x_equipo_asignado = fields.Selection([('eqp21','Equipo 21'),('eqp22','Equipo 22'),('eqp23','Equipo 23'),('eqp24','Equipo 24'),('eqb1','Equipo Bombas 1'),('eqb2','Equipo Bombas 2'),('eqb3','Equipo Bombas 3')],string='Equipo asignado')
@@ -118,8 +124,499 @@ class SaleOrder(models.Model):
     x_encabezado_coti2 = fields.Html(string='encabezado coti 2',default = _get_default_enc2)
     x_encabezado_coti3 = fields.Html(string='encabezado coti 3',default = _get_default_enc3)
     x_encabezado_coti4 = fields.Html(string='encabezado coti 4',default = _get_default_enc4)
-    x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)
-    
+    x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)    
+
+    @api.onchange('sale_order_template_id_prueba')
+    def onchange_sale_order_template_id_prueba(self):
+        _logger.info('entra exitosamente - metodo en req_ventas')
+        if not self.sale_order_template_id_prueba:
+            self.require_signature = self._get_default_require_signature()
+            self.require_payment = self._get_default_require_payment()
+            return
+        template = self.sale_order_template_id_prueba.with_context(lang=self.partner_id.lang)
+
+        order_lines = [(5, 0, 0)]
+        for line in template.sale_order_template_line_ids:
+            #_logger.info('line_id= {}'.format(line.id))
+            data = self._compute_line_data_for_template_change(line)
+            if line.product_id:
+                discount = 0
+                """
+                if self.pricelist_id:
+                    price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1, False)
+                    if self.pricelist_id.discount_policy == 'without_discount' and line.price_unit:
+                        discount = (line.price_unit - price) / line.price_unit * 100
+                        # negative discounts (= surcharge) are included in the display price
+                        if discount < 0:
+                            discount = 0
+                        else:
+                            price = line.price_unit
+                    elif line.price_unit:
+                        price = line.price_unit
+
+                else:
+                    price = line.price_unit
+                """    
+                price = line.product_id.product_tmpl_id.list_price
+        
+                #validacion si la plantilla que se esta cargando corresponde a un presupuesto o una orden de trabajo
+                if self.opportunity_id:                                        
+                    diametro = line.display_name.count(str(self.opportunity_id.x_diametro))
+                    entra_categoria=0
+                    seleccionado=0
+                    #_logger.info('diametro= {}'.format(diametro))
+                    #_logger.info('categoria= {}'.format(line.product_id.product_tmpl_id.categ_id.display_name))
+                    _logger.info('product_id= {}'.format(line.product_id.product_tmpl_id.id))
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PERFORACION':
+                        entra_categoria=1
+                        if diametro>0:                        
+                            data.update({
+                                'price_unit': self.opportunity_id.x_valorxmt,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': self.opportunity_id.x_profundidad,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                'utilidad_porcentaje': 0,                            
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))                    
+                            seleccionado=1
+                            
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN PERFORACIÓN / HERRAMIENTAS PERFORACIÓN / CORONAS':
+                        entra_categoria=1
+                        if self.opportunity_id.corona.id == line.product_id.product_tmpl_id.id:
+                            #_logger.info('corona crm= {}'.format(self.opportunity_id.corona.id))
+                            #_logger.info('corona plantilla= {}'.format(line.product_id.product_tmpl_id.id))
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))  
+                            seleccionado=1
+                    
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PRUEBAS':
+                        entra_categoria=1
+                        if self.opportunity_id.prueba_bombeo.id == line.product_id.product_tmpl_id.id:
+                            #comprueba si es una prueba de combeo DGA
+                            if line.product_id.product_tmpl_id.id == 551:
+                                data.update({
+                                    'price_unit': self.opportunity_id.x_insc_dga,
+                                    'discount': 100 - ((100 - discount) * (
+                                            100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': line.product_id.id,
+                                    'product_uom': line.product_uom_id.id,
+                                    'customer_lead': self._get_customer_lead(
+                                        line.product_id.product_tmpl_id),
+                                    'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                    'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                    'utilidad_porcentaje': 0,
+                                })
+                            else:
+                                data.update({
+                                    'price_unit': self.opportunity_id.x_valorpb,
+                                    'discount': 100 - ((100 - discount) * (
+                                            100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': line.product_id.id,
+                                    'product_uom': line.product_uom_id.id,
+                                    'customer_lead': self._get_customer_lead(
+                                        line.product_id.product_tmpl_id),
+                                    'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                    'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                    'utilidad_porcentaje': 0,
+                                })
+
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data)) 
+                            seleccionado=1
+                    
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS':
+                        entra_categoria=1
+                        if line.product_id.product_tmpl_id.id == 546:                        
+                            data.update({
+                                'price_unit': self.opportunity_id.x_faena,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                'utilidad_porcentaje': 0,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                        
+                        if line.product_id.product_tmpl_id.id == 1521:                        
+                            data.update({
+                                'price_unit': self.opportunity_id.x_valor_instalacion,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                'utilidad_porcentaje': 0,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                    
+                    if (line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / BOMBAS' or line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / KITS'):
+                        entra_categoria=1
+                        if self.opportunity_id.x_bomba_crm.id == line.product_id.product_tmpl_id.id:                        
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data)) 
+                            seleccionado=1
+                        
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / MOTORES':
+                        entra_categoria=1
+                        if self.opportunity_id.x_motor_crm.id == line.product_id.product_tmpl_id.id:                        
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                     
+                    if (line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TABLEROS ELECTRICOS' or line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TABLEROS ELECTRICOS / MONOFASICO' or line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TABLEROS ELECTRICOS / TRIFASICO'):
+                        entra_categoria=1
+                        if self.opportunity_id.tablero.id == line.product_id.product_tmpl_id.id:                        
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (
+                                        100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))                        
+                            seleccionado=1
+                    
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / PVC':                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': self.opportunity_id.x_impulsion,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                    
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / V-WELL':                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': Math.ceil(self.opportunity_id.x_impulsion/3),
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                        
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / FITTING / PVC / TERMINALES':
+                        if self.opportunity_id.x_impulsion%6>0:
+                            cant_terminales = round((self.opportunity_id.x_impulsion/6)+0.5)
+                        else:
+                            cant_terminales = round(self.opportunity_id.x_impulsion/6)
+                            
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': cant_terminales,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                    
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / CONDUIT' and line.product_id.product_tmpl_id.id == 1573:                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': self.opportunity_id.x_impulsion,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                    
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': self.opportunity_id.x_impulsion+10,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                        
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and line.product_id.product_tmpl_id.id == 55:                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': (self.opportunity_id.x_impulsion+10)*2,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                        
+                    if line.product_id.product_tmpl_id.id == 535:                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': self.opportunity_id.x_impulsion,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        seleccionado=1
+                        
+                    if entra_categoria==0 and seleccionado == 0:                        
+                        data.update({
+                            'price_unit': price,
+                            'discount': 100 - ((100 - discount) * (
+                                    100 - line.discount) / 100),
+                            'product_uom_qty': line.product_uom_qty,
+                            'product_id': line.product_id.id,
+                            'product_uom': line.product_uom_id.id,
+                            'customer_lead': self._get_customer_lead(
+                                line.product_id.product_tmpl_id),
+                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                        })                        
+                        if self.pricelist_id:
+                            data.update(self.env['sale.order.line']._get_purchase_price(
+                                self.pricelist_id, 
+                                line.product_id, 
+                                line.product_uom_id, 
+                                fields.Date.context_today(self)))
+                            
+                        order_lines.append((0, 0, data))
+                        
+                else:
+                    _logger.info('es una orden de trabajo')
+                    data.update({
+                        'price_unit': price,
+                        'discount': 100 - ((100 - discount) * (
+                                100 - line.discount) / 100),
+                        'product_uom_qty': line.product_uom_qty,
+                        'product_id': line.product_id.id,
+                        'product_uom': line.product_uom_id.id,
+                        'customer_lead': self._get_customer_lead(
+                            line.product_id.product_tmpl_id),
+                        'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                        'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                    })
+                    if self.pricelist_id:
+                        data.update(self.env['sale.order.line']._get_purchase_price(
+                            self.pricelist_id, 
+                            line.product_id, 
+                            line.product_uom_id, 
+                            fields.Date.context_today(self)))
+                        
+                    order_lines.append((0, 0, data))
+
+        self.order_line = order_lines
+        self.order_line._compute_tax_id()
+
+        option_lines = [(5, 0, 0)]
+        for option in template.sale_order_template_option_ids:
+            data = self._compute_option_data_for_template_change(option)
+            option_lines.append((0, 0, data))
+        self.sale_order_option_ids = option_lines
+
+        if template.number_of_days > 0:
+            self.validity_date = fields.Date.context_today(self) + timedelta(template.number_of_days)
+
+        self.require_signature = template.require_signature
+        self.require_payment = template.require_payment
+
+        if template.note:
+            self.note = template.note    
+
     
     
     #metodo que no sirve, no entra a este metodo
