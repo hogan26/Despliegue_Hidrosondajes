@@ -11,11 +11,12 @@
           <xpath expr="//field[@name='currency_id']" position="after">            
             <field name="x_equipo_asignado" attrs="{'invisible': [('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])],'required':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])]}"/>
             <field name="x_fecha_retiro" attrs="{'invisible': [('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])],'required':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])]}"/>            
-          </xpath>
+          </xpath>                    
           <!-- campo servicios requeridos para filtrar todas las versiones del presupuesto (campo importante) -->
           <xpath expr="//group[1]/group[2]" position="after">
             <group>
               <field name="x_servicios_requeridos"/>
+              <field name="sale_order_template_id_prueba"/> 
             </group>          
           </xpath>
           <!-- encabezados para las cotizaciones en base al select de servicios requeridos -->
