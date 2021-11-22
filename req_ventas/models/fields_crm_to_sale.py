@@ -36,17 +36,19 @@ class SaleOrder(models.Model):
     
             
     #onchange de plantillas de presupuesto
+
     sale_order_template_id_prueba = fields.Many2one(
         'sale.order.template', 'prueba de cotizaciones',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")  
-    
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")     
+
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
     
     #para ordenes de trabajo
     x_equipo_asignado = fields.Selection([('eqp21','Equipo 21'),('eqp22','Equipo 22'),('eqp23','Equipo 23'),('eqp24','Equipo 24'),('eqb1','Equipo Bombas 1'),('eqb2','Equipo Bombas 2'),('eqb3','Equipo Bombas 3')],string='Equipo asignado')
@@ -126,6 +128,7 @@ class SaleOrder(models.Model):
     x_encabezado_coti4 = fields.Html(string='encabezado coti 4',default = _get_default_enc4)
     x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)
     
+
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
         _logger.info('entra exitosamente - metodo en req_ventas')
@@ -616,7 +619,7 @@ class SaleOrder(models.Model):
 
         if template.note:
             self.note = template.note
-    
+
     
     
     #metodo que no sirve, no entra a este metodo

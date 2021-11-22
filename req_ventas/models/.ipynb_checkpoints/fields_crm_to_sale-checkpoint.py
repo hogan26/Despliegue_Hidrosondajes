@@ -40,8 +40,8 @@ class SaleOrder(models.Model):
         'sale.order.template', 'prueba de cotizaciones',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")  
-    
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")      
+
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
@@ -124,8 +124,8 @@ class SaleOrder(models.Model):
     x_encabezado_coti2 = fields.Html(string='encabezado coti 2',default = _get_default_enc2)
     x_encabezado_coti3 = fields.Html(string='encabezado coti 3',default = _get_default_enc3)
     x_encabezado_coti4 = fields.Html(string='encabezado coti 4',default = _get_default_enc4)
-    x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)
-    
+    x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)    
+
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
         _logger.info('entra exitosamente - metodo en req_ventas')
@@ -615,8 +615,8 @@ class SaleOrder(models.Model):
         self.require_payment = template.require_payment
 
         if template.note:
-            self.note = template.note
-    
+            self.note = template.note    
+
     
     
     #metodo que no sirve, no entra a este metodo
