@@ -18,7 +18,7 @@ class Lead(models.Model):
     x_faena = fields.Integer(string='Instalacion de faena')
     x_valorxmt = fields.Integer(string='Valor por metro')
     x_prueba_bombeo = fields.Selection([('sinprueba','Sin Prueba de Bombeo'),('pb2hrs','Prueba de bombeo 2hrs'),('pb4hrs','Prueba de bombeo 4hrs'),('pb24hrs','Prueba de bombeo DGA 24hrs')],string='Prueba de bombeo')
-    prueba_bombeo = fields.Many2one('product.template',string='Prueba de bomebo',domain=[('categ_id','=','SERVICIOS / PRUEBAS')])
+    prueba_bombeo = fields.Many2one('product.template',string='Prueba de bombeo',domain=[('categ_id','=','SERVICIOS / PRUEBAS')])
     x_valorpb = fields.Integer(string='Valor prueba de bombeo')
     x_insc_dga = fields.Integer(string='Inscripcion pozo DGA')
     corona = fields.Many2one('product.template',string='Corona',domain=[('categ_id','=','OPERACIÓN PERFORACIÓN / HERRAMIENTAS PERFORACIÓN / CORONAS')])
