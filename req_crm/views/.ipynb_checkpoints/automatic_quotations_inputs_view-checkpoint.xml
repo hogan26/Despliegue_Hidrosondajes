@@ -7,6 +7,9 @@
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="crm.crm_lead_view_form"/>
       <field name="arch" type="xml">
+          <xpath expr="//h2" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </xpath>
           <xpath expr="//group[1]/group[4]" position="after">                          
             <group>
                 <field name="x_servicios_requeridos"/>
@@ -20,15 +23,61 @@
                 <group>
                     <field name="x_tipo_servicio"/>
                     <field name="x_diametro"/>
-                    <field name="x_profundidad"/>
-                    <field name="x_faena"/>
-                    <field name="x_valorxmt"/>
+                    <field name="x_profundidad"/>                    
+                    <field name="x_valorxmt" attrs="{'invisible':[('matriz_activada','=',True)]}"/>
                     <field name="prueba_bombeo"/>
                     <field name="x_valorpb"/>
                     <field name="x_insc_dga"/>
-                    <field name="corona"/>
+                    <field name="x_faena"/>
+                    <field name="retiro_material"/>
+                    <field name="corona" attrs="{'invisible':[('matriz_activada','=',True)]}"/>
                     <!--<field name="x_valor_corona"/>-->
                     <field name="x_duracion"/>
+                    <field name="matriz_activada"/>
+                </group>
+                <group>
+                    <field name="lead_matriz_lines_ids" mode="tree">
+                        <form>
+                            <div class="o_row" invisible="1">
+                                <label for="matriz_line_id"/>
+                                <field name="matriz_line_id"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="tipo_servicio_perforacion"/>
+                                <field name="tipo_servicio_perforacion"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="cantidad_metros"/>
+                                <field name="cantidad_metros"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="valor_metro"/>
+                                <field name="valor_metro"/>
+                            </div>                            
+                        </form>
+                        <tree>
+                            <field name="tipo_servicio_perforacion"/>
+                            <field name="cantidad_metros"/>
+                            <field name="valor_metro"/>
+                        </tree>
+                    </field>
+                </group>
+                <group>
+                    <field name="corona_matriz_lines_ids" mode="tree">
+                        <form>
+                            <div class="o_row" invisible="1">
+                                <label for="corona_line_id"/>
+                                <field name="corona_line_id"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="corona"/>
+                                <field name="corona"/>
+                            </div>                                                       
+                        </form>
+                        <tree>
+                            <field name="corona"/>                            
+                        </tree>
+                    </field>
                 </group>
             </page>
             <page string="Servicio 2">
