@@ -5,7 +5,7 @@
     <record id="last_update_price_partner_form" model="ir.ui.view">
       <field name="name">last.update.price.partner.form</field>
       <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="inherit_id" ref="sale.view_order_form"/>         
       <field name="arch" type="xml">
           <!-- modificaciones a vistas para presupuesto version orden de trabajo -->
           <xpath expr="//field[@name='currency_id']" position="after">            
@@ -129,13 +129,21 @@
             </group>          
           </xpath>          
           <!-- columnas de informacion para ultima compra del producto -->
+          <xpath expr="//tree" position="attributes">              
+            <attribute name="decoration-danger">number_days_context==True</attribute>
+            <attribute name="decoration-success">number_days_context==False</attribute>
+          </xpath>
           <xpath expr="//notebook/page[1]/field/form/group[1]/group[1]/field[@name='tax_id']" position="after">
             <field name="last_update_price_date"/>
             <field name="last_update_price_partner"/>            
+            <field name="last_update_type_selector"/>
+            <field name="last_update_number_days"/>
           </xpath>
           <xpath expr="//tree/field[@name='tax_id']" position="after">
-            <field name="last_update_price_date"/>
-            <field name="last_update_price_partner"/>            
+            <field name="last_update_price_date" optional="show"/>
+            <field name="last_update_price_partner" optional="show"/>
+            <field name="last_update_type_selector" optional="show"/>
+            <field name="number_days_context" optional="show"/>  
           </xpath>
           <!-- datos bancarios y acuerdos de pago -->
           <xpath expr="//field[@name='order_line']" position="after">
