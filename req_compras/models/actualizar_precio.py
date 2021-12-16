@@ -114,6 +114,45 @@ class ActualizarPrecio(models.Model):
                     continue
         return res
     
+    def write(self, vals):
+        res = super(ActualizarPrecio, self).write(vals)
+        if vals.get('date_planned'):
+            self.order_line.filtered(lambda line: not line.display_type).date_planned = vals['date_planned']
+            
+        for line in self.order_line:
+            for proveedor in line.product_id.seller_ids:
+                if proveedor.display_name in self.partner_id.display_name:
+                    if proveedor.fijar_proveedor:                        
+                        if line.product_uom.display_name == 'Tira 3mt' and line.display_name.find('V-WELL') == -1:
+                            nuevo_precio = line.price_unit/3
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            proveedor.write({'price':nuevo_precio})
+                            continue
+                        elif line.product_uom.display_name == 'Tira 6mt':
+                            nuevo_precio = line.price_unit/6
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            proveedor.write({'price':nuevo_precio})
+                            continue
+                        else:
+                            nuevo_precio = line.price_unit
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            proveedor.write({'price':nuevo_precio})
+                            continue
+                    else:                        
+                        continue
+                else:                    
+                    continue
+        return res
+    
     def button_confirm(self):
         for order in self:
             if order.state not in ['draft', 'sent']:
