@@ -21,13 +21,42 @@ class ActualizarPrecio(models.Model):
             for proveedor in line.product_id.seller_ids:
                 if proveedor.display_name in res.partner_id.display_name:
                     if proveedor.fijar_proveedor:
-                        nuevo_precio = line.price_unit
-                        line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
-                        line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
-                        line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
-                        line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
-                        proveedor.write({'price':nuevo_precio})
-                        continue
+                        if line.product_uom.display_name == 'Tira 3mt' and line.display_name.find('V-WELL') == -1:
+                            nuevo_precio = line.price_unit/3
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if res.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if res.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        elif line.product_uom.display_name == 'Tira 6mt':
+                            nuevo_precio = line.price_unit/6
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if res.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if res.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        else:
+                            nuevo_precio = line.price_unit
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if res.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if res.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':nuevo_precio})
+                            continue
                     else:                        
                         continue
                 else:                    
@@ -49,7 +78,11 @@ class ActualizarPrecio(models.Model):
                             line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
-                            proveedor.write({'price':nuevo_precio})
+                            if self.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if self.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
                             continue
                         elif line.product_uom.display_name == 'Tira 6mt':
                             nuevo_precio = line.price_unit/6
@@ -57,7 +90,11 @@ class ActualizarPrecio(models.Model):
                             line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
-                            proveedor.write({'price':nuevo_precio})
+                            if self.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if self.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
                             continue
                         else:
                             nuevo_precio = line.price_unit
@@ -65,6 +102,10 @@ class ActualizarPrecio(models.Model):
                             line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if self.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if self.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
                             proveedor.write({'price':nuevo_precio})
                             continue
                     else:                        
@@ -81,11 +122,33 @@ class ActualizarPrecio(models.Model):
                 for proveedor in line.product_id.seller_ids:
                     if proveedor.display_name in order.partner_id.display_name:
                         if proveedor.fijar_proveedor:
-                            nuevo_precio = line.price_unit
-                            line.product_id.product_tmpl_id.write({'list_price':nuevo_precio})
+                           if line.product_uom.display_name == 'Tira 3mt' and line.display_name.find('V-WELL') == -1:
+                            nuevo_precio = line.price_unit/3
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})                            
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        elif line.product_uom.display_name == 'Tira 6mt':
+                            nuevo_precio = line.price_unit/6
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})                            
+                            proveedor.write({'price':line.price_unit})
                             continue
                         else:
-                            continue
+                            nuevo_precio = line.price_unit
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})                            
+                            proveedor.write({'price':nuevo_precio})
+                            continue                        
                     else:
                         continue            
 
