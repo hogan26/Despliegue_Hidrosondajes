@@ -37,7 +37,7 @@ class SaleOrder(models.Model):
             
     #onchange de plantillas de presupuesto
     sale_order_template_id_prueba = fields.Many2one(
-        'sale.order.template', 'prueba de cotizaciones',
+        'sale.order.template', 'Plantilla de presupuesto',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")  
