@@ -71,7 +71,7 @@ class SaleOrder(models.Model):
     x_duracion_s1 = fields.Integer(related='opportunity_id.x_duracion',string='Duracion')
     prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo')
     #servicio 2
-    x_caudal_crm = fields.Integer(related='opportunity_id.x_caudal_fl',string='Caudal')
+    x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal')
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
     x_bomba_crm = fields.Many2one('product.template',related='opportunity_id.x_bomba_crm',string='Bomba')
     x_motor_crm = fields.Many2one('product.template',related='opportunity_id.x_motor_crm',string='Motor')
