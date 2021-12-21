@@ -25,7 +25,7 @@ class Lead(models.Model):
     x_valor_corona = fields.Integer(string='Valor corona')
     x_duracion = fields.Integer(string='Duracion')
     #servicio 2
-    x_caudal_fl = fields.Integer('Caudal')
+    x_caudal_fl = fields.Float('Caudal')
     x_hp_fl = fields.Float(string='HP')
     x_bomba_crm = fields.Many2one('product.template',string='Bomba',domain=[('categ_id','in',[('OPERACIÓN BOMBEO / BOMBAS'),('OPERACIÓN BOMBEO / KITS')])])
     x_motor_crm = fields.Many2one('product.template',string='Motor',domain=[('categ_id','=','OPERACIÓN BOMBEO / MOTORES')])
