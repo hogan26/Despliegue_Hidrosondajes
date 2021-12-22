@@ -418,12 +418,17 @@ class SaleOrder(models.Model):
                             order_lines.append((0, 0, data))
                             seleccionado=1
 
-                        if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / V-WELL':                        
+                        if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / V-WELL':
+                            if self.opportunity_id.x_impulsion%3>0:
+                                calc_impulsion = round((self.opportunity_id.x_impulsion/3)+0.5)
+                            else:
+                                calc_impulsion = round(self.opportunity_id.x_impulsion/3)
+                                
                             data.update({
                                 'price_unit': price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': Math.ceil(self.opportunity_id.x_impulsion/3),
+                                'product_uom_qty': calc_impulsion,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(
@@ -834,12 +839,17 @@ class SaleOrder(models.Model):
                             order_lines.append((0, 0, data))
                             seleccionado=1
 
-                        if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / V-WELL':                        
+                        if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / V-WELL':
+                            if self.opportunity_id.x_impulsion%3>0:
+                                calc_impulsion = round((self.opportunity_id.x_impulsion/3)+0.5)
+                            else:
+                                calc_impulsion = round(self.opportunity_id.x_impulsion/3)
+                                
                             data.update({
                                 'price_unit': price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': Math.ceil(self.opportunity_id.x_impulsion/3),
+                                'product_uom_qty': calc_impulsion,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(
