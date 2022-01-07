@@ -4,7 +4,65 @@ from odoo import models, fields, api
 
 
 class Lead(models.Model):
-    _inherit = "crm.lead"
+    _inherit = "crm.lead"    
+    
+    '''
+    @api.model        
+    def default_estanque(self):
+        id=1628
+        return self.env['product.product'].search(['id','=',id])   
+    @api.model
+    def default_hidroneumatico(self):
+        return self.env['product.product'].search(['id','=',2074])
+    
+    @api.model
+    def default_bomba_centrifuga(self):
+        return self.env['product.product'].search(['id','=',1204])
+    
+    @api.model
+    def default_hormigon(self):
+        return self.env['product.product'].search(['id','=',2154])
+    
+    @api.model
+    def default_guardamotor(self):
+        return self.env['product.product'].search(['id','=',1642])
+    
+    @api.model
+    def default_manometro(self):
+        return self.env['product.product'].search(['id','=',1725])
+    
+    @api.model
+    def default_presostato(self):
+        return self.env['product.product'].search(['id','=',1724])    
+        
+    '''
+    @api.onchange('x_superficie')
+    def onchange_superficie(self):
+        if self.x_superficie:
+            self.update({'x_enterrado_s3':False})
+        else:
+            self.update({'x_enterrado_s3':True})
+    
+    @api.onchange('x_enterrado_s3')
+    def onchange_enterrado(self):
+        if self.x_enterrado_s3:
+            self.update({'x_superficie':False})
+        else:
+            self.update({'x_superficie':True})
+            
+    @api.onchange('x_hidropack')
+    def onchange_hidropack(self):
+        if self.x_hidropack:
+            self.update({'x_controlpress':False})
+        else:
+            self.update({'x_controlpress':True})
+    
+    @api.onchange('x_controlpress')
+    def onchange_controlpress(self):
+        if self.x_controlpress:
+            self.update({'x_hidropack':False})
+        else:
+            self.update({'x_hidropack':True})
     
     #formulario principal
     x_servicios_requeridos = fields.Selection([('s1', 'S1'),('s2','S2'),('s1s2','S1 + S2'),('s1s2s3','S1 + S2 + S3')],string='Servicios requeridos', required=True)
@@ -40,7 +98,7 @@ class Lead(models.Model):
     x_valor_referencia = fields.Integer(string='Valor total referencia')
     #servicio 3
     x_estanque = fields.Selection([('1000','1000 lts'),('2000','2000 lts'),('3000','3000 lts'),('5000','5000 lts'),('10000','10000 lts'),('20000','20000 lts')],string='Capacidad estanque')
-    x_superficie = fields.Boolean(string='Superficie')
+    x_superficie = fields.Boolean(string='Superficie',default=True)
     x_enterrado_s3 = fields.Boolean(string='Enterrado')
     x_bombacen_hp_fl = fields.Float(string='Bomba centrifuga HP')
     x_hidropack = fields.Boolean(string='Hidropack')
@@ -49,6 +107,21 @@ class Lead(models.Model):
     x_valor_instalacion_s3 = fields.Integer(string='Valor instalacion')
     x_duracion_s3 = fields.Integer(string='Duracion')
     x_valor_referencia_s3 = fields.Integer(string='valor referencial')
+    
+    #NUEVOS CAMPOS DE SERVICIO 3 (MEJORA)
+    estanque_acumulacion_sup =  fields.Many2one('product.product',string='Estanque de acumulación sup.',domain=[('categ_id','=','OPERACIÓN BOMBEO / ACUMULADORES / SUPERFICIE')])
+    estanque_acumulacion_ent =  fields.Many2one('product.product',string='Estanque de acumulación ent.',domain=[('categ_id','=','OPERACIÓN BOMBEO / ACUMULADORES / ENTERRADO')])
+    estanque_hidroneumatico = fields.Many2one('product.product',string='Estanque hidroneumatico',domain=[('categ_id','=','OPERACIÓN BOMBEO / ACUMULADORES / HIDRONEUMATICOS')])
+    bomba_centrifuga = fields.Many2one('product.product',string='Bomba centrifuga',domain=[('categ_id','=','OPERACIÓN BOMBEO / BOMBAS / CENTRIFUGAS')])
+    losa_hormigon = fields.Many2one('product.product',string='Losa de hormigón',domain=[('categ_id','=','CONSUMIBLES DE OPERACION / PEGAMENTOS Y CEMENTOS / HORMIGON')])
+    guardamotor = fields.Many2one('product.product',string='Guardamotor',domain=[('categ_id','=','HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / GUARDAMOTORES')])
+    manometro = fields.Many2one('product.product',string='Manometro',domain=[('categ_id','=','HERRAMIENTAS Y EQUIPOS / MANOMETROS')])
+    presostato = fields.Many2one('product.product',string='Presostato',domain=[('categ_id','=','HERRAMIENTAS Y EQUIPOS / EQUIPOS DE MEDICION / PRESOSTATOS')])
+    presscontrol = fields.Many2one('product.product',string='Presscontrol',domain=[('categ_id','=','HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / PRESSCONTROL')])
+    excavacion = fields.Integer(string='Valor excavación')
+    estanque_cloro = fields.Many2one('product.product',string='Estanque de cloro',domain=[('categ_id','=','OPERACIÓN BOMBEO / ACUMULADORES / CLORO')])
+    bomba_cloro = fields.Many2one('product.product',string='Bomba cloradora',domain=[('categ_id','=','OPERACIÓN BOMBEO / BOMBAS / CLORADORA')])
+        
     #servicio 4
     x_servicio4 = fields.Selection([('bombeoestandar','Prueba de bombeo estándar'),('bombeodga','Prueba de bombeo DGA 24hrs'),('bombeo2hrs','Prueba de bombeo 2hrs'),('bombeo4hrs','Prueba de bombeo 4hrs'),('bombeo8hrs','Prueba de bombeo 8hrs'),('analisisagua','Análisis agua'),('recargoagua','Recargo análisis agua'),('visita','	Visita técnica'),('camaravideo','Cámara video'),('limpiezamecanica','Limpieza mecánica'),('inscripciondga','Inscripción pozo DGA'),('retiroequipo','Retiro equipo existente'),('montajeequipo','Montaje equipo existente'),('instalacionfaena','Instalación de faena')],string='Servicio')
     x_precios4 = fields.Integer(string='Precio servicio')
