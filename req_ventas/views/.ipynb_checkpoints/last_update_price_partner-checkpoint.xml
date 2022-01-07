@@ -32,7 +32,7 @@
             </group>     
             <group>                
                 <group>
-                    <field name="configuracion_perforación" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])]}"/>
+                    <field name="configuracion_perforacion" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])]}"/>
                 </group> 
                 <group>
                     <field name="detalle_stock_seguridad" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3'])]}"/> 
