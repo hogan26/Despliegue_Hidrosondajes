@@ -46,11 +46,8 @@ class SaleOrder(models.Model):
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    
-    #para ordenes de trabajo
-    x_equipo_asignado = fields.Selection([('eqp21','Equipo 21'),('eqp22','Equipo 22'),('eqp23','Equipo 23'),('eqp24','Equipo 24'),('eqb1','Equipo Bombas 1'),('eqb2','Equipo Bombas 2'),('eqb3','Equipo Bombas 3')],string='Equipo asignado')
-    x_fecha_retiro = fields.Date(string='Fecha de retiro de materiales')    
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")    
+        
     #formulario principal
     opportunity_id = fields.Many2one('crm.lead', string='Opportunity', check_company=True,domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     x_servicios_requeridos = fields.Selection(related='opportunity_id.x_servicios_requeridos', string='Servicios requeridos')
@@ -90,7 +87,7 @@ class SaleOrder(models.Model):
     x_enterrado_s3 = fields.Boolean(related='opportunity_id.x_enterrado_s3',string='Enterrado')
     x_bombacen_hp_fl = fields.Float(related='opportunity_id.x_bombacen_hp_fl',string='Bomba centrifuga HP')
     x_hidropack = fields.Boolean(related='opportunity_id.x_hidropack',string='Hidropack')
-    x_controlpress = fields.Boolean(related='opportunity_id.x_controlpress',string='ControlPress')
+    x_controlpress = fields.Boolean(related='opportunity_id.x_controlpress',string='Presscontrol')
     x_cloracion = fields.Boolean(related='opportunity_id.x_cloracion',string='Cloracion')
     x_valor_instalacion_s3 = fields.Integer(related='opportunity_id.x_valor_instalacion_s3',string='Valor instalacion')
     x_duracion_s3 = fields.Integer(related='opportunity_id.x_duracion_s3',string='Duracion')
@@ -129,7 +126,7 @@ class SaleOrder(models.Model):
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
-        _logger.info('entra exitosamente - metodo en req_ventas')
+        #_logger.info('entra exitosamente - metodo en req_ventas')
         if not self.sale_order_template_id_prueba:
             self.require_signature = self._get_default_require_signature()
             self.require_payment = self._get_default_require_payment()
@@ -565,6 +562,339 @@ class SaleOrder(models.Model):
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
+                            
+                        if line.name == 'REFERENCIA POSICIONAL ESTANQUE':
+                            if self.opportunity_id.x_superficie:
+                                #estanque = self.env['product.product'].search([('id','=',self.opportunity_id.estanque_acumulacion_sup.id)])
+                                data.update({
+                                    'price_unit': self.opportunity_id.estanque_acumulacion_sup.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': 1,
+                                    'product_id': self.opportunity_id.estanque_acumulacion_sup.id,
+                                    'product_uom': self.opportunity_id.estanque_acumulacion_sup.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.estanque_acumulacion_sup),
+                                    'last_update_price_date': self.opportunity_id.estanque_acumulacion_sup.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.estanque_acumulacion_sup.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.estanque_acumulacion_sup.list_price, 
+                                        self.opportunity_id.estanque_acumulacion_sup, 
+                                        self.opportunity_id.estanque_acumulacion_sup.uom_id.id, 
+                                        fields.Date.context_today(self)))
+                                    
+                            elif self.opportunity_id.x_enterrado_s3:                                
+                                data.update({
+                                    'price_unit': self.opportunity_id.estanque_acumulacion_ent.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.estanque_acumulacion_ent.id,
+                                    'product_uom': self.opportunity_id.estanque_acumulacion_ent.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.estanque_acumulacion_ent),
+                                    'last_update_price_date': self.opportunity_id.estanque_acumulacion_ent.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.estanque_acumulacion_ent.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.estanque_acumulacion_ent.list_price, 
+                                        self.opportunity_id.estanque_acumulacion_ent.id, 
+                                        self.opportunity_id.estanque_acumulacion_ent.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                        
+                        if line.name == 'REFERENCIA POSICIONAL BOMBA CENTRIFUGA':
+                            data.update({
+                                'price_unit': self.opportunity_id.bomba_centrifuga.list_price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': self.opportunity_id.bomba_centrifuga.id,
+                                'product_uom': self.opportunity_id.bomba_centrifuga.uom_id.id,
+                                'customer_lead': self._get_customer_lead(self.opportunity_id.bomba_centrifuga),
+                                'last_update_price_date': self.opportunity_id.bomba_centrifuga.last_update_pricelist_date,
+                                'last_update_price_partner': self.opportunity_id.bomba_centrifuga.last_update_pricelist_partner,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.opportunity_id.bomba_centrifuga.list_price, 
+                                    self.opportunity_id.bomba_centrifuga.id, 
+                                    self.opportunity_id.bomba_centrifuga.uom_id.id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                            
+                        if line.name == 'REFERENCIA POSICIONAL LOSA HORMIGON':
+                            entra_categoria=1
+                            if self.opportunity_id.x_superficie:
+                                data.update({
+                                    'price_unit': self.opportunity_id.losa_hormigon.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.losa_hormigon.id,
+                                    'product_uom': self.opportunity_id.losa_hormigon.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.losa_hormigon),
+                                    'last_update_price_date': self.opportunity_id.losa_hormigon.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.losa_hormigon.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.losa_hormigon.list_price, 
+                                        self.opportunity_id.losa_hormigon.id, 
+                                        self.opportunity_id.losa_hormigon.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                            
+                        if line.name == 'REFERENCIA POSICIONAL GUARDAMOTOR':
+                            data.update({
+                                'price_unit': self.opportunity_id.guardamotor.list_price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': self.opportunity_id.guardamotor.id,
+                                'product_uom': self.opportunity_id.guardamotor.uom_id.id,
+                                'customer_lead': self._get_customer_lead(self.opportunity_id.guardamotor),
+                                'last_update_price_date': self.opportunity_id.guardamotor.last_update_pricelist_date,
+                                'last_update_price_partner': self.opportunity_id.guardamotor.last_update_pricelist_partner,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.opportunity_id.guardamotor.list_price, 
+                                    self.opportunity_id.guardamotor.id, 
+                                    self.opportunity_id.guardamotor.uom_id.id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                            
+                        if line.name == 'REFERENCIA POSICIONAL ESTANQUE HIDRONEUMATICO':
+                            entra_categoria=1
+                            if self.opportunity_id.x_hidropack:
+                                data.update({
+                                    'price_unit': self.opportunity_id.estanque_hidroneumatico.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.estanque_hidroneumatico.id,
+                                    'product_uom': self.opportunity_id.estanque_hidroneumatico.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.estanque_hidroneumatico),
+                                    'last_update_price_date': self.opportunity_id.estanque_hidroneumatico.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.estanque_hidroneumatico.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.estanque_hidroneumatico.list_price, 
+                                        self.opportunity_id.estanque_hidroneumatico.id, 
+                                        self.opportunity_id.estanque_hidroneumatico.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                            
+                        if line.name == 'REFERENCIA POSICIONAL MANOMETRO':
+                            entra_categoria=1
+                            if self.opportunity_id.x_hidropack:
+                                data.update({
+                                    'price_unit': self.opportunity_id.manometro.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.manometro.id,
+                                    'product_uom': self.opportunity_id.manometro.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.manometro),
+                                    'last_update_price_date': self.opportunity_id.manometro.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.manometro.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.manometro.list_price, 
+                                        self.opportunity_id.manometro.id, 
+                                        self.opportunity_id.manometro.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                                
+                        if line.name == 'REFERENCIA POSICIONAL PRESSCONTROL':
+                            entra_categoria=1
+                            if self.opportunity_id.x_controlpress:
+                                data.update({
+                                    'price_unit': self.opportunity_id.presscontrol.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.presscontrol.id,
+                                    'product_uom': self.opportunity_id.presscontrol.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.presscontrol),
+                                    'last_update_price_date': self.opportunity_id.presscontrol.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.presscontrol.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.presscontrol.list_price, 
+                                        self.opportunity_id.presscontrol.id, 
+                                        self.opportunity_id.presscontrol.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                            
+                        if line.name == 'REFERENCIA POSICIONAL PRESOSTATO':
+                            entra_categoria=1
+                            if self.opportunity_id.x_hidropack:
+                                data.update({
+                                    'price_unit': self.opportunity_id.presostato.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.presostato.id,
+                                    'product_uom': self.opportunity_id.presostato.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.presostato),
+                                    'last_update_price_date': self.opportunity_id.presostato.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.presostato.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.presostato.list_price, 
+                                        self.opportunity_id.presostato.id, 
+                                        self.opportunity_id.presostato.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                            
+                        if line.name == 'EXCAVACIÓN' and self.opportunity_id.x_enterrado_s3 == True:                            
+                            data.update({
+                                'price_unit': self.opportunity_id.excavacion,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                            
+                        if line.product_id.product_tmpl_id.id == 1180: 
+                            entra_categoria=1
+                            if self.opportunity_id.x_hidropack:                                
+                                data.update({
+                                    'price_unit': price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': line.product_id.id,
+                                    'product_uom': line.product_uom_id.id,
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                    'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                    'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.pricelist_id, 
+                                        line.product_id, 
+                                        line.product_uom_id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                                
+                        if line.product_id.product_tmpl_id.id == 1723: 
+                            entra_categoria=1
+                            if self.opportunity_id.x_hidropack:                                
+                                data.update({
+                                    'price_unit': price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': line.product_id.id,
+                                    'product_uom': line.product_uom_id.id,
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                    'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                    'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.pricelist_id, 
+                                        line.product_id, 
+                                        line.product_uom_id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                            
+                        if line.product_id.product_tmpl_id.id == 1530:                            
+                            data.update({
+                                'price_unit': self.opportunity_id.x_valor_instalacion_s3,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                        
+                        if line.name == 'REFERENCIA POSICIONAL BOMBA CLORACION': 
+                            entra_categoria=1
+                            if self.opportunity_id.x_cloracion:
+                                data.update({
+                                    'price_unit': self.opportunity_id.bomba_cloro.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.bomba_cloro.id,
+                                    'product_uom': self.opportunity_id.bomba_cloro.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.bomba_cloro),
+                                    'last_update_price_date': self.opportunity_id.bomba_cloro.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.bomba_cloro.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.bomba_cloro.list_price, 
+                                        self.opportunity_id.bomba_cloro.id, 
+                                        self.opportunity_id.bomba_cloro.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                        
+                        if line.name == 'REFERENCIA POSICIONAL ESTANQUE CLORO': 
+                            entra_categoria=1
+                            if self.opportunity_id.estanque_cloro:
+                                data.update({
+                                    'price_unit': self.opportunity_id.estanque_cloro.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.estanque_cloro.id,
+                                    'product_uom': self.opportunity_id.estanque_cloro.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.estanque_cloro),
+                                    'last_update_price_date': self.opportunity_id.estanque_cloro.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.estanque_cloro.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.estanque_cloro.list_price, 
+                                        self.opportunity_id.estanque_cloro.id, 
+                                        self.opportunity_id.estanque_cloro.uom_id.id, 
+                                        fields.Date.context_today(self)))
+
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
+                        
 
                         if entra_categoria==0 and seleccionado == 0:                        
                             data.update({
@@ -985,7 +1315,7 @@ class SaleOrder(models.Model):
                                     fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
-                            seleccionado=1
+                            seleccionado=1                        
 
                         if entra_categoria==0 and seleccionado == 0:                        
                             data.update({

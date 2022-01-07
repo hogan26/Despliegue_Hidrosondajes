@@ -98,14 +98,24 @@
                 </group>
             </page>
             <page string="Servicio 3">
-                <group>
-                    <field name="x_estanque"/>
-                    <field name="x_superficie"/>
+                <group>                    
+                    <field name="x_superficie"/>                    
                     <field name="x_enterrado_s3"/>
-                    <field name="x_bombacen_hp_fl"/>
+                    <field name="estanque_acumulacion_sup" attrs="{'invisible': [('x_enterrado_s3','=',True)]}"/>
+                    <field name="estanque_acumulacion_ent" attrs="{'invisible': [('x_superficie','=',True)]}"/>
+                    <field name="losa_hormigon" attrs="{'invisible': [('x_enterrado_s3','=',True)]}"/>
+                    <field name="excavacion" attrs="{'invisible': [('x_enterrado_s3','=',False)]}"/>
+                    <field name="bomba_centrifuga"/>
                     <field name="x_hidropack"/>
-                    <field name="x_controlpress"/>
+                    <field name="x_controlpress"/> 
+                    <field name="presscontrol" attrs="{'invisible': [('x_controlpress','=',False)]}"/> 
+                    <field name="estanque_hidroneumatico" attrs="{'invisible': [('x_controlpress','=',True)]}"/>
+                    <field name="manometro" attrs="{'invisible': [('x_controlpress','=',True)]}"/>
+                    <field name="presostato" attrs="{'invisible': [('x_controlpress','=',True)]}"/>                    
                     <field name="x_cloracion"/>
+                    <field name="estanque_cloro" attrs="{'invisible': [('x_cloracion','=',False)]}"/>                    
+                    <field name="bomba_cloro" attrs="{'invisible': [('x_cloracion','=',False)]}"/>
+                    <field name="guardamotor"/>                                        
                     <field name="x_valor_instalacion_s3"/>
                     <field name="x_duracion_s3"/>
                     <field name="x_valor_referencia_s3"/>
