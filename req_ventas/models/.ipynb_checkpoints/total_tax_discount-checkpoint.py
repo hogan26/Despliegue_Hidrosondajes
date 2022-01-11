@@ -22,7 +22,7 @@ class SaleOrder(models.Model):
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax - (amount_tax*(order.total_tax_discount/100)),
-                'amount_total': amount_untaxed + amount_tax,
+                'amount_total': amount_untaxed + (amount_tax - (amount_tax*(order.total_tax_discount/100))),
             })
     
     total_tax_discount = fields.Integer(string="Descuento (%)",default=0)
