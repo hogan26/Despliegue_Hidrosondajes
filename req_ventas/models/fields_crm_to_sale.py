@@ -123,6 +123,7 @@ class SaleOrder(models.Model):
     x_encabezado_coti3 = fields.Html(string='encabezado coti 3',default = _get_default_enc3)
     x_encabezado_coti4 = fields.Html(string='encabezado coti 4',default = _get_default_enc4)
     x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)
+    x_encabezado_coti_s4 = fields.Html(string='encabezado coti s4')
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
@@ -223,7 +224,7 @@ class SaleOrder(models.Model):
                                     order_lines.append((0, 0, data))  
                                     seleccionado=1
 
-                        if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PRUEBAS':
+                        if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PRUEBAS' and self.opportunity_id.x_servicios_requeridos != 's4':
                             entra_categoria=1
                             if self.opportunity_id.prueba_bombeo.id == line.product_id.product_tmpl_id.id:
                                 #comprueba si es una prueba de combeo DGA
@@ -267,7 +268,7 @@ class SaleOrder(models.Model):
                                     order_lines.append((0, 0, data)) 
                                     seleccionado=1
 
-                        if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS':
+                        if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS' and self.opportunity_id.x_servicios_requeridos != 's4':
                             entra_categoria=1
                             if line.product_id.product_tmpl_id.id == 546:                        
                                 data.update({
@@ -828,7 +829,7 @@ class SaleOrder(models.Model):
                                 order_lines.append((0, 0, data))
                                 seleccionado=1
                             
-                        if line.product_id.product_tmpl_id.id == 1530:                            
+                        if line.product_id.product_tmpl_id.id == 1530 and self.opportunity_id.x_servicios_requeridos != 's4':
                             data.update({
                                 'price_unit': self.opportunity_id.x_valor_instalacion_s3,
                                 'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
@@ -893,8 +894,35 @@ class SaleOrder(models.Model):
                                         fields.Date.context_today(self)))
 
                                 order_lines.append((0, 0, data))
-                                seleccionado=1
+                                seleccionado=1                        
                         
+                        matriz_s4 = self.opportunity_id
+                        if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PRUEBAS' or 'SERVICIOS' and self.opportunity_id.x_servicios_requeridos == 's4':
+                            entra_categoria=1
+                            for matriz_servicio4 in matriz_s4.lead_matriz_s4_lines_ids:                                
+                                if matriz_servicio4.listado_servicios.id == line.product_id.product_tmpl_id.id:
+                                    _logger.info('matriz= {}'.format(matriz_servicio4.listado_servicios.id))
+                                    _logger.info('plantilla= {}'.format(line.product_id.product_tmpl_id.id))
+                                    data.update({
+                                        'price_unit': matriz_servicio4.valor_servicio,
+                                        'discount': 100 - ((100 - discount) * (
+                                                100 - line.discount) / 100),
+                                        'product_uom_qty': 1,
+                                        'product_id': line.product_id.id,
+                                        'product_uom': line.product_uom_id.id,
+                                        'customer_lead': self._get_customer_lead(
+                                            line.product_id.product_tmpl_id),                                        
+                                        'utilidad_porcentaje': 0,                            
+                                    })                        
+                                    if self.pricelist_id:
+                                        data.update(self.env['sale.order.line']._get_purchase_price(
+                                            self.pricelist_id, 
+                                            line.product_id, 
+                                            line.product_uom_id, 
+                                            fields.Date.context_today(self)))
+
+                                        order_lines.append((0, 0, data))                    
+                                        seleccionado=1 
 
                         if entra_categoria==0 and seleccionado == 0:                        
                             data.update({
