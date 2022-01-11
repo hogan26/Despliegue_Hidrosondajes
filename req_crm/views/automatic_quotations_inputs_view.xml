@@ -122,9 +122,27 @@
                 </group>
             </page>
             <page string="Servicio 4 (Casos especiales)">
-                <group>
-                    <field name="x_servicio4"/>
-                    <field name="x_precios4"/>
+                <group string="Matriz de servicios especiales">
+                    <field name="lead_matriz_s4_lines_ids" mode="tree">
+                        <form>
+                            <div class="o_row" invisible="1">
+                                <label for="matriz_s4_line_id"/>
+                                <field name="matriz_s4_line_id"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="listado_servicios"/>
+                                <field name="listado_servicios"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="valor_servicio"/>
+                                <field name="valor_servicio"/>
+                            </div>                                                        
+                        </form>
+                        <tree>
+                            <field name="listado_servicios"/>
+                            <field name="valor_servicio"/>                            
+                        </tree>
+                    </field>
                 </group>
             </page>
             <page string="Servicio 5 (Diagnóstico)">

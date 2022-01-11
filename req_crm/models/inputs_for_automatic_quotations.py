@@ -65,7 +65,7 @@ class Lead(models.Model):
             self.update({'x_hidropack':True})
     
     #formulario principal
-    x_servicios_requeridos = fields.Selection([('s1', 'S1'),('s2','S2'),('s1s2','S1 + S2'),('s1s2s3','S1 + S2 + S3')],string='Servicios requeridos', required=True)
+    x_servicios_requeridos = fields.Selection([('s1', 'S1'),('s2','S2'),('s1s2','S1 + S2'),('s1s2s3','S1 + S2 + S3'),('s4','S4')],string='Servicios requeridos', required=True)
     x_enviar_wsp = fields.Boolean(string='Enviar por WhatsApp')
     x_tipo_instalacion = fields.Selection([('domiciliario','Domiciliario'),('otro','Otro')],string='Tipo de instalacion')
     x_otro = fields.Char(string='otro')
