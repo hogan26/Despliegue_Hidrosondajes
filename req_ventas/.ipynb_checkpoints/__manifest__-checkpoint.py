@@ -29,5 +29,6 @@
         #'views/sale_order_template_id_prueba.xml',
         'views/sheet_width_increase.xml',
         'views/total_tax_discount.xml',
+        'views/liquidation.xml',
     ],    
 }
