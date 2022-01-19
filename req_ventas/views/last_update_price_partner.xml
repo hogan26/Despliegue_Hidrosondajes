@@ -149,6 +149,13 @@
                   </div>
                 </group>
             </div>
+            <div attrs="{'invisible': [('x_servicios_requeridos','not in',['s4'])]}">
+                <group>                  
+                  <div>
+                    <field name="x_encabezado_coti_s4"/>
+                  </div>                  
+                </group>
+            </div>
             <div attrs="{'invisible': [('state','not in','liquidar')]}">
                 <group string="Encabezado liquidacion">                  
                   <div>
