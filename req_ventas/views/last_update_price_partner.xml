@@ -298,12 +298,12 @@
                         <div>
                         <group string="Acuerdos de pago" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s1s2','s1s2s3'])]}">
                             <field name="x_abono_crm" attrs="{'invisible': [('x_abono_crm', '=', 0)]}"/>
-                            <field name="abono_porcentaje" attrs="{'invisible': [('abono_porcentaje', '=', 0)]}"/>
+                            <field name="abono_porcentaje" attrs="{'invisible': [('abono_porcentaje', '=', 0)]}" force_save="1"/>
                             <field name="x_abono_m_crm" attrs="{'invisible': [('x_abono_m_crm', '=', 0)]}"/>
-                            <field name="abono_monto" attrs="{'invisible': [('abono_monto', '=', 0)]}"/>
+                            <field name="abono_monto" attrs="{'invisible': [('abono_monto', '=', 0)]}" force_save="1"/>
                             <field name="x_cuotas_crm" attrs="{'invisible': [('x_cuotas_crm', '=', 0)]}"/>
-                            <field name="num_cuotas" attrs="{'invisible': [('num_cuotas', '=', 0)]}"/>                            
-                            <field name="observaciones" attrs="{'invisible': [('observaciones', '=', False)]}"/>
+                            <field name="num_cuotas" attrs="{'invisible': [('num_cuotas', '=', 0)]}" force_save="1"/>
+                            <field name="observaciones" attrs="{'invisible': [('observaciones', '=', False)]}" force_save="1"/>
                         </group>      
                         </div>
                     </div>
