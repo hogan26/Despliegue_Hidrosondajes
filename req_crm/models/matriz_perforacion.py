@@ -28,14 +28,27 @@ class MatrizPerforacion(models.Model):
     _description = 'matriz de servicio de perforacion'
     
     matriz_line_id = fields.Many2one(comodel_name="crm.lead")
-    tipo_servicio_perforacion = fields.Many2one('product.template',string='Tipo servicio',domain=[('categ_id','=','SERVICIOS / PERFORACION')])
+    tipo_servicio_perforacion = fields.Many2one('product.template',string='Tipo servicio',domain=[('categ_id','in',[('SERVICIOS / PERFORACION'),('SERVICIOS / ENTUBACION')])])
     cantidad_metros = fields.Integer(string="Metros")
     valor_metro = fields.Integer(string="Valor mt")   
     
     
 class CoronasPerforacion(models.Model):
     _name = "coronas.perforacion"
-    _description = 'coronas para matriz de servicio de perforacion'
+    _description = 'coronas para matriz de servicio de perforacion'    
+    
+    
+    @api.onchange('corona')
+    def onchange_corona(self):
+        data = self.env['product.template'].search([('id','=',self.corona.id)])
+        self.update({'precio':data.list_price})
+        self.update({'proveedor':data.last_update_pricelist_partner.name})
+        self.update({'tipo_ult_com':data.last_update_type_selector})
+        self.update({'fecha_ult_com':data.last_update_pricelist_date})
     
     corona_line_id = fields.Many2one(comodel_name="crm.lead")
     corona = fields.Many2one('product.template',string='Corona',domain=[('categ_id','=','OPERACIÓN PERFORACIÓN / HERRAMIENTAS PERFORACIÓN / CORONAS')])
+    precio = fields.Integer(string="Precio u.a",store=True)
+    proveedor = fields.Char(string="Proveedor u.a",readonly=True,store=True)
+    tipo_ult_com = fields.Char(string="Tipo u.a",readonly=True,store=True)
+    fecha_ult_com = fields.Date(string="fecha u.a",readonly=True,store=True)

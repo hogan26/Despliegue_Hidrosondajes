@@ -15,25 +15,30 @@
                 <field name="x_servicios_requeridos"/>
                 <field name="x_enviar_wsp"/>
                 <field name="x_tipo_instalacion"/>
-                <field name="x_otro"/>
+                <field name="x_otro" attrs="{'invisible':[('x_tipo_instalacion','not in',['otro'])]}"/>
+                <field name="caudal_esperado_check" invisible="1"/>
             </group>
           </xpath> 
           <xpath expr="//notebook/page[1]" position="before">            
             <page string="Servicio 1">
-                <group>
-                    <field name="x_tipo_servicio"/>
-                    <field name="x_diametro"/>
-                    <field name="x_profundidad"/>                    
-                    <field name="x_valorxmt" attrs="{'invisible':[('matriz_activada','=',True)]}"/>
-                    <field name="prueba_bombeo"/>
-                    <field name="x_valorpb"/>
-                    <field name="x_insc_dga"/>
-                    <field name="x_faena"/>
-                    <field name="retiro_material"/>
-                    <field name="corona" attrs="{'invisible':[('matriz_activada','=',True)]}"/>
-                    <!--<field name="x_valor_corona"/>-->
-                    <field name="x_duracion"/>
-                    <field name="matriz_activada"/>
+                <group> 
+                    <group>
+                        <field name="x_tipo_servicio"/>
+                        <field name="prueba_bombeo" attrs="{'invisible':[('prueba_bombeo','=',False)]}"/>
+                        <field name="prueba_bombeo_crm" attrs="{'invisible':[('prueba_bombeo','!=',False)]}"/>
+                        <field name="generador" attrs="{'invisible':[('prueba_bombeo_crm','=',2211)]}"/>
+                        <field name="x_valorpb" attrs="{'invisible':[('prueba_bombeo_crm','=',2211)]}"/>
+                        <field name="x_insc_dga" attrs="{'invisible':[('prueba_bombeo_crm','!=',551)]}"/>
+                        <field name="x_faena"/>
+                        <field name="retiro_material"/>
+                        <field name="x_duracion" attrs="{'invisible':[('x_duracion','=',0)]}"/>
+                        <field name="duracion_s1" attrs="{'invisible':[('x_duracion','!=',0)]}"/>                    
+                    </group>
+                    <group style="margin-top: 20px; margin-bottom: 20px;" attrs="{'invisible':[('x_tipo_servicio','not in',['profundizar'])]}" string="Datos aportados por el cliente">
+                        <field name="profundidad_profundizar" />
+                        <field name="diametro_profundizar"/>
+                        <field name="caudal_estimado_profundizar"/>
+                    </group>
                 </group>
                 <group>
                     <field name="lead_matriz_lines_ids" mode="tree">
@@ -70,22 +75,58 @@
                                 <field name="corona_line_id"/>
                             </div>
                             <div class="o_row">
-                                <label for="corona"/>
-                                <field name="corona"/>
-                            </div>                                                       
+                                <div>
+                                    <label for="corona"/>
+                                    <field name="corona"/>
+                                </div>                                                                                               
+                            </div> 
+                            <div class="o_row">
+                                <div>
+                                    <label for="precio"/>
+                                    <field name="precio"/>
+                                </div>
+                            </div>
+                            <div class="o_row">                                
+                                <div>
+                                    <label for="proveedor"/>
+                                    <field name="proveedor" force_save="1"/>
+                                </div>                                                                
+                            </div>
+                            <div class="o_row">
+                                <div>
+                                    <label for="tipo_ult_com"/>
+                                    <field name="tipo_ult_com" force_save="1"/>
+                                </div>
+                            </div>                            
+                            <div class="o_row">
+                                <div>
+                                    <label for="fecha_ult_com"/>
+                                    <field name="fecha_ult_com" force_save="1"/>
+                                </div>
+                            </div>                            
                         </form>
                         <tree>
-                            <field name="corona"/>                            
+                            <field name="corona"/> 
+                            <field name="precio"/>
+                            <field name="proveedor"/>
+                            <field name="tipo_ult_com"/>
+                            <field name="fecha_ult_com"/>
                         </tree>
                     </field>
                 </group>
             </page>
             <page string="Servicio 2">
                 <group>
-                    <field name="x_caudal_fl"/>
+                    <field name="profundidad_s2" attrs="{'invisible':[('x_servicios_requeridos','not in',['s2','s2s3'])]}"/>
+                    <field name="x_caudal_fl" attrs="{'invisible':[('x_caudal_fl','=',0)]}"/>
+                    <field name="caudal_crm" attrs="{'invisible':[('x_caudal_fl','!=',0)]}"/>
                     <field name="x_hp_fl"/>
-                    <field name="x_bomba_crm"/>
-                    <field name="x_motor_crm"/>
+                    <field name="kit_check"/>
+                    <field name="kits" attrs="{'invisible':[('kit_check','=',False)]}"/>
+                    <field name="bomba_crm" attrs="{'invisible':[('kit_check','=',True)]}"/>
+                    <field name="motor_crm" attrs="{'invisible':[('kit_check','=',True)]}"/>                    
+                    <field name="x_bomba_crm" attrs="{'invisible': ['|',('kit_check','=', True),('x_bomba_crm','=',False)]}"/>
+                    <field name="x_motor_crm" attrs="{'invisible': ['|',('kit_check','=', True),('x_motor_crm','=',False)]}"/>
                     <field name="tablero"/>
                     <field name="x_tipo_caneria"/>
                     <field name="x_pul_canerias_s2"/>
@@ -93,7 +134,8 @@
                     <field name="x_altura"/>
                     <field name="x_voltaje"/>
                     <field name="x_valor_instalacion"/>
-                    <field name="x_duracion_s2"/>
+                    <field name="x_duracion_s2" attrs="{'invisible':[('x_duracion_s2','=',0)]}"/>
+                    <field name="duracion_s2" attrs="{'invisible':[('x_duracion_s2','!=',0)]}"/>
                     <field name="x_valor_referencia"/>
                 </group>
             </page>
@@ -144,6 +186,9 @@
                         </tree>
                     </field>
                 </group>
+                <group attrs="{'invisible': [('caudal_esperado_check','=',False)]}">
+                    <field name="caudal_esperado"/>
+                </group>
             </page>
             <page string="Servicio 5 (Diagnóstico)">
                 <group>
@@ -177,15 +222,60 @@
                     <field name="x_num_personas_ib"/>
                 </group>
             </page>
-            <page string="Formato de pagos">
-                <group>
-                    <field name="x_abono"/>
-                    <field name="x_abono_monto"/>
-                    <label for="x_cuotas" string="0 - A convenir"/>
-                    <label for="x_cuotas" string="1 - Contra entrega"/>
-                    <label for="x_cuotas" string="2+ - Cuotas en cheque"/>
-                    <field name="x_cuotas"/>
-                    <field name="x_comentarios"/>
+            <page string="Acuerdos de pago">
+                <group string="Historial de acuerdos de pago">
+                    <field name="payment_agreed_matriz_ids" mode="tree">
+                        <form>
+                            <div>
+                                <label>Para num. cuotas:</label>
+                            </div>
+                            <div>
+                                <label>0 - A convenir</label>
+                            </div>
+                            <div>
+                                <label>1 - Contra entrega</label>
+                            </div>
+                            <div>
+                                <label>2+ - Cuotas en cheque</label>
+                            </div>                                                        
+                            <div class="o_row" invisible="1">
+                                <label for="payment_agreed_id"/>
+                                <field name="payment_agreed_id"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="Abono_porcentaje"/>
+                                <field name="Abono_porcentaje"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="Abono_monto"/>
+                                <field name="Abono_monto"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="descuento_iva"/>
+                                <field name="descuento_iva"/>
+                            </div>                              
+                            <div class="o_row">
+                                <label for="num_cuotas"/>
+                                <field name="num_cuotas"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="fijar_ac"/>
+                                <field name="fijar_ac"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="comentarios"/>
+                                <field name="comentarios"/>
+                            </div>
+                        </form>
+                        <tree>                                                        
+                            <field name="Abono_porcentaje"/>
+                            <field name="Abono_monto"/>
+                            <field name="descuento_iva"/>                                                        
+                            <field name="num_cuotas"/>
+                            <field name="fijar_ac"/>
+                            <field name="comentarios"/>                                                       
+                        </tree>
+                    </field>
                 </group>
             </page>
           </xpath>
