@@ -394,7 +394,7 @@ class SaleOrder(models.Model):
                     #_logger.info('categoria= {}'.format(line.product_id.product_tmpl_id.categ_id.display_name))
                     _logger.info('product_id= {}'.format(line.product_id.product_tmpl_id.id))
                     matriz = self.opportunity_id
-                    if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PERFORACION':
+                    if line.product_id.product_tmpl_id.categ_id.display_name in [('SERVICIOS / PERFORACION'),('SERVICIOS / ENTUBACION')]:
                         entra_categoria=1
                         for matriz_perforacion in matriz.lead_matriz_lines_ids:
                             #_logger.info('matriz_perforacion= {}'.format(matriz_perforacion))
