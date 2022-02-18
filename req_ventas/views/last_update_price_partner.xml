@@ -224,7 +224,7 @@
                                 <field name="prueba_bombeo_crm" force_save="1"/>
                             </div>
                             <div attrs="{'invisible': [('generador','=', False)]}">
-                                - Utilización de generador Trifásico
+                                - Utilización de generador
                             </div>    
                             </div>
                             <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1s2','s1s2s3'])]}">
