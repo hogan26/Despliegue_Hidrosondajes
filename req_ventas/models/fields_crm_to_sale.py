@@ -401,7 +401,7 @@ class SaleOrder(models.Model):
                                 
                             if matriz_perforacion.tipo_servicio_perforacion.id == line.product_id.product_tmpl_id.id:
                                 data.update({
-                                    'name': matriz_perforacion.name,
+                                    'name': matriz_perforacion.tipo_servicio_perforacion.name,
                                     'price_unit': matriz_perforacion.valor_metro,
                                     'discount': 100 - ((100 - discount) * (
                                             100 - line.discount) / 100),
