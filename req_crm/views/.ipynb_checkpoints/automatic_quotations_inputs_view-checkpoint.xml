@@ -119,8 +119,10 @@
                 <group>
                     <field name="profundidad_s2" attrs="{'invisible':[('x_servicios_requeridos','not in',['s2','s2s3'])]}"/>
                     <field name="x_caudal_fl" attrs="{'invisible':[('x_caudal_fl','=',0)]}"/>
-                    <field name="caudal_crm" attrs="{'invisible':[('x_caudal_fl','!=',0)]}"/>
-                    <field name="x_hp_fl"/>
+                    <field name="caudal_crm" attrs="{'invisible':['|',('x_caudal_fl','!=',0),('caudal_crm','=',0)]}"/>
+                    <field name="caudal_text" attrs="{'invisible':['|',('x_caudal_fl','!=',0),('caudal_crm','!=',0)]}"/>
+                    <field name="x_hp_fl" attrs="{'invisible':[('x_hp_fl','=',0)]}"/>
+                    <field name="hp_text" attrs="{'invisible':[('x_hp_fl','!=',0)]}"/>
                     <field name="kit_check"/>
                     <field name="kits" attrs="{'invisible':[('kit_check','=',False)]}"/>
                     <field name="bomba_crm" attrs="{'invisible':[('kit_check','=',True)]}"/>
