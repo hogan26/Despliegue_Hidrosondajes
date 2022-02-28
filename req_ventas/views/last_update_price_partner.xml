@@ -171,7 +171,7 @@
                                         - <label for="x_caudal_crm"></label>
                                         <field name="x_caudal_crm"/> l/s
                                     </div>
-                                    <div attrs="{'invisible': [('x_caudal_crm','!=', 0)]}">
+                                    <div attrs="{'invisible': ['|',('x_caudal_crm','!=', 0),('caudal_crm','=', 0)]}">
                                         - <label for="caudal_crm"></label>
                                         <field name="caudal_crm" force_save="1"/> l/s
                                     </div>
