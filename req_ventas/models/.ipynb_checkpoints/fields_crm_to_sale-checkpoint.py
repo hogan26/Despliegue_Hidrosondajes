@@ -84,7 +84,9 @@ class SaleOrder(models.Model):
     #servicio 2
     x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal: ')
     caudal_crm = fields.Float(string='Caudal: ',store=True,readonly=True)
+    caudal_text = fields.Char(string='Caudal: ',store=True,readonly=True)
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
+    #hp_text = fields.Char(string='HP')
     kit_check = fields.Boolean(string='kit_check')
     kit_store = fields.Char(string='Conjunto Bomba/Motor: ',store=True,readonly=True)
     bombas_store = fields.Char(string='Bomba: ',store=True,readonly=True)
@@ -152,6 +154,8 @@ class SaleOrder(models.Model):
     x_encabezado_coti4 = fields.Html(string='encabezado coti 4',default = _get_default_enc4)
     x_encabezado_coti5 = fields.Html(string='encabezado coti 5',default = _get_default_enc5)
     x_encabezado_coti_s4 = fields.Html(string='encabezado coti s4')
+    encabezado_s3_descripcion = fields.Html(string='encabezado coti s3 descripcion')
+    encabezado_s3_obra = fields.Html(string='encabezado coti s3 obra')
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
@@ -240,6 +244,7 @@ class SaleOrder(models.Model):
             self.update({'diametro_pozo':encabezado_diametro})
             self.update({'duracion_servicio1':self.opportunity_id.duracion_s1})
             self.update({'caudal_crm':self.opportunity_id.caudal_crm})                        
+            self.update({'caudal_text':self.opportunity_id.caudal_text})
             self.update({'kit_store':search_kit})
             self.update({'bombas_store':search_bomba})
             self.update({'motor_store':search_motor})
