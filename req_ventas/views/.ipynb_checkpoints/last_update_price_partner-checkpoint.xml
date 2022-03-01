@@ -333,18 +333,24 @@
                 <xpath expr="//group[@name='note_group']/group[1]" position="before">
                     <group colspan="4" string="Observaciones" attrs="{'invisible': ['|',('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3']),('state','in','liquidar')]}">
                         <div>
-                        <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s1s2','s1s2s3'])]}">
-                            <span>- La ubicación de la obra será validada en terreno por el cliente y el acceso estará en condiciones de permitir la instalación de la máquina perforadora</span>
-                        </div>
-                        <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1'])]}">
-                            <span>- Se facturarán solo los metros perforados al valor cotizado.</span>
-                        </div>
-                        <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1s2','s1s2s3'])]}">
-                            <span>- Se facturarán los metros perforados y servicios de bomba al valor cotizado.</span>
-                        </div>
-                        <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3'])]}">
-                            <span>- Validez de la presente oferta: 30 días.</span>
-                        </div>  
+                            <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s1s2','s1s2s3'])]}">
+                                <span>- La ubicación de la obra será validada en terreno por el cliente y el acceso estará en condiciones de permitir la instalación de la máquina perforadora</span>
+                            </div>
+                            <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1'])]}">
+                                <span>- Se facturarán solo los metros perforados al valor cotizado.</span>
+                            </div>
+                            <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1s2','s1s2s3'])]}">
+                                <span>- Se facturarán los metros perforados y servicios de bomba al valor cotizado.</span>
+                            </div>
+                            <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1'])]}">
+                                <field name="observacion_s1"/>
+                            </div>
+                            <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s2'])]}">
+                                <field name="observacion_s2"/>
+                            </div>
+                            <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3'])]}">
+                                <span>- Validez de la presente oferta: 30 días.</span>
+                            </div>  
                         </div>
                     </group>            
                     <group colspan="4" string="Detalle abonos liquidacion" attrs="{'invisible': [('state','not in','liquidar')]}">
