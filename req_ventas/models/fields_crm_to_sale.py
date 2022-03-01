@@ -146,7 +146,9 @@ class SaleOrder(models.Model):
     abono_monto = fields.Integer(string='Abono ($)',readonly=True)
     descuento_iva = fields.Integer(string='Descuento IVA',readonly=True)
     num_cuotas = fields.Integer(string='Num. cuotas',readonly=True)
-    observaciones = fields.Char(string='Observaciones',readonly=True)    
+    observaciones = fields.Char(string='Observaciones',readonly=False)  
+    observacion_s1 = fields.Char(string='observacion_s1',default='- Este servicio no incluye bomba de pozo.')
+    observacion_s2 = fields.Char(string='observacion_s1',default='- Este servicio considera la instalación del tablero de control a 1 metro de distancia del pozo.')
     
     x_encabezado_coti1 = fields.Html(string='encabezado coti 1',default = _get_default_enc1)
     x_encabezado_coti2 = fields.Html(string='encabezado coti 2',default = _get_default_enc2)
@@ -895,7 +897,7 @@ class SaleOrder(models.Model):
                             'price_unit': price,
                             'discount': 100 - ((100 - discount) * (
                                     100 - line.discount) / 100),
-                            'product_uom_qty': self.opportunity_id.x_impulsion+10,
+                            'product_uom_qty': self.opportunity_id.x_impulsion+5,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
                             'customer_lead': self._get_customer_lead(
@@ -936,6 +938,37 @@ class SaleOrder(models.Model):
                         order_lines.append((0, 0, data))
                         seleccionado=1
                         
+                    if line.product_id.product_tmpl_id.id == 51:    #mufa resina m11
+                        
+                        if self.opportunity_id.hp_text.find(',')!=-1:                            
+                            hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))
+                            #_logger.info('entra al if de busqueda= {}'.format(hp_motor))
+                        else:
+                            hp_motor = float(self.opportunity_id.hp_text)
+                        
+                        
+                        if hp_motor > 7.5:
+                            #_logger.info('entra al if------hp_motor = {}'.format(hp_motor))
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': 2,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                                                
                         
                     if line.name == 'REFERENCIA POSICIONAL LLAVE DE BOLA':
                         entra_categoria=1
@@ -1256,7 +1289,7 @@ class SaleOrder(models.Model):
                                 'price_unit': goma_brida_object.list_price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
+                                'product_uom_qty': 2,
                                 'product_id': goma_brida_object.id,
                                 'product_uom': goma_brida_object.uom_id.id,
                                 'customer_lead': self._get_customer_lead(goma_brida_object),
@@ -1335,7 +1368,7 @@ class SaleOrder(models.Model):
                                 'price_unit': price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': 1,
+                                'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
@@ -1359,7 +1392,7 @@ class SaleOrder(models.Model):
                                 'price_unit': price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': 1,
+                                'product_uom_qty': 32,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
@@ -1383,7 +1416,7 @@ class SaleOrder(models.Model):
                                 'price_unit': price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': 1,
+                                'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
@@ -1407,7 +1440,7 @@ class SaleOrder(models.Model):
                                 'price_unit': price,
                                 'discount': 100 - ((100 - discount) * (
                                         100 - line.discount) / 100),
-                                'product_uom_qty': 1,
+                                'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
@@ -1425,7 +1458,7 @@ class SaleOrder(models.Model):
                             seleccionado=1                    
                         
                     if line.product_id.name == 'REFERENCIA POSICIONAL ESTANQUE':
-                        _logger.info('x_superficie= {}'.format(self.opportunity_id.x_superficie))
+                        #_logger.info('x_superficie= {}'.format(self.opportunity_id.x_superficie))
                         if self.opportunity_id.x_superficie:
                             #estanque = self.env['product.product'].search([('id','=',self.opportunity_id.estanque_acumulacion_sup.id)])
                             data.update({
