@@ -130,7 +130,7 @@
                                 <div attrs="{'invisible': [('kit_check','=', False)]}">
                                     <div attrs="{'invisible': [('kit_store','=', False)]}">
                                         - <label for="kit_store"></label>
-                                        <field name="kit_store" force_save="1"/>
+                                        <field name="kit_store" readonly="False" force_save="1"/>
                                     </div>
                                 </div>
                                 <div attrs="{'invisible': [('kit_check','=', True)]}">
@@ -182,7 +182,7 @@
                                     <div attrs="{'invisible': [('kit_check','=', False)]}">
                                         <div attrs="{'invisible': [('kit_store','=', False)]}">
                                             - <label for="kit_store"></label>
-                                            <field name="kit_store" force_save="1"/>
+                                            <field name="kit_store" readonly="False" force_save="1"/>
                                         </div>
                                     </div>
                                     <div attrs="{'invisible': [('kit_check','=', True)]}">
