@@ -918,7 +918,7 @@ class SaleOrder(models.Model):
                             'price_unit': price,
                             'discount': 100 - ((100 - discount) * (
                                     100 - line.discount) / 100),
-                            'product_uom_qty': (self.opportunity_id.x_impulsion+10)*2,
+                            'product_uom_qty': (self.opportunity_id.x_impulsion+5)*2,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
                             'customer_lead': self._get_customer_lead(
