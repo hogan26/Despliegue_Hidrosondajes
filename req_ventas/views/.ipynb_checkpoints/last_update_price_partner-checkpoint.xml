@@ -136,7 +136,7 @@
                                 <div attrs="{'invisible': [('kit_check','=', True)]}">
                                     <div attrs="{'invisible': [('bombas_store','=', False)]}">
                                         - <label for="bombas_store"></label>
-                                        <field name="bombas_store" force_save="1"/>
+                                        <field name="bombas_store" readonly="False" force_save="1"/>
                                     </div>
                                     <div attrs="{'invisible': [('x_bomba_crm','=', False)]}">
                                         - <label for="x_bomba_crm"></label>
@@ -144,7 +144,7 @@
                                     </div>
                                     <div attrs="{'invisible': [('motor_store','=', False)]}">
                                         - <label for="motor_store"></label>
-                                        <field name="motor_store" force_save="1"/>
+                                        <field name="motor_store" readonly="False" force_save="1"/>
                                     </div>
                                     <div attrs="{'invisible': [('x_motor_crm','=', False)]}">
                                         - <label for="x_motor_crm"></label>
@@ -188,7 +188,7 @@
                                     <div attrs="{'invisible': [('kit_check','=', True)]}">
                                         <div attrs="{'invisible': [('bombas_store','=', False)]}">
                                             - <label for="bombas_store"></label>
-                                            <field name="bombas_store" force_save="1"/>
+                                            <field name="bombas_store" readonly="False" force_save="1"/>
                                         </div>
                                         <div attrs="{'invisible': [('x_bomba_crm','=', False)]}">
                                             - <label for="x_bomba_crm"></label>
@@ -196,7 +196,7 @@
                                         </div>
                                         <div attrs="{'invisible': [('motor_store','=', False)]}">
                                             - <label for="motor_store"></label>
-                                            <field name="motor_store" force_save="1"/>
+                                            <field name="motor_store" readonly="False" force_save="1"/>
                                         </div>
                                         <div attrs="{'invisible': [('x_motor_crm','=', False)]}">
                                             - <label for="x_motor_crm"></label>
