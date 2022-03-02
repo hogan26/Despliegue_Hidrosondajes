@@ -892,28 +892,145 @@ class SaleOrder(models.Model):
                         order_lines.append((0, 0, data))                        
                         seleccionado=1
 
-                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):  #CABLES PLANOS SUMERGIBLES                      
-                        data.update({
-                            'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (
-                                    100 - line.discount) / 100),
-                            'product_uom_qty': self.opportunity_id.x_impulsion+5,
-                            'product_id': line.product_id.id,
-                            'product_uom': line.product_uom_id.id,
-                            'customer_lead': self._get_customer_lead(
-                                line.product_id.product_tmpl_id),
-                            'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
-                            'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
-                        })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
-                        order_lines.append((0, 0, data))
-                        seleccionado=1
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):  #CABLES PLANOS SUMERGIBLES
+                        entra_categoria=1                        
+                            
+                        if self.opportunity_id.hp_text.find(',')!=-1:                            
+                            hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                        else:
+                            hp_motor = float(self.opportunity_id.hp_text)
+
+                        if hp_motor <= 7.5 and line.product_id.product_tmpl_id.id == 495:                            
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': self.opportunity_id.x_impulsion+5,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+
+                        if hp_motor > 7.5 and hp_motor < 30 and line.product_id.product_tmpl_id.id == 56:                            
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+
+                        if hp_motor >= 30 and hp_motor < 50 and line.product_id.product_tmpl_id.id == 496:                            
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+
+                        if hp_motor >= 50 and hp_motor < 75 and line.product_id.product_tmpl_id.id == 497:                            
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+
+                        if hp_motor >= 75 and hp_motor < 100 and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 2352):                            
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+
+                        if hp_motor >= 100 and line.product_id.product_tmpl_id.id == 2353:                            
+                            data.update({
+                                'price_unit': price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(
+                                    line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
 
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and line.product_id.product_tmpl_id.id == 55:    #CABLE SONDA                     
                         data.update({
