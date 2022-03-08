@@ -21,10 +21,21 @@ class SaleOrder(models.Model):
                 amount_tax += line.price_tax
             order.update({
                 'amount_untaxed': amount_untaxed,
+                'amount_tax': amount_tax,
+                'amount_total': amount_untaxed + amount_tax,
+            })
+            
+            """
+            version antigua
+            order.update({
+                'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax - (amount_tax*(order.total_tax_discount/100)),
                 'amount_total': amount_untaxed + (amount_tax - (amount_tax*(order.total_tax_discount/100))),
             })
+            """
     
     total_tax_discount = fields.Integer(string="Descuento (%)",default=0)
+    tax_after_discount = fields.Integer(string="Iva final")
+    amount_total_after_tax_discount = fields.Integer(string="Monto final")
     
     

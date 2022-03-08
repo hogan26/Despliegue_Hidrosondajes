@@ -303,7 +303,7 @@
                 <xpath expr="//field[@name='order_line']" position="after">
                     <div class="row" attrs="{'invisible': [('state','in','liquidar')]}">
                     <div class="col">
-                        <group string="Datos bancarios de la empresa" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s1s2','s1s2s3'])]}">
+                        <group string="Datos bancarios de la empresa" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s2s3','s1s2s3'])]}">
                         <div>
                             <div>Nombre: Hidrosondajes Limitada</div>
                             <div>Rut: 76.481.928-4</div>

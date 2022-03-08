@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="composite_product_form_view" model="ir.ui.view">
+      <field name="name">composite.product.form.view</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_form_view"/>
+      <field name="arch" type="xml">
+          <xpath expr="//div[@name='options']/div[2]" position="after">              
+              <div>
+                  <field name="composite_product_check"/>
+                  <label for="composite_product_check"/>
+              </div>              
+          </xpath>
+          <xpath expr="//page[@name='general_information']" position="after">              
+              <page string="Producto compuesto" attrs="{'invisible':[('composite_product_check','=',False)]}">
+                  <group>
+                      <field name="composite_products_lines_ids" mode="tree">
+                        <form>
+                            <div class="o_row" invisible="1">
+                                <label for="composite_product_id"/>
+                                <field name="composite_product_id"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="product"/>
+                                <field name="product"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="cost_price"/>
+                                <field name="cost_price"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="quantity"/>
+                                <field name="quantity"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="utility"/>
+                                <field name="utility"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="uom"/>
+                                <field name="uom" force_save="1"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="sale_price"/>
+                                <field name="sale_price" force_save="1"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="amount_total_line"/>
+                                <field name="amount_total_line" force_save="1"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="margen"/>
+                                <field name="margen" force_save="1"/>
+                            </div>
+                        </form>
+                        <tree>
+                            <field name="product"/>
+                            <field name="cost_price"/>
+                            <field name="quantity"/>
+                            <field name="utility"/>
+                            <field name="uom" force_save="1"/>
+                            <field name="sale_price" force_save="1"/>
+                            <field name="amount_total_line" force_save="1"/>
+                            <field name="margen" force_save="1"/>
+                        </tree>
+                      </field>
+                  </group>
+                  <group>
+                      <div>
+                          <label for="amount_total"/>
+                          <field name="amount_total" force_save="1"/>
+                      </div> 
+                      <div>
+                          <label for="total_margen"/>
+                          <field name="total_margen" force_save="1"/>
+                      </div>
+                  </group>                      
+              </page>
+          </xpath> 
+      </field>          
+    </record>
+  </data>
+</odoo>
