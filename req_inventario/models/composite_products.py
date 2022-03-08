@@ -31,8 +31,7 @@ class ProducTemplate(models.Model):
     
     
 class MatrizProductoCompuesto(models.Model):    
-    _name = "composite.product"
-    _description = 'coronas para matriz de servicio de perforacion'    
+    _name = "composite.product"   
     
     @api.onchange('product','cost_price','quantity','utility')
     def onchange_product(self):
@@ -50,7 +49,7 @@ class MatrizProductoCompuesto(models.Model):
         self.update({'margen':margen})
     
     composite_product_id = fields.Many2one(comodel_name="product.template")
-    product = fields.Many2one('product.template',string='Producto',store=True)
+    product = fields.Many2one('product.template',string='Producto')
     cost_price = fields.Integer(string="Precio Costo")
     quantity = fields.Integer(string="Cantidad")
     utility = fields.Integer(string="Utilidad (%)",default=45)
