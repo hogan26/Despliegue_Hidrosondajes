@@ -34,7 +34,7 @@ class SaleOrder(models.Model):
             })
             """
     
-    total_tax_discount = fields.Integer(string="Descuento (%)",default=0)
+    total_tax_discount = fields.Integer(string="Descuento IVA (%)",default=0)
     tax_after_discount = fields.Integer(string="Iva final")
     amount_total_after_tax_discount = fields.Integer(string="Monto final")
     
