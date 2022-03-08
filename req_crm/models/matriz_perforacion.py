@@ -48,7 +48,7 @@ class CoronasPerforacion(models.Model):
     
     corona_line_id = fields.Many2one(comodel_name="crm.lead")
     corona = fields.Many2one('product.template',string='Corona',domain=[('categ_id','=','OPERACIÓN PERFORACIÓN / HERRAMIENTAS PERFORACIÓN / CORONAS')])
-    precio = fields.Integer(string="Precio u.a",store=True)
-    proveedor = fields.Char(string="Proveedor u.a",readonly=True,store=True)
-    tipo_ult_com = fields.Char(string="Tipo u.a",readonly=True,store=True)
-    fecha_ult_com = fields.Date(string="fecha u.a",readonly=True,store=True)
+    precio = fields.Integer(string="Precio última actualización",store=True)
+    proveedor = fields.Char(string="Proveedor última actualización",readonly=True,store=True)
+    tipo_ult_com = fields.Char(string="Tipo última actualización",readonly=True,store=True)
+    fecha_ult_com = fields.Date(string="fecha última actualización",readonly=True,store=True)

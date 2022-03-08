@@ -8,7 +8,7 @@ class Lead(models.Model):
     
     payment_agreed_matriz_ids = fields.One2many(
         comodel_name="payment.agreed",
-        inverse_name="payment_agreed_id", string=' ')
+        inverse_name="payment_agreed_id", string='Acuerdo')
     
 class PaymentAgreed(models.Model):
     _name = "payment.agreed"   
