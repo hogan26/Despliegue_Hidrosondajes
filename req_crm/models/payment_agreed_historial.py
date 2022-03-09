@@ -8,11 +8,10 @@ class Lead(models.Model):
     
     payment_agreed_matriz_ids = fields.One2many(
         comodel_name="payment.agreed",
-        inverse_name="payment_agreed_id", string='Acuerdo')
+        inverse_name="payment_agreed_id", string=' ')
     
 class PaymentAgreed(models.Model):
     _name = "payment.agreed"   
-    _description = "matriz de acuerdos de pago del cliente"
     
     payment_agreed_id = fields.Many2one(comodel_name="crm.lead")
     Abono_monto = fields.Integer(string="Abono ($)")
@@ -21,3 +20,4 @@ class PaymentAgreed(models.Model):
     num_cuotas = fields.Integer(string="Num. Cuotas")
     fijar_ac = fields.Boolean(string="Fijar a.c",default=True)
     comentarios = fields.Char(string="Comentarios")
+    
