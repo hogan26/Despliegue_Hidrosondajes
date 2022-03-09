@@ -31,7 +31,8 @@ class ProducTemplate(models.Model):
     
     
 class MatrizProductoCompuesto(models.Model):    
-    _name = "composite.product"   
+    _name = "composite.product"
+    _description = "matriz para ingresar lista de productos que componen un producto mas grande"
     
     @api.onchange('product','cost_price','quantity','utility')
     def onchange_product(self):
@@ -57,6 +58,3 @@ class MatrizProductoCompuesto(models.Model):
     sale_price = fields.Integer(string="Precio Venta",readonly=True)
     amount_total_line = fields.Integer(string="Total",readonly=True)
     margen = fields.Integer(string="margen",readonly=True)
-    
-    
-    

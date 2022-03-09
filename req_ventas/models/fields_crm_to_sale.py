@@ -71,14 +71,14 @@ class SaleOrder(models.Model):
     profundidad_calculada = fields.Integer(string="Profundidad: ",default=get_default_profundidad_calculada,readonly=True,store=True)
     x_faena = fields.Integer(related='opportunity_id.x_faena',string='Instalacion de faena')
     x_valorxmt = fields.Integer(related='opportunity_id.x_valorxmt',string='Valor por metro')
-    x_prueba_bombeo = fields.Selection(related='opportunity_id.x_prueba_bombeo',string='Prueba de bombeo')
+    x_prueba_bombeo = fields.Selection(related='opportunity_id.x_prueba_bombeo',string='Prueba de bombeo:')
     x_valorpb = fields.Integer(related='opportunity_id.x_valorpb',string='Valor prueba de bombeo')
     x_insc_dga = fields.Integer(related='opportunity_id.x_insc_dga',string='Inscripcion pozo DGA')
     corona = fields.Many2one('product.template',related='opportunity_id.corona',string='Corona')
     x_valor_corona = fields.Integer(related='opportunity_id.x_valor_corona',string='Valor corona')
     x_duracion_s1 = fields.Integer(related='opportunity_id.x_duracion',string='Duracion')
     duracion_servicio1 = fields.Integer(string='Duración',store=True,readonly=True)
-    prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo')
+    prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo..')
     prueba_bombeo_crm = fields.Char(string='Prueba de bombeo: ',store=True,readonly=True)
     generador = fields.Boolean(string='Req. Generador')
     #servicio 2
@@ -329,9 +329,9 @@ class SaleOrder(models.Model):
             
         if tuberia_medida == '4':
             tuberia_medida_mm = '110'
-            tuberia_medida_vwell = '100 (4")'
+            tuberia_medida_vwell = '100MM (4")'
             terminal_medida_pvc = '110 x 4" CEMENTAR'
-            adaptador_medida = '100 (4")'
+            adaptador_medida = '100MM (4")'
             llave_bola = 'LLAVE DE BOLA PASO CONTINUO 4"'
             union_americana = 'UNION AMERICANA PVC 110MM CEMENTAR'
             codo_hi_galva = 'CODO HI GALVA. 4"'
@@ -894,11 +894,14 @@ class SaleOrder(models.Model):
 
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):  #CABLES PLANOS SUMERGIBLES
                         entra_categoria=1                        
-                            
-                        if self.opportunity_id.hp_text.find(',')!=-1:                            
-                            hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                        
+                        if self.opportunity_id.hp_text:                            
+                            if self.opportunity_id.hp_text.find(',')!=-1:                            
+                                hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                            else:
+                                hp_motor = float(self.opportunity_id.hp_text)
                         else:
-                            hp_motor = float(self.opportunity_id.hp_text)
+                            hp_motor = self.opportunity_id.x_hp_fl
 
                         if hp_motor <= 7.5 and line.product_id.product_tmpl_id.id == 495:                            
                             data.update({
@@ -1056,11 +1059,14 @@ class SaleOrder(models.Model):
                         
                     if line.product_id.product_tmpl_id.id == 51:    #mufa resina m11
                         
-                        if self.opportunity_id.hp_text.find(',')!=-1:                            
-                            hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))
-                            #_logger.info('entra al if de busqueda= {}'.format(hp_motor))
+                        
+                        if self.opportunity_id.hp_text:                            
+                            if self.opportunity_id.hp_text.find(',')!=-1:                            
+                                hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                            else:
+                                hp_motor = float(self.opportunity_id.hp_text)
                         else:
-                            hp_motor = float(self.opportunity_id.hp_text)
+                            hp_motor = self.opportunity_id.x_hp_fl
                         
                         
                         if hp_motor > 7.5:
