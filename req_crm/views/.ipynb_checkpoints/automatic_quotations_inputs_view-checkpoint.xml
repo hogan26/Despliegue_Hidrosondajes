@@ -118,6 +118,7 @@
             <page string="Servicio 2">
                 <group>
                     <field name="profundidad_s2" attrs="{'invisible':[('x_servicios_requeridos','not in',['s2','s2s3'])]}"/>
+                    <field name="diametro_s2" attrs="{'invisible':[('x_servicios_requeridos','not in',['s2','s2s3'])]}"/>
                     <field name="x_caudal_fl" attrs="{'invisible':[('x_caudal_fl','=',0)]}"/>
                     <field name="caudal_crm" attrs="{'invisible':['|',('x_caudal_fl','!=',0),('caudal_crm','=',0)]}"/>
                     <field name="caudal_text" attrs="{'invisible':['|',('x_caudal_fl','!=',0),('caudal_crm','!=',0)]}"/>
@@ -255,7 +256,15 @@
                             <div class="o_row">
                                 <label for="descuento_iva"/>
                                 <field name="descuento_iva"/>
-                            </div>                              
+                            </div>  
+                            <div class="o_row">
+                                <label for="descuento_neto_porcentaje"/>
+                                <field name="descuento_neto_porcentaje"/>
+                            </div>
+                            <div class="o_row">
+                                <label for="descuento_neto_monto"/>
+                                <field name="descuento_neto_monto"/>
+                            </div>
                             <div class="o_row">
                                 <label for="num_cuotas"/>
                                 <field name="num_cuotas"/>
@@ -273,6 +282,8 @@
                             <field name="Abono_porcentaje"/>
                             <field name="Abono_monto"/>
                             <field name="descuento_iva"/>                                                        
+                            <field name="descuento_neto_porcentaje"/>
+                            <field name="descuento_neto_monto"/>
                             <field name="num_cuotas"/>
                             <field name="fijar_ac"/>
                             <field name="comentarios"/>                                                       

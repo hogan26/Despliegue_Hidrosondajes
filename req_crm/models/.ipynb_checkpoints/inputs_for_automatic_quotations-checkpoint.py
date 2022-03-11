@@ -70,6 +70,7 @@ class Lead(models.Model):
     duracion_s1 = fields.Integer(string='Duracion',default=get_default_duracion_s1)
     #servicio 2
     profundidad_s2 = fields.Integer(string="Profundidad")
+    diametro_s2 = fields.Integer(string="Diametro")
     x_caudal_fl = fields.Float('Caudal')
     caudal_crm = fields.Float(string='Caudal')
     caudal_text = fields.Char(string='Caudal')
