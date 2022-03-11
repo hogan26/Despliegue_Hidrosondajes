@@ -145,6 +145,8 @@ class SaleOrder(models.Model):
     abono_porcentaje = fields.Integer(string='Abono inicial (%)',readonly=True)
     abono_monto = fields.Integer(string='Abono ($)',readonly=True)
     descuento_iva = fields.Integer(string='Descuento IVA',readonly=True)
+    descuento_neto_porcentaje = fields.Integer(string='Descuento neto (%)',readonly=True)
+    descuento_neto_monto = fields.Integer(string='Descuento neto ($)',readonly=True)
     num_cuotas = fields.Integer(string='Num. cuotas',readonly=True)
     observaciones = fields.Char(string='Observaciones',readonly=False)  
     observacion_s1 = fields.Char(string='observacion_s1',default='- Este servicio no incluye bomba de pozo.')
@@ -175,6 +177,8 @@ class SaleOrder(models.Model):
                 self.update({'abono_porcentaje':acuerdo.Abono_porcentaje})
                 self.update({'abono_monto':acuerdo.Abono_monto})
                 self.update({'descuento_iva':acuerdo.descuento_iva})
+                self.update({'descuento_neto_porcentaje':acuerdo.descuento_neto_porcentaje})
+                self.update({'descuento_neto_monto':acuerdo.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo.num_cuotas})
                 self.update({'observaciones':acuerdo.comentarios})
         
@@ -329,9 +333,9 @@ class SaleOrder(models.Model):
             
         if tuberia_medida == '4':
             tuberia_medida_mm = '110'
-            tuberia_medida_vwell = '100 (4")'
+            tuberia_medida_vwell = '100MM (4")'
             terminal_medida_pvc = '110 x 4" CEMENTAR'
-            adaptador_medida = '100 (4")'
+            adaptador_medida = '100MM (4")'
             llave_bola = 'LLAVE DE BOLA PASO CONTINUO 4"'
             union_americana = 'UNION AMERICANA PVC 110MM CEMENTAR'
             codo_hi_galva = 'CODO HI GALVA. 4"'
@@ -410,13 +414,11 @@ class SaleOrder(models.Model):
                                 data.update({
                                     'name': matriz_perforacion.tipo_servicio_perforacion.name,
                                     'price_unit': matriz_perforacion.valor_metro,
-                                    'discount': 100 - ((100 - discount) * (
-                                            100 - line.discount) / 100),
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                     'product_uom_qty': matriz_perforacion.cantidad_metros,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(
-                                        line.product_id.product_tmpl_id),
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                     'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                     'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                     'utilidad_porcentaje': 0,                            
@@ -440,13 +442,11 @@ class SaleOrder(models.Model):
                                 #_logger.info('corona plantilla= {}'.format(line.product_id.product_tmpl_id.id))
                                 data.update({
                                     'price_unit': matriz_corona.precio,
-                                    'discount': 100 - ((100 - discount) * (
-                                            100 - line.discount) / 100),
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(
-                                        line.product_id.product_tmpl_id),
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                     'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                     'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                     'utilidad_porcentaje': 0,
@@ -468,13 +468,11 @@ class SaleOrder(models.Model):
                             if line.product_id.product_tmpl_id.id == 551:
                                 data.update({
                                     'price_unit': self.opportunity_id.x_insc_dga,
-                                    'discount': 100 - ((100 - discount) * (
-                                            100 - line.discount) / 100),
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(
-                                        line.product_id.product_tmpl_id),
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                     'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                     'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                     'utilidad_porcentaje': 0,
@@ -482,13 +480,11 @@ class SaleOrder(models.Model):
                             else:
                                 data.update({
                                     'price_unit': self.opportunity_id.x_valorpb,
-                                    'discount': 100 - ((100 - discount) * (
-                                            100 - line.discount) / 100),
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(
-                                        line.product_id.product_tmpl_id),
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                     'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                     'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                     'utilidad_porcentaje': 0,
@@ -510,13 +506,11 @@ class SaleOrder(models.Model):
                         if line.product_id.product_tmpl_id.id == 546:                        
                             data.update({
                                 'price_unit': self.opportunity_id.x_faena + self.opportunity_id.retiro_material,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                 'utilidad_porcentaje': 0,
@@ -534,13 +528,11 @@ class SaleOrder(models.Model):
                         if line.product_id.product_tmpl_id.id == 1521:                        
                             data.update({
                                 'price_unit': self.opportunity_id.x_valor_instalacion,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                 'utilidad_porcentaje': 0,
@@ -639,8 +631,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tuberia_pvc.name,
                                 'price_unit': tuberia_pvc.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': self.opportunity_id.x_impulsion,
                                 'product_id': tuberia_pvc.id,
                                 'product_uom': tuberia_pvc.uom_id.id,
@@ -672,8 +663,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tuberia_vwell.name,
                                 'price_unit': tuberia_vwell.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': calc_impulsion,
                                 'product_id': tuberia_vwell.id,
                                 'product_uom': tuberia_vwell.uom_id.id,
@@ -707,8 +697,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': terminal_hi_pvc.name,
                                 'price_unit': terminal_hi_pvc.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': cant_terminales,
                                 'product_id': terminal_hi_pvc.id,
                                 'product_uom': terminal_hi_pvc.uom_id.id,
@@ -742,8 +731,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': terminal_he_pvc.name, 
                                 'price_unit': terminal_he_pvc.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': cant_terminales,
                                 'product_id': terminal_he_pvc.id,
                                 'product_uom': terminal_he_pvc.uom_id.id,
@@ -771,8 +759,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': adaptador_sup_vwell.name,
                                 'price_unit': adaptador_sup_vwell.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 1,
                                 'product_id': adaptador_sup_vwell.id,
                                 'product_uom': adaptador_sup_vwell.uom_id.id,
@@ -800,8 +787,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': adaptador_inf_vwell.name,
                                 'price_unit': adaptador_inf_vwell.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 1,
                                 'product_id': adaptador_inf_vwell.id,
                                 'product_uom': adaptador_inf_vwell.uom_id.id,
@@ -822,13 +808,11 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / CONDUIT' and line.product_id.product_tmpl_id.id == 1573:                        
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (
-                                    100 - line.discount) / 100),
+                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                             'product_uom_qty': self.opportunity_id.x_impulsion,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
-                            'customer_lead': self._get_customer_lead(
-                                line.product_id.product_tmpl_id),
+                            'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
@@ -845,13 +829,11 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.id == 535:    #CUERDA DE POLIPROPILENO                     
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (
-                                    100 - line.discount) / 100),
+                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                             'product_uom_qty': self.opportunity_id.x_impulsion,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
-                            'customer_lead': self._get_customer_lead(
-                                line.product_id.product_tmpl_id),
+                            'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
@@ -873,8 +855,7 @@ class SaleOrder(models.Model):
                         data.update({
                             'name': tablero_electrico.name,
                             'price_unit': tablero_electrico.list_price,
-                            'discount': 100 - ((100 - discount) * (
-                                    100 - line.discount) / 100),
+                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': tablero_electrico.id,
                             'product_uom': tablero_electrico.uom_id.id,
@@ -896,10 +877,13 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):  #CABLES PLANOS SUMERGIBLES
                         entra_categoria=1                        
                             
-                        if self.opportunity_id.hp_text.find(',')!=-1:                            
-                            hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                        if self.opportunity_id.hp_text:                            
+                            if self.opportunity_id.hp_text.find(',')!=-1:                            
+                                hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                            else:
+                                hp_motor = float(self.opportunity_id.hp_text)
                         else:
-                            hp_motor = float(self.opportunity_id.hp_text)
+                            hp_motor = self.opportunity_id.x_hp_fl
 
                         if hp_motor <= 7.5 and line.product_id.product_tmpl_id.id == 495:                            
                             data.update({
@@ -929,8 +913,7 @@ class SaleOrder(models.Model):
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
@@ -951,8 +934,7 @@ class SaleOrder(models.Model):
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
@@ -973,8 +955,7 @@ class SaleOrder(models.Model):
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
@@ -995,8 +976,7 @@ class SaleOrder(models.Model):
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
@@ -1017,8 +997,7 @@ class SaleOrder(models.Model):
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
-                                'customer_lead': self._get_customer_lead(
-                                    line.product_id.product_tmpl_id),
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
@@ -1035,13 +1014,11 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and line.product_id.product_tmpl_id.id == 55:    #CABLE SONDA                     
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (
-                                    100 - line.discount) / 100),
+                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                             'product_uom_qty': (self.opportunity_id.x_impulsion+5)*2,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
-                            'customer_lead': self._get_customer_lead(
-                                line.product_id.product_tmpl_id),
+                            'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
@@ -1057,11 +1034,13 @@ class SaleOrder(models.Model):
                         
                     if line.product_id.product_tmpl_id.id == 51:    #mufa resina m11
                         
-                        if self.opportunity_id.hp_text.find(',')!=-1:                            
-                            hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))
-                            #_logger.info('entra al if de busqueda= {}'.format(hp_motor))
+                        if self.opportunity_id.hp_text:                            
+                            if self.opportunity_id.hp_text.find(',')!=-1:                            
+                                hp_motor = float(self.opportunity_id.hp_text.replace(',','.'))                                
+                            else:
+                                hp_motor = float(self.opportunity_id.hp_text)
                         else:
-                            hp_motor = float(self.opportunity_id.hp_text)
+                            hp_motor = self.opportunity_id.x_hp_fl
                         
                         
                         if hp_motor > 7.5:
@@ -1096,8 +1075,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': llave_bola_object.name,
                                 'price_unit': llave_bola_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': llave_bola_object.id,
                                 'product_uom': llave_bola_object.uom_id.id,
@@ -1122,8 +1100,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': llave_bola_object.name,
                                 'price_unit': llave_bola_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': llave_bola_object.id,
                                 'product_uom': llave_bola_object.uom_id.id,
@@ -1150,8 +1127,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': union_americana_object.name,
                                 'price_unit': union_americana_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': union_americana_object.id,
                                 'product_uom': union_americana_object.uom_id.id,
@@ -1176,8 +1152,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': union_americana_object.name,
                                 'price_unit': union_americana_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': union_americana_object.id,
                                 'product_uom': union_americana_object.uom_id.id,
@@ -1204,8 +1179,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': codo_hi_galva_object.name,
                                 'price_unit': codo_hi_galva_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': codo_hi_galva_object.id,
                                 'product_uom': codo_hi_galva_object.uom_id.id,
@@ -1230,8 +1204,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': codo_hi_galva_object.name,
                                 'price_unit': codo_hi_galva_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': codo_hi_galva_object.id,
                                 'product_uom': codo_hi_galva_object.uom_id.id,
@@ -1262,8 +1235,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tuberia_pvc_vwell_object.name,
                                 'price_unit': tuberia_pvc_vwell_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': cantidad,
                                 'product_id': tuberia_pvc_vwell_object.id,
                                 'product_uom': tuberia_pvc_vwell_object.uom_id.id,
@@ -1296,8 +1268,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': terminal_he_pvc_vwell_object.name,
                                 'price_unit': terminal_he_pvc_vwell_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': cantidad,
                                 'product_id': terminal_he_pvc_vwell_object.id,
                                 'product_uom': terminal_he_pvc_vwell_object.uom_id.id,
@@ -1323,8 +1294,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': flange_hi_acero_object.name,
                                 'price_unit': flange_hi_acero_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': flange_hi_acero_object.id,
                                 'product_uom': flange_hi_acero_object.uom_id.id,
@@ -1350,8 +1320,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': curva_brida_brida_acero_object.name,
                                 'price_unit': curva_brida_brida_acero_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': curva_brida_brida_acero_object.id,
                                 'product_uom': curva_brida_brida_acero_object.uom_id.id,
@@ -1377,8 +1346,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': valvula_elastoamerica_object.name,
                                 'price_unit': valvula_elastoamerica_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': valvula_elastoamerica_object.id,
                                 'product_uom': valvula_elastoamerica_object.uom_id.id,
@@ -1404,8 +1372,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': goma_brida_object.name,
                                 'price_unit': goma_brida_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 2,
                                 'product_id': goma_brida_object.id,
                                 'product_uom': goma_brida_object.uom_id.id,
@@ -1431,8 +1398,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': copla_hi_galva_object.name,
                                 'price_unit': copla_hi_galva_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': copla_hi_galva_object.id,
                                 'product_uom': copla_hi_galva_object.uom_id.id,
@@ -1459,8 +1425,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tapa_pozo_object.name,
                                 'price_unit': tapa_pozo_object.list_price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 1,
                                 'product_id': tapa_pozo_object.id,
                                 'product_uom': tapa_pozo_object.uom_id.id,
@@ -1483,8 +1448,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1507,8 +1471,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 32,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1531,8 +1494,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1555,8 +1517,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (
-                                        100 - line.discount) / 100),
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1927,13 +1888,11 @@ class SaleOrder(models.Model):
                                 #_logger.info('plantilla= {}'.format(line.product_id.product_tmpl_id.id))
                                 data.update({
                                     'price_unit': matriz_servicio4.valor_servicio,
-                                    'discount': 100 - ((100 - discount) * (
-                                            100 - line.discount) / 100),
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                     'product_uom_qty': 1,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(
-                                        line.product_id.product_tmpl_id),                                        
+                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),                                        
                                     'utilidad_porcentaje': 0,                            
                                 })                        
                                 if self.pricelist_id:
@@ -1949,13 +1908,11 @@ class SaleOrder(models.Model):
                     if entra_categoria==0 and seleccionado == 0:                        
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (
-                                    100 - line.discount) / 100),
+                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
-                            'customer_lead': self._get_customer_lead(
-                                line.product_id.product_tmpl_id),
+                            'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
@@ -1971,13 +1928,11 @@ class SaleOrder(models.Model):
                     _logger.info('es una orden de trabajo')
                     data.update({
                         'price_unit': price,
-                        'discount': 100 - ((100 - discount) * (
-                                100 - line.discount) / 100),
+                        'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                         'product_uom_qty': line.product_uom_qty,
                         'product_id': line.product_id.id,
                         'product_uom': line.product_uom_id.id,
-                        'customer_lead': self._get_customer_lead(
-                            line.product_id.product_tmpl_id),
+                        'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                         'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                         'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                     })
