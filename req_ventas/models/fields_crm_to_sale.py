@@ -199,6 +199,8 @@ class SaleOrder(models.Model):
                             diametros.append(8)
                         if suma.tipo_servicio_perforacion.display_name.rfind('10') != -1:
                             diametros.append(10)
+                        if suma.tipo_servicio_perforacion.display_name.rfind('12') != -1:
+                            diametros.append(12)
             
             diametro_tapa = ''
             if len(diametros)>1:                
@@ -550,77 +552,80 @@ class SaleOrder(models.Model):
                     if line.name == 'REFERENCIA POSICIONAL KIT':
                         entra_categoria=1
                         if self.opportunity_id.kit_check:
-                            data.update({
-                                'name':self.opportunity_id.kits.name,
-                                'price_unit': self.opportunity_id.kits.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
-                                'product_id': self.opportunity_id.kits.id,
-                                'product_uom': self.opportunity_id.kits.uom_id.id,
-                                'customer_lead': self._get_customer_lead(self.opportunity_id.kits),
-                                'last_update_price_date': self.opportunity_id.kits.last_update_pricelist_date,
-                                'last_update_price_partner': self.opportunity_id.kits.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.kits.list_price, 
-                                    self.opportunity_id.kits.id, 
-                                    self.opportunity_id.kits.uom_id.id, 
-                                    fields.Date.context_today(self)))
+                            if self.opportunity_id.kits:
+                                data.update({
+                                    'name':self.opportunity_id.kits.name,
+                                    'price_unit': self.opportunity_id.kits.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.kits.id,
+                                    'product_uom': self.opportunity_id.kits.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.kits),
+                                    'last_update_price_date': self.opportunity_id.kits.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.kits.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.kits.list_price, 
+                                        self.opportunity_id.kits.id, 
+                                        self.opportunity_id.kits.uom_id.id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data))
-                            seleccionado=1  
+                                order_lines.append((0, 0, data))
+                                seleccionado=1  
                             
                          
                     if line.name == 'REFERENCIA POSICIONAL BOMBA POZO':
                         entra_categoria=1
                         bomba_pozo = self.env['product.product'].search([('name','=',self.opportunity_id.bomba_crm.name)])
                         if not(self.opportunity_id.kit_check):
-                            data.update({
-                                'name': bomba_pozo.name,
-                                'price_unit': bomba_pozo.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
-                                'product_id': bomba_pozo.id,
-                                'product_uom': bomba_pozo.uom_id.id,
-                                'customer_lead': self._get_customer_lead(bomba_pozo),
-                                'last_update_price_date': bomba_pozo.last_update_pricelist_date,
-                                'last_update_price_partner': bomba_pozo.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    bomba_pozo.list_price, 
-                                    bomba_pozo.id, 
-                                    bomba_pozo.uom_id.id, 
-                                    fields.Date.context_today(self)))
+                            if self.opportunity_id.bomba_crm:
+                                data.update({
+                                    'name': bomba_pozo.name,
+                                    'price_unit': bomba_pozo.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': bomba_pozo.id,
+                                    'product_uom': bomba_pozo.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(bomba_pozo),
+                                    'last_update_price_date': bomba_pozo.last_update_pricelist_date,
+                                    'last_update_price_partner': bomba_pozo.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        bomba_pozo.list_price, 
+                                        bomba_pozo.id, 
+                                        bomba_pozo.uom_id.id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data))
-                            seleccionado=1
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
                             
                     if line.name == 'REFERENCIA POSICIONAL MOTOR':
                         entra_categoria=1
-                        motor = self.env['product.product'].search([('name','=',self.opportunity_id.motor_crm.name)])
+                        motor = self.env['product.product'].search([('name','=',self.opportunity_id.motor_crm.name)])                        
                         if not(self.opportunity_id.kit_check):
-                            data.update({
-                                'name': motor.name,
-                                'price_unit': motor.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
-                                'product_id': motor.id,
-                                'product_uom': motor.uom_id.id,
-                                'customer_lead': self._get_customer_lead(motor),
-                                'last_update_price_date': motor.last_update_pricelist_date,
-                                'last_update_price_partner': motor.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    motor.list_price, 
-                                    motor.id, 
-                                    motor.uom_id.id, 
-                                    fields.Date.context_today(self)))
+                            if self.opportunity_id.motor_crm:
+                                data.update({
+                                    'name': motor.name,
+                                    'price_unit': motor.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': motor.id,
+                                    'product_uom': motor.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(motor),
+                                    'last_update_price_date': motor.last_update_pricelist_date,
+                                    'last_update_price_partner': motor.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        motor.list_price, 
+                                        motor.id, 
+                                        motor.uom_id.id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data))
-                            seleccionado=1 
+                                order_lines.append((0, 0, data))
+                                seleccionado=1 
                             
                     if line.name == 'REFERENCIA POSICIONAL TUBERIA PVC': 
                         entra_categoria=1                        
@@ -874,7 +879,7 @@ class SaleOrder(models.Model):
                         seleccionado=1
 
 
-                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):  #CABLES PLANOS SUMERGIBLES
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496 or line.product_id.product_tmpl_id.id == 2352 or line.product_id.product_tmpl_id.id == 2353):  #CABLES PLANOS SUMERGIBLES
                         entra_categoria=1                        
                             
                         if self.opportunity_id.hp_text:                            
@@ -1287,8 +1292,13 @@ class SaleOrder(models.Model):
                             seleccionado=1
                             
                     if line.name == 'REFERENCIA POSICIONAL FLANGE HI ACERO':
-                        entra_categoria=1                        
+                        entra_categoria=1    
+                        
+                        _logger.info('x_tipo_caneria= {}'.format(self.opportunity_id.x_tipo_caneria))
+                        _logger.info('x_pul_canerias_s2= {}'.format(self.opportunity_id.x_pul_canerias_s2))
                         if self.opportunity_id.x_tipo_caneria in ['vwell'] and self.opportunity_id.x_pul_canerias_s2 in ['3','4','5','6']:
+                            _logger.info('x_tipo_caneria= {}'.format(self.opportunity_id.x_tipo_caneria))
+                            _logger.info('x_pul_canerias_s2= {}'.format(self.opportunity_id.x_pul_canerias_s2))
                             flange_hi_acero_object = self.env['product.product'].search([('name','=',flange_hi_acero)])
 
                             data.update({
@@ -1418,8 +1428,12 @@ class SaleOrder(models.Model):
                             
                     if line.name == 'REFERENCIA POSICIONAL TAPA POZO':
                         entra_categoria=1                        
-                        if self.opportunity_id.x_servicios_requeridos in ['s1s2','s1s2s3']:
-                            tapa_pozo_name = 'TAPA POZO '+diametro_tapa+'" CON INSTALACION'
+                        if self.opportunity_id.x_servicios_requeridos in ['s2','s2s3','s1s2','s1s2s3']:
+                            if self.opportunity_id.x_servicios_requeridos in ['s2']:
+                                tapa_pozo_name = 'TAPA POZO '+str(self.opportunity_id.diametro_s2)+'" CON INSTALACION'
+                            else:
+                                tapa_pozo_name = 'TAPA POZO '+diametro_tapa+'" CON INSTALACION'
+                                
                             tapa_pozo_object = self.env['product.product'].search([('name','=',tapa_pozo_name)])
 
                             data.update({
