@@ -56,7 +56,7 @@ class SaleOrder(models.Model):
     caudal_estimado_profundizar = fields.Char(string='Caudal estimado: ',readonly=True)
     x_diametro_pozo = fields.Integer(related='opportunity_id.x_diametro',string='Diametro:.. ')
     diametro_pozo = fields.Char(string='Diametro: ',readonly=True,store=True)
-    x_profundidad_pozo = fields.Integer(related='opportunity_id.x_profundidad',string='Profundidad: ')
+    x_profundidad_pozo = fields.Integer(related='opportunity_id.x_profundidad',string='Profundidad.: ')
     profundidad_calculada = fields.Integer(string="Profundidad: ",default=get_default_profundidad_calculada,readonly=True,store=True)
     x_faena = fields.Integer(related='opportunity_id.x_faena',string='Instalacion de faena')
     x_valorxmt = fields.Integer(related='opportunity_id.x_valorxmt',string='Valor por metro')
@@ -71,7 +71,7 @@ class SaleOrder(models.Model):
     prueba_bombeo_crm = fields.Char(string='Prueba de bombeo: ',store=True,readonly=True)
     generador = fields.Boolean(string='Req. Generador')
     #servicio 2
-    x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal.: ')
+    x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal..: ')
     caudal_crm = fields.Float(string='Caudal.: ',store=True,readonly=True)
     caudal_text = fields.Char(string='Caudal: ',store=True,readonly=True)
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
