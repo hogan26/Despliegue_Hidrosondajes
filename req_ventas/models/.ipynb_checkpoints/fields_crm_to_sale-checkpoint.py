@@ -41,18 +41,12 @@ class SaleOrder(models.Model):
             return 0
             
     #onchange de plantillas de presupuesto
-    sale_order_template_id_prueba = fields.Many2one(
-        'sale.order.template', 'Plantilla de presupuesto',
-        readonly=True, check_company=True,
-        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")  
-    
+    sale_order_template_id_prueba = fields.Many2one(comodel_name='sale.order.template',string='Plantilla de presupuesto',readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     sale_order_template_id = fields.Many2one(
         'sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")    
-        
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",invisible=True) 
     #formulario principal
     opportunity_id = fields.Many2one('crm.lead', string='Opportunity', check_company=True,domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     x_servicios_requeridos = fields.Selection(related='opportunity_id.x_servicios_requeridos', string='Servicios requeridos')
@@ -60,30 +54,30 @@ class SaleOrder(models.Model):
     x_tipo_instalacion = fields.Selection(related='opportunity_id.x_tipo_instalacion',string='Tipo de instalacion')
     x_otro = fields.Char(related='opportunity_id.x_otro',string='otro')
     #servicio 1
-    x_tipo_servicio = fields.Selection(related='opportunity_id.x_tipo_servicio',string='Tipo de servicio')
+    x_tipo_servicio = fields.Selection(related='opportunity_id.x_tipo_servicio',string='Tipo de servicio..')
     tipo_servicio = fields.Char(string='Tipo de servicio')    
-    profundidad_profundizar = fields.Integer(string='Profundidad: ',readonly=True)
-    diametro_profundizar = fields.Integer(string='Diametro: ',readonly=True)
+    profundidad_profundizar = fields.Integer(string='Metros a profundizar: ',readonly=True)
+    diametro_profundizar = fields.Integer(string='Diametro de profundización: ',readonly=True)
     caudal_estimado_profundizar = fields.Char(string='Caudal estimado: ',readonly=True)
-    x_diametro_pozo = fields.Integer(related='opportunity_id.x_diametro',string='Diametro: ')
+    x_diametro_pozo = fields.Integer(related='opportunity_id.x_diametro',string='Diametro:.. ')
     diametro_pozo = fields.Char(string='Diametro: ',readonly=True,store=True)
-    x_profundidad_pozo = fields.Integer(related='opportunity_id.x_profundidad',string='Profundidad: ')
+    x_profundidad_pozo = fields.Integer(related='opportunity_id.x_profundidad',string='Profundidad.: ')
     profundidad_calculada = fields.Integer(string="Profundidad: ",default=get_default_profundidad_calculada,readonly=True,store=True)
     x_faena = fields.Integer(related='opportunity_id.x_faena',string='Instalacion de faena')
     x_valorxmt = fields.Integer(related='opportunity_id.x_valorxmt',string='Valor por metro')
-    x_prueba_bombeo = fields.Selection(related='opportunity_id.x_prueba_bombeo',string='Prueba de bombeo')
+    x_prueba_bombeo = fields.Selection(related='opportunity_id.x_prueba_bombeo',string='Prueba de bombeo..')
     x_valorpb = fields.Integer(related='opportunity_id.x_valorpb',string='Valor prueba de bombeo')
     x_insc_dga = fields.Integer(related='opportunity_id.x_insc_dga',string='Inscripcion pozo DGA')
     corona = fields.Many2one('product.template',related='opportunity_id.corona',string='Corona')
     x_valor_corona = fields.Integer(related='opportunity_id.x_valor_corona',string='Valor corona')
-    x_duracion_s1 = fields.Integer(related='opportunity_id.x_duracion',string='Duracion')
+    x_duracion_s1 = fields.Integer(related='opportunity_id.x_duracion',string='Duración servicio de perforación')
     duracion_servicio1 = fields.Integer(string='Duración',store=True,readonly=True)
-    prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo')
+    prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo.')
     prueba_bombeo_crm = fields.Char(string='Prueba de bombeo: ',store=True,readonly=True)
     generador = fields.Boolean(string='Req. Generador')
     #servicio 2
-    x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal: ')
-    caudal_crm = fields.Float(string='Caudal: ',store=True,readonly=True)
+    x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal..: ')
+    caudal_crm = fields.Float(string='Caudal.: ',store=True,readonly=True)
     caudal_text = fields.Char(string='Caudal: ',store=True,readonly=True)
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
     #hp_text = fields.Char(string='HP')
@@ -91,8 +85,8 @@ class SaleOrder(models.Model):
     kit_store = fields.Char(string='Conjunto Bomba/Motor: ',store=True,readonly=True)
     bombas_store = fields.Char(string='Bomba: ',store=True,readonly=True)
     motor_store = fields.Char(string='Motor: ',store=True,readonly=True)
-    x_bomba_crm = fields.Many2one('product.template',related='opportunity_id.x_bomba_crm',string='Bomba: ')
-    x_motor_crm = fields.Many2one('product.template',related='opportunity_id.x_motor_crm',string='Motor: ')
+    x_bomba_crm = fields.Many2one('product.template',related='opportunity_id.x_bomba_crm',string='Bomba.: ')
+    x_motor_crm = fields.Many2one('product.template',related='opportunity_id.x_motor_crm',string='Motor.: ')
     tablero = fields.Many2one('product.template',related='opportunity_id.tablero',string='Tablero')
     x_tipo_caneria = fields.Selection(related='opportunity_id.x_tipo_caneria',string='Tipo de caneria')
     x_pul_canerias_s2 = fields.Selection(related='opportunity_id.x_pul_canerias_s2',string='Pulgadas')
@@ -100,8 +94,8 @@ class SaleOrder(models.Model):
     x_altura = fields.Integer(related='opportunity_id.x_altura',string='Altura total')
     x_voltaje = fields.Integer(related='opportunity_id.x_voltaje',string='Voltaje')
     x_valor_instalacion = fields.Integer(related='opportunity_id.x_valor_instalacion',string='Valor Instalacion')
-    x_duracion_total = fields.Integer(related='opportunity_id.x_duracion_s2',string='Duracion')
-    duracion_s2 = fields.Integer(string='Duracion',readonly=True,store=True)
+    x_duracion_total = fields.Integer(related='opportunity_id.x_duracion_s2',string='Duracion.')
+    duracion_s2 = fields.Integer(string='Duración sistema de bombeo',readonly=True,store=True)
     x_valor_referencia = fields.Integer(related='opportunity_id.x_valor_referencia',string='Valor total referencia')
     #servicio 3
     x_estanque = fields.Selection(related='opportunity_id.x_estanque',string='Capacidad estanque')
@@ -119,7 +113,7 @@ class SaleOrder(models.Model):
     x_precios4 = fields.Integer(related='opportunity_id.x_precios4',string='Precio servicio')
     caudal_esperado = fields.Float(string='Caudal esperado por el cliente')    
     #servicio 5
-    x_idakm = fields.Integer(related='opportunity_id.x_idakm',string='Ida (km)')
+    x_idakm = fields.Integer(related='opportunity_id.x_idakm',string='Ida (km).')
     x_duracionhrs = fields.Integer(related='opportunity_id.x_duracionhrs',string='Duracion hrs trabajo')
     x_num_personas = fields.Integer(related='opportunity_id.x_num_personas',string='Num. Personas Totales')
     x_sin_camion = fields.Boolean(related='opportunity_id.x_sin_camion',string='Sin camion Pluma')
@@ -128,18 +122,18 @@ class SaleOrder(models.Model):
     #servicio 6
     x_mt_estimado = fields.Integer(related='opportunity_id.x_mt_estimado',string='Metros estimados')
     x_idakms6 = fields.Integer(related='opportunity_id.x_idakms6',string='Ida (km)')
-    x_dias_s6 = fields.Integer(related='opportunity_id.x_dias_s6',string='Num. dias')
-    x_personas_s6 = fields.Integer(related='opportunity_id.x_personas_s6',string='Num. personas')
-    x_dias_s6_lim = fields.Integer(related='opportunity_id.x_dias_s6_lim',string='Num. dias')
+    x_dias_s6 = fields.Integer(related='opportunity_id.x_dias_s6',string='Num. dias..')
+    x_personas_s6 = fields.Integer(related='opportunity_id.x_personas_s6',string='Num. personas.')
+    x_dias_s6_lim = fields.Integer(related='opportunity_id.x_dias_s6_lim',string='Num. dias.')
     x_num_perforadores = fields.Integer(related='opportunity_id.x_num_perforadores',string='Num. Pers. perforador')
     x_num_soldadores = fields.Integer(related='opportunity_id.x_num_soldadores',string='Num. Pers. soldador')
     x_num_ayudantes = fields.Integer(related='opportunity_id.x_num_ayudantes',string='Num. Pers. ayudante')
     x_dias_s6_ib = fields.Integer(related='opportunity_id.x_dias_s6_ib',string='Num. dias')
     x_num_personas_ib = fields.Integer(related='opportunity_id.x_num_personas_ib',string='Num. personas')
     # campos de acuerdos de pago antiguos
-    x_abono_crm = fields.Integer(related='opportunity_id.x_abono',string='Abono inicial (%)')
-    x_abono_m_crm = fields.Integer(related='opportunity_id.x_abono_monto',string='Abono ($)')
-    x_cuotas_crm = fields.Integer(related='opportunity_id.x_cuotas',string='Num. cuotas')
+    x_abono_crm = fields.Integer(related='opportunity_id.x_abono',string='Abono (%)')
+    x_abono_m_crm = fields.Integer(related='opportunity_id.x_abono_monto',string='Abono ($).')
+    x_cuotas_crm = fields.Integer(related='opportunity_id.x_cuotas',string='Num. cuotas.')
     x_comentarios = fields.Char(string='Comentarios',related='opportunity_id.x_comentarios')    
     # campos de acuerdos de pago nuevos
     abono_porcentaje = fields.Integer(string='Abono inicial (%)',readonly=True)
@@ -149,8 +143,8 @@ class SaleOrder(models.Model):
     descuento_neto_monto = fields.Integer(string='Descuento neto ($)',readonly=True)
     num_cuotas = fields.Integer(string='Num. cuotas',readonly=True)
     observaciones = fields.Char(string='Observaciones',readonly=False)  
-    observacion_s1 = fields.Char(string='observacion_s1',default='- Este servicio no incluye bomba de pozo.')
-    observacion_s2 = fields.Char(string='observacion_s1',default='- Este servicio considera la instalación del tablero de control a 1 metro de distancia del pozo.')
+    observacion_s1 = fields.Char(string='observacion_s1_bomba',default='- Este servicio no incluye bomba de pozo.')
+    observacion_s2 = fields.Char(string='observacion_s1_tablero',default='- Este servicio considera la instalación del tablero de control a 1 metro de distancia del pozo.')
     
     x_encabezado_coti1 = fields.Html(string='encabezado coti 1',default = _get_default_enc1)
     x_encabezado_coti2 = fields.Html(string='encabezado coti 2',default = _get_default_enc2)
@@ -163,7 +157,7 @@ class SaleOrder(models.Model):
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
-        #_logger.info('entra exitosamente - metodo en req_ventas')
+        _logger.info('entra exitosamente - metodo en req_ventas')
         if not self.sale_order_template_id_prueba:
             self.require_signature = self._get_default_require_signature()
             self.require_payment = self._get_default_require_payment()
@@ -199,6 +193,8 @@ class SaleOrder(models.Model):
                             diametros.append(8)
                         if suma.tipo_servicio_perforacion.display_name.rfind('10') != -1:
                             diametros.append(10)
+                        if suma.tipo_servicio_perforacion.display_name.rfind('12') != -1:
+                            diametros.append(12)
             
             diametro_tapa = ''
             if len(diametros)>1:                
@@ -550,77 +546,80 @@ class SaleOrder(models.Model):
                     if line.name == 'REFERENCIA POSICIONAL KIT':
                         entra_categoria=1
                         if self.opportunity_id.kit_check:
-                            data.update({
-                                'name':self.opportunity_id.kits.name,
-                                'price_unit': self.opportunity_id.kits.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
-                                'product_id': self.opportunity_id.kits.id,
-                                'product_uom': self.opportunity_id.kits.uom_id.id,
-                                'customer_lead': self._get_customer_lead(self.opportunity_id.kits),
-                                'last_update_price_date': self.opportunity_id.kits.last_update_pricelist_date,
-                                'last_update_price_partner': self.opportunity_id.kits.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.kits.list_price, 
-                                    self.opportunity_id.kits.id, 
-                                    self.opportunity_id.kits.uom_id.id, 
-                                    fields.Date.context_today(self)))
+                            if self.opportunity_id.kits:
+                                data.update({
+                                    'name':self.opportunity_id.kits.name,
+                                    'price_unit': self.opportunity_id.kits.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': self.opportunity_id.kits.id,
+                                    'product_uom': self.opportunity_id.kits.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(self.opportunity_id.kits),
+                                    'last_update_price_date': self.opportunity_id.kits.last_update_pricelist_date,
+                                    'last_update_price_partner': self.opportunity_id.kits.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        self.opportunity_id.kits.list_price, 
+                                        self.opportunity_id.kits.id, 
+                                        self.opportunity_id.kits.uom_id.id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data))
-                            seleccionado=1  
+                                order_lines.append((0, 0, data))
+                                seleccionado=1  
                             
                          
                     if line.name == 'REFERENCIA POSICIONAL BOMBA POZO':
                         entra_categoria=1
                         bomba_pozo = self.env['product.product'].search([('name','=',self.opportunity_id.bomba_crm.name)])
                         if not(self.opportunity_id.kit_check):
-                            data.update({
-                                'name': bomba_pozo.name,
-                                'price_unit': bomba_pozo.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
-                                'product_id': bomba_pozo.id,
-                                'product_uom': bomba_pozo.uom_id.id,
-                                'customer_lead': self._get_customer_lead(bomba_pozo),
-                                'last_update_price_date': bomba_pozo.last_update_pricelist_date,
-                                'last_update_price_partner': bomba_pozo.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    bomba_pozo.list_price, 
-                                    bomba_pozo.id, 
-                                    bomba_pozo.uom_id.id, 
-                                    fields.Date.context_today(self)))
+                            if self.opportunity_id.bomba_crm:
+                                data.update({
+                                    'name': bomba_pozo.name,
+                                    'price_unit': bomba_pozo.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': bomba_pozo.id,
+                                    'product_uom': bomba_pozo.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(bomba_pozo),
+                                    'last_update_price_date': bomba_pozo.last_update_pricelist_date,
+                                    'last_update_price_partner': bomba_pozo.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        bomba_pozo.list_price, 
+                                        bomba_pozo.id, 
+                                        bomba_pozo.uom_id.id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data))
-                            seleccionado=1
+                                order_lines.append((0, 0, data))
+                                seleccionado=1
                             
                     if line.name == 'REFERENCIA POSICIONAL MOTOR':
                         entra_categoria=1
-                        motor = self.env['product.product'].search([('name','=',self.opportunity_id.motor_crm.name)])
+                        motor = self.env['product.product'].search([('name','=',self.opportunity_id.motor_crm.name)])                        
                         if not(self.opportunity_id.kit_check):
-                            data.update({
-                                'name': motor.name,
-                                'price_unit': motor.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                'product_uom_qty': line.product_uom_qty,
-                                'product_id': motor.id,
-                                'product_uom': motor.uom_id.id,
-                                'customer_lead': self._get_customer_lead(motor),
-                                'last_update_price_date': motor.last_update_pricelist_date,
-                                'last_update_price_partner': motor.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    motor.list_price, 
-                                    motor.id, 
-                                    motor.uom_id.id, 
-                                    fields.Date.context_today(self)))
+                            if self.opportunity_id.motor_crm:
+                                data.update({
+                                    'name': motor.name,
+                                    'price_unit': motor.list_price,
+                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'product_uom_qty': line.product_uom_qty,
+                                    'product_id': motor.id,
+                                    'product_uom': motor.uom_id.id,
+                                    'customer_lead': self._get_customer_lead(motor),
+                                    'last_update_price_date': motor.last_update_pricelist_date,
+                                    'last_update_price_partner': motor.last_update_pricelist_partner,
+                                })                        
+                                if self.pricelist_id:
+                                    data.update(self.env['sale.order.line']._get_purchase_price(
+                                        motor.list_price, 
+                                        motor.id, 
+                                        motor.uom_id.id, 
+                                        fields.Date.context_today(self)))
 
-                            order_lines.append((0, 0, data))
-                            seleccionado=1 
+                                order_lines.append((0, 0, data))
+                                seleccionado=1 
                             
                     if line.name == 'REFERENCIA POSICIONAL TUBERIA PVC': 
                         entra_categoria=1                        
@@ -874,7 +873,8 @@ class SaleOrder(models.Model):
                         seleccionado=1
 
 
-                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496):  #CABLES PLANOS SUMERGIBLES
+
+                    if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496 or line.product_id.product_tmpl_id.id == 2352 or line.product_id.product_tmpl_id.id == 2353):  #CABLES PLANOS SUMERGIBLES
                         entra_categoria=1                        
                             
                         if self.opportunity_id.hp_text:                            
@@ -1287,8 +1287,13 @@ class SaleOrder(models.Model):
                             seleccionado=1
                             
                     if line.name == 'REFERENCIA POSICIONAL FLANGE HI ACERO':
-                        entra_categoria=1                        
+                        entra_categoria=1    
+                        
+                        _logger.info('x_tipo_caneria= {}'.format(self.opportunity_id.x_tipo_caneria))
+                        _logger.info('x_pul_canerias_s2= {}'.format(self.opportunity_id.x_pul_canerias_s2))
                         if self.opportunity_id.x_tipo_caneria in ['vwell'] and self.opportunity_id.x_pul_canerias_s2 in ['3','4','5','6']:
+                            _logger.info('x_tipo_caneria= {}'.format(self.opportunity_id.x_tipo_caneria))
+                            _logger.info('x_pul_canerias_s2= {}'.format(self.opportunity_id.x_pul_canerias_s2))
                             flange_hi_acero_object = self.env['product.product'].search([('name','=',flange_hi_acero)])
 
                             data.update({
@@ -1418,8 +1423,12 @@ class SaleOrder(models.Model):
                             
                     if line.name == 'REFERENCIA POSICIONAL TAPA POZO':
                         entra_categoria=1                        
-                        if self.opportunity_id.x_servicios_requeridos in ['s1s2','s1s2s3']:
-                            tapa_pozo_name = 'TAPA POZO '+diametro_tapa+'" CON INSTALACION'
+                        if self.opportunity_id.x_servicios_requeridos in ['s2','s2s3','s1s2','s1s2s3']:
+                            if self.opportunity_id.x_servicios_requeridos in ['s2']:
+                                tapa_pozo_name = 'TAPA POZO '+str(self.opportunity_id.diametro_s2)+'" CON INSTALACION'
+                            else:
+                                tapa_pozo_name = 'TAPA POZO '+diametro_tapa+'" CON INSTALACION'
+                                
                             tapa_pozo_object = self.env['product.product'].search([('name','=',tapa_pozo_name)])
 
                             data.update({

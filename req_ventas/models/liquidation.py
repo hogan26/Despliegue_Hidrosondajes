@@ -12,13 +12,6 @@ class SaleOrder(models.Model):
     def action_liquidation(self):
         self.write({'state':'liquidar'})
     
-    state = fields.Selection([
-        ('draft', 'Quotation'),
-        ('sent', 'Quotation Sent'),
-        ('sale', 'Sales Order'),
-        ('done', 'Locked'),
-        ('cancel', 'Cancelled'),
-        ('liquidar', 'Liquidado'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+    state = fields.Selection(selection_add=[('liquidar', 'Liquidado')])
     encabezado_liquidacion = fields.Html(string='Titulo principal')
     detalle_abonos_liquidacion = fields.Html(string='Detalle abonos')
