@@ -42,6 +42,11 @@ class SaleOrder(models.Model):
             
     #onchange de plantillas de presupuesto
     sale_order_template_id_prueba = fields.Many2one(comodel_name='sale.order.template',string='Plantilla de presupuesto',readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
+    sale_order_template_id = fields.Many2one(
+        'sale.order.template', 'Quotation Template',
+        readonly=True, check_company=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",invisible=True) 
     #formulario principal
     opportunity_id = fields.Many2one('crm.lead', string='Opportunity', check_company=True,domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     x_servicios_requeridos = fields.Selection(related='opportunity_id.x_servicios_requeridos', string='Servicios requeridos')
@@ -152,7 +157,7 @@ class SaleOrder(models.Model):
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
-        #_logger.info('entra exitosamente - metodo en req_ventas')
+        _logger.info('entra exitosamente - metodo en req_ventas')
         if not self.sale_order_template_id_prueba:
             self.require_signature = self._get_default_require_signature()
             self.require_payment = self._get_default_require_payment()
