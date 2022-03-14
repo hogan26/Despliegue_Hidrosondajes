@@ -157,7 +157,7 @@ class SaleOrder(models.Model):
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
-        _logger.info('entra exitosamente - metodo en req_ventas')
+        #_logger.info('entra exitosamente - metodo en req_ventas')
         if not self.sale_order_template_id_prueba:
             self.require_signature = self._get_default_require_signature()
             self.require_payment = self._get_default_require_payment()
