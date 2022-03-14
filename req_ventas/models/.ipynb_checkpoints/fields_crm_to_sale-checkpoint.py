@@ -873,6 +873,7 @@ class SaleOrder(models.Model):
                         seleccionado=1
 
 
+
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496 or line.product_id.product_tmpl_id.id == 2352 or line.product_id.product_tmpl_id.id == 2353):  #CABLES PLANOS SUMERGIBLES
                         entra_categoria=1                        
                             
