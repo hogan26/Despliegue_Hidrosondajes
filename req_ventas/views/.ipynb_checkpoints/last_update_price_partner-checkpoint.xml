@@ -15,7 +15,9 @@
                     <field name="kit_check" invisible='1' force_save="1"/>
                     <field name="tipo_servicio" invisible='1' force_save="1"/>
                     <field name="x_tipo_servicio" invisible='1' force_save="1"/>
-                    <field name="generador" invisible='1'/>
+                    <field name="generador" invisible='1' force_save="1"/>
+                    <field name="presscontrol" invisible='1' force_save="1"/>
+                    <field name="bomba_cloro" invisible='1' force_save="1"/>
                 </xpath>                                    
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">              
                     <field name="sale_order_template_id_prueba" attrs="{'invisible': [('state','in','liquidar')]}"/>
@@ -70,7 +72,7 @@
                         <group attrs="{'invisible': [('x_servicios_requeridos',  'not in', ['s1','s1s2','s1s2s3'])]}">
                             <div attrs="{'invisible': [('x_tipo_servicio',  'in', ['profundizar'])]}">
                                 <div>
-                                    <span>Construcción de pozo</span>
+                                    <span><strong>Construcción de pozo</strong></span>
                                 </div>                                
                             </div>
                             <div attrs="{'invisible': [('x_tipo_servicio',  'in', ['construccion'])]}">
@@ -280,7 +282,34 @@
                                 <field name="encabezado_liquidacion"/>
                             </div>                  
                         </group>
-                    </div>  
+                    </div>
+                    <div attrs="{'invisible': [('x_servicios_requeridos','not in',['s2s3','s1s2s3'])]}">
+                        <group string="Tratamiento, almacenamiento y distribución">
+                            <div>
+                                <div>
+                                    - <label for="bomba_centrifuga"></label>
+                                    <field name="bomba_centrifuga" force_save="1"/> hp
+                                </div>   
+                                <div>
+                                    - <label for="estanque_hidroneumatico"></label>
+                                    <field name="estanque_hidroneumatico" force_save="1"/> lts
+                                </div> 
+                                <div attrs="{'invisible': [('presscontrol','=',False)]}">
+                                    - Presscontrol
+                                </div>
+                                <div attrs="{'invisible': [('bomba_cloro','=',False)]}">
+                                    - Bomba dosificadora de cloro
+                                </div>
+                                <div>
+                                    <field name="encabezado_s3_servicio_completo"/>
+                                </div> 
+                                <div>
+                                    - <label for="duracion_s3"></label>
+                                    <field name="duracion_s3" force_save="1"/> Días
+                                </div>
+                            </div>
+                        </group>
+                    </div>
                 </xpath>          
                 <!-- columnas de informacion para ultima compra del producto -->
                 <xpath expr="//tree" position="attributes">              

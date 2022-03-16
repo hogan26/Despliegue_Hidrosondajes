@@ -106,8 +106,14 @@ class SaleOrder(models.Model):
     x_controlpress = fields.Boolean(related='opportunity_id.x_controlpress',string='Presscontrol')
     x_cloracion = fields.Boolean(related='opportunity_id.x_cloracion',string='Cloracion')
     x_valor_instalacion_s3 = fields.Integer(related='opportunity_id.x_valor_instalacion_s3',string='Valor instalacion')
-    x_duracion_s3 = fields.Integer(related='opportunity_id.x_duracion_s3',string='Duracion')
+    x_duracion_s3 = fields.Integer(related='opportunity_id.x_duracion_s3',string='Duracion...')
+    duracion_s3 = fields.Integer(string='Duracion')
     x_valor_referencia_s3 = fields.Integer(related='opportunity_id.x_valor_referencia_s3',string='valor referencial')
+    #servicio 3 para encabezados
+    bomba_centrifuga = fields.Char(string='Bomba centrifuga de ')
+    bomba_cloro = fields.Boolean(string='Bomba dosificadora encabezado')
+    presscontrol = fields.Boolean(string='presscontrol encabezado')
+    estanque_hidroneumatico = fields.Char(string='Estanque hidroneumatico de ')    
     #servicio 4
     x_servicio4 = fields.Selection(related='opportunity_id.x_servicio4',string='Servicio')
     x_precios4 = fields.Integer(related='opportunity_id.x_precios4',string='Precio servicio')
@@ -154,10 +160,11 @@ class SaleOrder(models.Model):
     x_encabezado_coti_s4 = fields.Html(string='encabezado coti s4')
     encabezado_s3_descripcion = fields.Html(string='encabezado coti s3 descripcion')
     encabezado_s3_obra = fields.Html(string='encabezado coti s3 obra')
+    encabezado_s3_servicio_completo = fields.Html(string='encabezado coti s3 servicio completo')
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
-        _logger.info('entra exitosamente - metodo en req_ventas')
+        #_logger.info('entra exitosamente - metodo en req_ventas')
         if not self.sale_order_template_id_prueba:
             self.require_signature = self._get_default_require_signature()
             self.require_payment = self._get_default_require_payment()
@@ -216,20 +223,17 @@ class SaleOrder(models.Model):
             if self.opportunity_id.kits:                
                 search_kit = self.env['product.product'].search([('name','=',self.opportunity_id.kits.name)])
                 search_kit = search_kit.name.lower()
-            else:
-                search_kit = ''
+                self.update({'kit_store':search_kit})            
                 
             if self.opportunity_id.bomba_crm:                
                 search_bomba = self.env['product.product'].search([('name','=',self.opportunity_id.bomba_crm.name)])
                 search_bomba = search_bomba.name.lower()
-            else:
-                search_bomba = ''
+                self.update({'bombas_store':search_bomba})            
                 
             if self.opportunity_id.motor_crm:                
                 search_motor = self.env['product.product'].search([('name','=',self.opportunity_id.motor_crm.name)])
                 search_motor = search_motor.name.lower()
-            else:
-                search_motor = ''            
+                self.update({'motor_store':search_motor})            
                 
             if self.opportunity_id.kit_check:
                 self.update({'kit_check':True})
@@ -247,9 +251,6 @@ class SaleOrder(models.Model):
             self.update({'duracion_servicio1':self.opportunity_id.duracion_s1})
             self.update({'caudal_crm':self.opportunity_id.caudal_crm})                        
             self.update({'caudal_text':self.opportunity_id.caudal_text})
-            self.update({'kit_store':search_kit})
-            self.update({'bombas_store':search_bomba})
-            self.update({'motor_store':search_motor})
             self.update({'duracion_s2':self.opportunity_id.duracion_s2})
             self.update({'prueba_bombeo_crm':search_pbb})
             self.update({'tipo_servicio':self.opportunity_id.x_tipo_servicio})
@@ -265,8 +266,33 @@ class SaleOrder(models.Model):
                 self.update({'caudal_estimado_profundizar':self.opportunity_id.caudal_estimado_profundizar})
                 
             if self.opportunity_id.caudal_esperado_check:
-                self.update({'caudal_esperado':self.opportunity_id.caudal_esperado})
+                self.update({'caudal_esperado':self.opportunity_id.caudal_esperado})                
+            
+            if self.opportunity_id.x_servicios_requeridos in ['s1s2s3']:
+                if self.opportunity_id.bomba_centrifuga.name:
+                    aux_final = str(self.opportunity_id.bomba_centrifuga.name).find('HP')
+                    aux_inicial = aux_final - 3
+                    self.update({'bomba_centrifuga':float(str(self.opportunity_id.bomba_centrifuga.name[aux_inicial:aux_final]))})
                 
+                if self.opportunity_id.estanque_hidroneumatico.name:
+                    aux_final = str(self.opportunity_id.estanque_hidroneumatico.name).find('LT')
+                    aux_inicial = aux_final - 3
+                    self.update(
+                        {'estanque_hidroneumatico':int(str(self.opportunity_id.estanque_hidroneumatico.name[aux_inicial:aux_final]))}
+                    )
+                
+                if self.opportunity_id.x_controlpress:
+                    self.update({'presscontrol':True})
+                else:
+                    self.update({'presscontrol':False})
+                    
+                if self.opportunity_id.x_cloracion:
+                    self.update({'bomba_cloro':True})
+                else:
+                    self.update({'bomba_cloro':False})
+                
+                self.update({'duracion_s3':self.opportunity_id.x_duracion_s3})
+            
         
         tuberia_medida = self.opportunity_id.x_pul_canerias_s2
         if tuberia_medida == '1':
@@ -849,29 +875,29 @@ class SaleOrder(models.Model):
                     if line.name == 'REFERENCIA POSICIONAL TABLERO ELECTRICO':
                         entra_categoria=1
                         
-                        tablero_electrico = self.env['product.product'].search([('name','=',self.opportunity_id.tablero.name)])
-                                                
-                        data.update({
-                            'name': tablero_electrico.name,
-                            'price_unit': tablero_electrico.list_price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                            'product_uom_qty': line.product_uom_qty,
-                            'product_id': tablero_electrico.id,
-                            'product_uom': tablero_electrico.uom_id.id,
-                            'customer_lead': self._get_customer_lead(tablero_electrico),
-                            'last_update_price_date': tablero_electrico.last_update_pricelist_date,
-                            'last_update_price_partner': tablero_electrico.last_update_pricelist_partner,                            
-                        })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                tablero_electrico.pricelist_id, 
-                                tablero_electrico.id, 
-                                tablero_electrico.uom_id, 
-                                fields.Date.context_today(self)))
+                        if self.opportunity_id.tablero:
+                            tablero_electrico = self.env['product.product'].search([('name','=',self.opportunity_id.tablero.name)])
 
-                        order_lines.append((0, 0, data))                        
-                        seleccionado=1
+                            data.update({
+                                'name': tablero_electrico.name,
+                                'price_unit': tablero_electrico.list_price,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': tablero_electrico.id,
+                                'product_uom': tablero_electrico.uom_id.id,
+                                'customer_lead': self._get_customer_lead(tablero_electrico),
+                                'last_update_price_date': tablero_electrico.last_update_pricelist_date,
+                                'last_update_price_partner': tablero_electrico.last_update_pricelist_partner,                            
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    tablero_electrico.pricelist_id, 
+                                    tablero_electrico.id, 
+                                    tablero_electrico.uom_id, 
+                                    fields.Date.context_today(self)))
 
+                            order_lines.append((0, 0, data))                        
+                            seleccionado=1
 
 
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 56 or line.product_id.product_tmpl_id.id == 497 or line.product_id.product_tmpl_id.id == 495 or line.product_id.product_tmpl_id.id == 496 or line.product_id.product_tmpl_id.id == 2352 or line.product_id.product_tmpl_id.id == 2353):  #CABLES PLANOS SUMERGIBLES
