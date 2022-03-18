@@ -14,6 +14,7 @@ class SaleOrder(models.Model):
         #raise ValidationError('probando boton')
         requerimiento = self.opportunity_id
         
+
         #VALIDACIONES PARA ACTUALIZAR ENCABEZADOS --- MODELO SALE.ORDER
         suma_metros = 0
         for calculo_profundidad in requerimiento.lead_matriz_lines_ids:
@@ -46,8 +47,8 @@ class SaleOrder(models.Model):
         if requerimiento.prueba_bombeo_crm:                
             search_pbb = self.env['product.product'].search([('name','=',requerimiento.prueba_bombeo_crm.name)])
             search_pbb = search_pbb.name.lower()
-            self.update({'prueba_bombeo_crm':search_pbb})
-        
+            self.update({'prueba_bombeo_crm':search_pbb})        
+
         # VALIDACIONES PARA ACUERDOS DE PAGO
         for acuerdo_pago in requerimiento.payment_agreed_matriz_ids:
             if acuerdo_pago.fijar_ac:
@@ -58,12 +59,12 @@ class SaleOrder(models.Model):
                 self.update({'descuento_neto_monto':acuerdo_pago.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo_pago.num_cuotas})
                 self.update({'observaciones':acuerdo_pago.comentarios})
-        
-        
+
         for line in self.order_line:
             if line.display_type not in ['line_section','line_note']:                
                 #_logger.info('product_id= {}'.format(line.product_template_id.id))
                 #_logger.info('name= {}'.format(line.product_template_id.name))
+
                 # VALIDACIONES PARA LINEAS DE PRESUPUESTO ----- MODELO ORDER.LINE
                 
                 #CHECKEO DE LINEA DE MATRIZ DE PERFORACION
@@ -73,6 +74,7 @@ class SaleOrder(models.Model):
                             'product_uom_qty':matriz_perforacion.cantidad_metros,
                             'price_unit':matriz_perforacion.valor_metro,
                         })
+
                         
                         
                 # CAMPOS SELECCIONABLES EN FORMULARIO DE REQUERIMIENTOS
