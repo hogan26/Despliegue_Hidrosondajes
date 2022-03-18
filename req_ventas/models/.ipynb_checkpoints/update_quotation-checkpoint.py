@@ -14,7 +14,7 @@ class SaleOrder(models.Model):
         #raise ValidationError('probando boton')
         requerimiento = self.opportunity_id
         
-        #VALIDACIONES PARA ACTUALIZAR ENCABEZADOS
+        #VALIDACIONES PARA ACTUALIZAR ENCABEZADOS --- MODELO SALE.ORDER
         suma_metros = 0
         for calculo_profundidad in requerimiento.lead_matriz_lines_ids:
             suma_metros = suma_metros + calculo_profundidad.cantidad_metros
@@ -48,11 +48,23 @@ class SaleOrder(models.Model):
             search_pbb = search_pbb.name.lower()
             self.update({'prueba_bombeo_crm':search_pbb})
         
+        # VALIDACIONES PARA ACUERDOS DE PAGO
+        for acuerdo_pago in requerimiento.payment_agreed_matriz_ids:
+            if acuerdo_pago.fijar_ac:
+                self.update({'abono_porcentaje':acuerdo_pago.Abono_porcentaje})
+                self.update({'abono_monto':acuerdo_pago.Abono_monto})
+                self.update({'descuento_iva':acuerdo_pago.descuento_iva})
+                self.update({'descuento_neto_porcentaje':acuerdo_pago.descuento_neto_porcentaje})
+                self.update({'descuento_neto_monto':acuerdo_pago.descuento_neto_monto})
+                self.update({'num_cuotas':acuerdo_pago.num_cuotas})
+                self.update({'observaciones':acuerdo_pago.comentarios})
+        
+        
         for line in self.order_line:
             if line.display_type not in ['line_section','line_note']:                
                 #_logger.info('product_id= {}'.format(line.product_template_id.id))
                 #_logger.info('name= {}'.format(line.product_template_id.name))
-                #VALIDACIONES
+                # VALIDACIONES PARA LINEAS DE PRESUPUESTO ----- MODELO ORDER.LINE
                 
                 #CHECKEO DE LINEA DE MATRIZ DE PERFORACION
                 for matriz_perforacion in requerimiento.lead_matriz_lines_ids:
@@ -60,7 +72,7 @@ class SaleOrder(models.Model):
                         line.update({
                             'product_uom_qty':matriz_perforacion.cantidad_metros,
                             'price_unit':matriz_perforacion.valor_metro,
-                        })                        
+                        })
                         
                         
                 # CAMPOS SELECCIONABLES EN FORMULARIO DE REQUERIMIENTOS
