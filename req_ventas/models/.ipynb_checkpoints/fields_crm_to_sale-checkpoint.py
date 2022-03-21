@@ -182,6 +182,11 @@ class SaleOrder(models.Model):
                 self.update({'descuento_neto_monto':acuerdo.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo.num_cuotas})
                 self.update({'observaciones':acuerdo.comentarios})
+                
+                self.update({'total_tax_discount':acuerdo.descuento_iva})
+                self.update({'untaxed_percentage_discount':acuerdo.descuento_neto_porcentaje})
+                self.update({'untaxed_amount_discount':acuerdo.descuento_neto_monto})                
+                
         
         # CARGA DE INFORMACION PARA COTIZACIONES        
         diametros = []

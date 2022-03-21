@@ -14,7 +14,7 @@ class MargenTotal(models.Model):
             order.update({'suma_margen':suma_margen})
             
     suma_margen = fields.Monetary(
-        string='Margen total', 
+        string='Margen Utilidad', 
         readonly=True, 
         compute=suma_margen)
 
