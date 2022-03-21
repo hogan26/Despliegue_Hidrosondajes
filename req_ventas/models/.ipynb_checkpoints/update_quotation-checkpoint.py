@@ -59,6 +59,10 @@ class SaleOrder(models.Model):
                 self.update({'descuento_neto_monto':acuerdo_pago.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo_pago.num_cuotas})
                 self.update({'observaciones':acuerdo_pago.comentarios})
+                
+                self.update({'total_tax_discount':acuerdo_pago.descuento_iva})
+                self.update({'untaxed_percentage_discount':acuerdo_pago.descuento_neto_porcentaje})
+                self.update({'untaxed_amount_discount':acuerdo_pago.descuento_neto_monto})
 
         for line in self.order_line:
             if line.display_type not in ['line_section','line_note']:                
@@ -73,7 +77,9 @@ class SaleOrder(models.Model):
                         line.update({
                             'product_uom_qty':matriz_perforacion.cantidad_metros,
                             'price_unit':matriz_perforacion.valor_metro,
-                        })                        
+                        })
+
+                        
                         
                 # CAMPOS SELECCIONABLES EN FORMULARIO DE REQUERIMIENTOS
                 if line.product_template_id.categ_id.display_name == 'SERVICIOS / PRUEBAS': #PRUEBA DE BOMBEO
