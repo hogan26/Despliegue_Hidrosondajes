@@ -42,7 +42,7 @@ class SaleOrder(models.Model):
             
     #onchange de plantillas de presupuesto
     sale_order_template_id_prueba = fields.Many2one(comodel_name='sale.order.template',string='Plantilla de presupuesto',readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
-    sale_order_template_id = fields.Many2one(comodel_name='sale.order.template', 'Quotation Template',readonly=True, check_company=True,        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",invisible=True)
+    sale_order_template_id = fields.Many2one(comodel_name='sale.order.template',string='Quotation Template',readonly=True, check_company=True,        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     #formulario principal
     opportunity_id = fields.Many2one('crm.lead', string='Opportunity', check_company=True,domain="[('type', '=', 'opportunity'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     x_servicios_requeridos = fields.Selection(related='opportunity_id.x_servicios_requeridos', string='Servicios requeridos')
