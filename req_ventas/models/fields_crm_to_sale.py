@@ -43,7 +43,7 @@ class SaleOrder(models.Model):
     #onchange de plantillas de presupuesto
     sale_order_template_id_prueba = fields.Many2one(comodel_name='sale.order.template',string='Plantilla de presupuesto',readonly=True,states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
     sale_order_template_id = fields.Many2one(
-        'sale.order.template', 'Quotation Template',
+        comodel_name='sale.order.template', 'Quotation Template',
         readonly=True, check_company=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",invisible=True) 
@@ -55,7 +55,7 @@ class SaleOrder(models.Model):
     x_otro = fields.Char(related='opportunity_id.x_otro',string='otro')
     #servicio 1
     x_tipo_servicio = fields.Selection(related='opportunity_id.x_tipo_servicio',string='Tipo de servicio..')
-    tipo_servicio = fields.Char(string='Tipo de servicio')    
+    tipo_servicio = fields.Char(string='Tipo de servicio.')    
     profundidad_profundizar = fields.Integer(string='Metros a profundizar: ',readonly=True)
     diametro_profundizar = fields.Integer(string='Diametro de profundización: ',readonly=True)
     caudal_estimado_profundizar = fields.Char(string='Caudal estimado: ',readonly=True)

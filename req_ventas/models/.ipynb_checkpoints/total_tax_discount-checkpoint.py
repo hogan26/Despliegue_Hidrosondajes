@@ -69,10 +69,10 @@ class SaleOrder(models.Model):
     
     total_tax_discount = fields.Integer(string="Descuento IVA (%)",default=0)
     total_tax_amount_discount = fields.Integer(string="Descuento IVA ($)",default=0)
-    untaxed_percentage_discount = fields.Integer(string="Descuento neto (%)",default=0)
-    untaxed_amount_discount = fields.Integer(string="Descuento neto ($)",default=0)
+    untaxed_percentage_discount = fields.Integer(string="Descuento neto (%).",default=0)
+    untaxed_amount_discount = fields.Integer(string="Descuento neto ($).",default=0)
     tax_client = fields.Float(string="Impuestos")
-    amount_total_client = fields.Float(string="Total")
+    amount_total_client = fields.Float(string="Total.")
     code = fields.Float(string="Código")    
     
     """
