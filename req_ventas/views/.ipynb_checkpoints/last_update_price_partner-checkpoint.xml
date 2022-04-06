@@ -345,7 +345,7 @@
                     </div>
                     <div class="col">
                         <div>
-                        <group string="Acuerdos de pago" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3'])]}">
+                        <group string="Acuerdos de pago" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3','s4'])]}">
                             <field name="x_abono_crm" attrs="{'invisible': [('x_abono_crm', '=', 0)]}"/>
                             <field name="abono_porcentaje" attrs="{'invisible': [('abono_porcentaje', '=', 0)]}" force_save="1"/>
                             <field name="x_abono_m_crm" attrs="{'invisible': [('x_abono_m_crm', '=', 0)]}"/>
