@@ -29,6 +29,7 @@ class SaleOrder(models.Model):
         res = super(SaleOrder,self).action_confirm()        
         if self.opportunity_id:
             current_stage = self.opportunity_id.stage_id.name
+
             if current_stage == 'INICIO' or current_stage == 'ELABORADO' or current_stage == 'ENVIADO':
                 siguiente_etapa = self.env['crm.stage'].search([('name','=','CONFIRMADO')])
                 self.opportunity_id.update({'stage_id':siguiente_etapa.id})
