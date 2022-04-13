@@ -486,34 +486,21 @@ class SaleOrder(models.Model):
 
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS / PRUEBAS' and self.opportunity_id.x_servicios_requeridos != 's4':
                         entra_categoria=1
-                        if self.opportunity_id.prueba_bombeo_crm.id == line.product_id.product_tmpl_id.id:
-                            #comprueba si es una prueba de combeo DGA
-                            if line.product_id.product_tmpl_id.id == 551:
-                                data.update({
-                                    'price_unit': self.opportunity_id.x_insc_dga,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                    'product_uom_qty': line.product_uom_qty,
-                                    'product_id': line.product_id.id,
-                                    'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
-                                    'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
-                                    'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
-                                    'utilidad_porcentaje': 0,
-                                })
-                            else:
-                                data.update({
-                                    'price_unit': self.opportunity_id.x_valorpb,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
-                                    'product_uom_qty': line.product_uom_qty,
-                                    'product_id': line.product_id.id,
-                                    'product_uom': line.product_uom_id.id,
-                                    'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
-                                    'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
-                                    'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
-                                    'utilidad_porcentaje': 0,
-                                })
+                        if self.opportunity_id.prueba_bombeo_crm.id == line.product_id.product_tmpl_id.id:                            
+                            
+                            data.update({
+                                'price_unit': self.opportunity_id.x_valorpb,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                'utilidad_porcentaje': 0,
+                            })
 
-                            if line.product_id.product_tmpl_id.id != 2211:    
+                            if line.product_id.product_tmpl_id.id != 2211: #verifica que no sea el item 'sin prueba de bombeo' 
                                 if self.pricelist_id:
                                     data.update(self.env['sale.order.line']._get_purchase_price(
                                         self.pricelist_id, 
