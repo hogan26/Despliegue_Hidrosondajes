@@ -513,7 +513,7 @@ class SaleOrder(models.Model):
 
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'SERVICIOS' and self.opportunity_id.x_servicios_requeridos != 's4':
                         entra_categoria=1
-                        if line.product_id.product_tmpl_id.id == 546:                        
+                        if line.product_id.product_tmpl_id.id == 546: #logistica de equipos y suministros                        
                             data.update({
                                 'price_unit': self.opportunity_id.x_faena + self.opportunity_id.retiro_material,
                                 'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
@@ -535,9 +535,31 @@ class SaleOrder(models.Model):
                             order_lines.append((0, 0, data))
                             seleccionado=1
 
-                        if line.product_id.product_tmpl_id.id == 1521:                        
+                        if line.product_id.product_tmpl_id.id == 1521: #instalacion de bomba, cañerias y conexionado electrico                       
                             data.update({
                                 'price_unit': self.opportunity_id.x_valor_instalacion,
+                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'product_uom_qty': line.product_uom_qty,
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
+                                'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
+                                'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
+                                'utilidad_porcentaje': 0,
+                            })                        
+                            if self.pricelist_id:
+                                data.update(self.env['sale.order.line']._get_purchase_price(
+                                    self.pricelist_id, 
+                                    line.product_id, 
+                                    line.product_uom_id, 
+                                    fields.Date.context_today(self)))
+
+                            order_lines.append((0, 0, data))
+                            seleccionado=1
+                        
+                        if line.product_id.product_tmpl_id.id == 2195 and self.opportunity_id.x_insc_dga!=0: #inscripcion DGA                        
+                            data.update({
+                                'price_unit': self.opportunity_id.x_insc_dga,
                                 'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
