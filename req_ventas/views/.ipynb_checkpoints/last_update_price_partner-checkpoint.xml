@@ -8,10 +8,35 @@
             <field name="inherit_id" ref="sale.view_order_form"/>         
             <field name="arch" type="xml">
                 <!-- modificaciones a vistas para presupuesto version orden de trabajo -->
-                <xpath expr="//field[@name='partner_id']" position="after">            
-                    <field name="num_telefono"/>
-                    <field name="direccion"/>
-                    <field name="calle"/>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <div>
+                        <div>
+                            <span>Datos originales del cliente, actualizar aquí para mejorar información</span>
+                        </div>
+                        <div>
+                            <strong><span>Mobil: </span></strong>
+                            <field name="num_telefono"/>                        
+                        </div>
+                        <div>
+                            <strong><span>Dirección: </span></strong>
+                            <field name="direccion"/>                        
+                        </div>
+                        <div>
+                            <strong><span>Calle: </span></strong>
+                            <field name="calle"/>                        
+                        </div>
+                        <div attrs="{'invisible': ['|',('street_sale_order','=',False),('city_sale_order','=',False)]}">
+                            <span>Información para el servicio. Aplica por defecto datos originales del cliente, actualizar cuando el cliente contrata varias veces el mismo servicio en distintas direcciones, no modificar datos originales del cliente</span>
+                        </div>
+                        <div attrs="{'invisible': [('city_sale_order','=',False)]}">                            
+                            <strong><span>Ciudad Cotización: </span></strong>
+                            <field name="city_sale_order"/>                        
+                        </div>
+                        <div attrs="{'invisible': [('street_sale_order','=',False)]}">
+                            <strong><span>Calle Cotización: </span></strong>
+                            <field name="street_sale_order"/>                        
+                        </div>                    
+                    </div>                    
                     <field name="kit_check" invisible='1' force_save="1"/>
                     <field name="tipo_servicio" invisible='1' force_save="1"/>
                     <field name="x_tipo_servicio" invisible='1' force_save="1"/>
@@ -19,8 +44,11 @@
                     <field name="presscontrol" invisible='1' force_save="1"/>
                     <field name="bomba_cloro" invisible='1' force_save="1"/>
                 </xpath>                                    
-                <xpath expr="//field[@name='partner_shipping_id']" position="after">              
-                    <field name="sale_order_template_id_prueba" attrs="{'invisible': [('state','in','liquidar')]}"/>
+                <xpath expr="//field[@name='partner_shipping_id']" position="after"> 
+                    <div attrs="{'invisible': [('state','in','liquidar')]}">
+                        <strong><span>Plantilla de presupuesto: </span></strong>
+                        <field name="sale_order_template_id_prueba"/>
+                    </div>                    
                 </xpath> 
                 <xpath expr="//group[1]" position="after">                    
                     <group>
