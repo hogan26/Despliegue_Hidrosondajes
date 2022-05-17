@@ -270,6 +270,10 @@
                                 <field name="num_cuotas"/>
                             </div>
                             <div class="o_row">
+                                <label for="payment_method"/>
+                                <field name="payment_method"/>
+                            </div>
+                            <div class="o_row">
                                 <label for="fijar_ac"/>
                                 <field name="fijar_ac"/>
                             </div>
@@ -285,6 +289,7 @@
                             <field name="descuento_neto_porcentaje"/>
                             <field name="descuento_neto_monto"/>
                             <field name="num_cuotas"/>
+                            <field name="payment_method"/>
                             <field name="fijar_ac"/>
                             <field name="comentarios"/>                                                       
                         </tree>
