@@ -58,6 +58,7 @@ class SaleOrder(models.Model):
                 self.update({'descuento_neto_porcentaje':acuerdo_pago.descuento_neto_porcentaje})
                 self.update({'descuento_neto_monto':acuerdo_pago.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo_pago.num_cuotas})
+                self.update({'payment_method':acuerdo_pago.payment_method})
                 self.update({'observaciones':acuerdo_pago.comentarios})
                 
                 self.update({'total_tax_discount':acuerdo_pago.descuento_iva})

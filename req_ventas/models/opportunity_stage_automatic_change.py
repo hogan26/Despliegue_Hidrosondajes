@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -28,11 +29,24 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         res = super(SaleOrder,self).action_confirm()        
         if self.opportunity_id:
-            current_stage = self.opportunity_id.stage_id.name
+            if self.opportunity_id.payment_agreed_matriz_ids:
+                acuerdo = False
+                for validation in self.opportunity_id.payment_agreed_matriz_ids:
+                    if validation.fijar_ac:
+                        acuerdo = True
+                if acuerdo == False:
+                    raise ValidationError("No se ha fijado ningun acuerdo comercial para este presupuesto")
+            else:            
+                raise ValidationError("No existe ningun acuerdo comercial para este presupuesto")
+            
+            if self.partner_id.vat:
+                current_stage = self.opportunity_id.stage_id.name
 
-            if current_stage == 'INICIO' or current_stage == 'ELABORADO' or current_stage == 'ENVIADO':
-                siguiente_etapa = self.env['crm.stage'].search([('name','=','CONFIRMADO')])
-                self.opportunity_id.update({'stage_id':siguiente_etapa.id})
+                if current_stage == 'INICIO' or current_stage == 'ELABORADO' or current_stage == 'ENVIADO':
+                    siguiente_etapa = self.env['crm.stage'].search([('name','=','CONFIRMADO')])
+                    self.opportunity_id.update({'stage_id':siguiente_etapa.id})
+            else:
+                raise ValidationError("El campo Rut del cliente esta vacío,por favor dirijase al formulario de cliente, complete el campo y vuelva a intentar confirmar este presupuesto")
                 
         return res
     

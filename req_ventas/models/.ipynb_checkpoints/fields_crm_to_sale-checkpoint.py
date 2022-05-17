@@ -144,6 +144,7 @@ class SaleOrder(models.Model):
     descuento_neto_porcentaje = fields.Integer(string='Descuento neto (%)',readonly=True)
     descuento_neto_monto = fields.Integer(string='Descuento neto ($)',readonly=True)
     num_cuotas = fields.Integer(string='Num. cuotas',readonly=True)
+    payment_method = fields.Selection([('efectivo','Efectivo'),('tarjeta_credito','Tarjeta de crédito'),('cheque','Cheque'),('transferencia','Transferencia')],string="Forma de pago",readonly=True)
     observaciones = fields.Char(string='Observaciones',readonly=False)  
     observacion_s1 = fields.Char(string='observacion_s1_bomba',default='- Este servicio no incluye bomba de pozo.')
     observacion_s2 = fields.Char(string='observacion_s1_tablero',default='- Este servicio considera la instalación del tablero de control a 1 metro de distancia del pozo.')
@@ -177,6 +178,7 @@ class SaleOrder(models.Model):
                 self.update({'descuento_neto_porcentaje':acuerdo.descuento_neto_porcentaje})
                 self.update({'descuento_neto_monto':acuerdo.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo.num_cuotas})
+                self.update({'payment_method':acuerdo.payment_method})
                 self.update({'observaciones':acuerdo.comentarios})
                 
                 self.update({'total_tax_discount':acuerdo.descuento_iva})

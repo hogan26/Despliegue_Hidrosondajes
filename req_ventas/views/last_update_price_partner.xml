@@ -380,6 +380,7 @@
                             <field name="abono_monto" attrs="{'invisible': [('abono_monto', '=', 0)]}" force_save="1"/>
                             <field name="x_cuotas_crm" attrs="{'invisible': [('x_cuotas_crm', '=', 0)]}"/>
                             <field name="num_cuotas" attrs="{'invisible': [('num_cuotas', '=', 0)]}" force_save="1"/>
+                            <field name="payment_method" attrs="{'invisible': [('payment_method', '=', False)]}" force_save="1"/>
                             <field name="observaciones" attrs="{'invisible': [('observaciones', '=', False)]}" force_save="1"/>
                         </group>      
                         </div>
