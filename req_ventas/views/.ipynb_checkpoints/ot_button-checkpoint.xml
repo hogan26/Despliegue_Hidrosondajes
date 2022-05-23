@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="sale_order_ot_button" model="ir.ui.view">
+            <field name="name">sale.order.ot.button</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[@name='action_cancel']" position="before">
+                    <button name="action_new_ot" string="Generar O.T." type="object" class="btn-primary"/>
+                </xpath>
+                <xpath expr="//field[@name='x_servicios_requeridos']" position="after">
+                    <field name="origin_sale_order" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>
+                    <field name="service" attrs="{'invisible': [('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])],'required':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
