@@ -30,7 +30,7 @@
         'views/sheet_width_increase.xml',
         'views/total_tax_discount.xml',
         'views/liquidation.xml',
-        'views/update_quotation_button.xml',        
+        'views/update_quotation_button.xml',
         'views/ot_button.xml',
         'views/sale_order_template_service.xml',
     ],    
