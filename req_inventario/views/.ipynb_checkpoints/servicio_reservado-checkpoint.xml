@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="servicio_reservado" model="ir.ui.view">
+            <field name="name">servicio.reservado</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="servicio_reservado"/>
+                </xpath>
+                <xpath expr="//header/button[@name='action_cancel']" position="after">
+                    <button name="action_load_stock_origin_location" string="Cargar stock" type="object" class="btn-primary"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

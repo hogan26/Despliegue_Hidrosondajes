@@ -27,5 +27,6 @@
         # 'security/ir.model.access.csv',        
         'views/last_update_pricelist_date_view.xml',
         'views/composite_product_form_view.xml',
+        'views/servicio_reservado.xml',
     ],    
 }

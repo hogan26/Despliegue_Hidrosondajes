@@ -61,6 +61,8 @@ class SaleOrderLine(models.Model):
     monto_final = fields.Monetary(string="Monto final", compute=monto_final)
     margen_total = fields.Monetary(string="Margen", compute=margen_total)
     
-            
-        
+class SaleOrderTemplate(models.Model):
+    _inherit = 'sale.order.template'
+
+    service = fields.Selection([('s1','S1'),('s2','S2'),('s3','S3'),('s4','S4')],string='Servicio que aplica')        
 
