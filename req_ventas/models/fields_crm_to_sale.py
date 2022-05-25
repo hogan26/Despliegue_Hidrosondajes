@@ -170,6 +170,9 @@ class SaleOrder(models.Model):
         
         #ACUERDOS DE PAGO
         
+        if not(self.opportunity_id):
+            self.update({'service':self.sale_order_template_id_prueba.service})
+        
         for acuerdo in self.opportunity_id.payment_agreed_matriz_ids:
             if acuerdo.fijar_ac:
                 self.update({'abono_porcentaje':acuerdo.Abono_porcentaje})
@@ -190,7 +193,7 @@ class SaleOrder(models.Model):
         diametros = []
         if not(self.opportunity_id.x_profundidad):
             calculo_profundidad = self.opportunity_id        
-            profundidad = self.profundidad_calculada
+            profundidad = 0
             for suma in calculo_profundidad.lead_matriz_lines_ids:
                 if suma.tipo_servicio_perforacion.categ_id.display_name == 'SERVICIOS / PERFORACION':
                     profundidad = profundidad + suma.cantidad_metros

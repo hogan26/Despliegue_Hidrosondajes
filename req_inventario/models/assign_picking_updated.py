@@ -33,7 +33,8 @@ class StockMove(models.Model):
                     # analizamos las lineas del presupuesto e identificamos la posicion de las secciones
                     for lines in sale_order.order_line:
                         if lines.product_id.id and not (lines.display_type):
-                            order_lines.append({'display_type': lines.display_type, 'product_id': lines.product_id.id})
+                            if lines.product_type!='service':
+                                order_lines.append({'display_type': lines.display_type, 'product_id': lines.product_id.id})
                         else:
                             order_lines.append({'display_type': 'section_note', 'product_id': 0})
 
