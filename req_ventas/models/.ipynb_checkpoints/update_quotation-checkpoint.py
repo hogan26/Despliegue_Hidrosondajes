@@ -59,10 +59,10 @@ class SaleOrder(models.Model):
             search_est_hid = self.env['product.product'].search([('name','=',requerimiento.estanque_hidroneumatico.name)])
             aux_final = str(requerimiento.estanque_hidroneumatico.name).find('LT')
             aux_inicial = aux_final - 3
-            self.update({'estanque_hidroneumatico':float(str(requerimiento.estanque_hidroneumatico.name[aux_inicial:aux_final]))})
-        
-        if requerimiento.duracion_s3:
-            self.update({'x_duracion_s3':requerimiento.duracion_s3})
+            self.update({'estanque_hidroneumatico':float(str(requerimiento.estanque_hidroneumatico.name[aux_inicial:aux_final]))})        
+
+        if requerimiento.x_duracion_s3:
+            self.update({'duracion_s3':requerimiento.x_duracion_s3})
 
         # VALIDACIONES PARA ACUERDOS DE PAGO
         for acuerdo_pago in requerimiento.payment_agreed_matriz_ids:
