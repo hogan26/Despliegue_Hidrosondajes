@@ -274,7 +274,7 @@ class SaleOrder(models.Model):
             if self.opportunity_id.caudal_esperado_check:
                 self.update({'caudal_esperado':self.opportunity_id.caudal_esperado})                
             
-            if self.opportunity_id.x_servicios_requeridos in ['s1s2s3']:
+            if self.opportunity_id.x_servicios_requeridos in ['s3','s2s3','s1s2s3']:
                 if self.opportunity_id.bomba_centrifuga.name:
                     aux_final = str(self.opportunity_id.bomba_centrifuga.name).find('HP')
                     aux_inicial = aux_final - 3

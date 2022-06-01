@@ -44,10 +44,25 @@ class SaleOrder(models.Model):
             search_motor = search_motor.name.lower()
             self.update({'motor_store':search_motor})
 
-        if requerimiento.prueba_bombeo_crm:                
+        if requerimiento.prueba_bombeo_crm:
             search_pbb = self.env['product.product'].search([('name','=',requerimiento.prueba_bombeo_crm.name)])
             search_pbb = search_pbb.name.lower()
             self.update({'prueba_bombeo_crm':search_pbb})        
+            
+        if requerimiento.bomba_centrifuga:
+            search_bomba_cen = self.env['product.product'].search([('name','=',requerimiento.bomba_centrifuga.name)])
+            aux_final = str(requerimiento.bomba_centrifuga.name).find('HP')
+            aux_inicial = aux_final - 3
+            self.update({'bomba_centrifuga':float(str(requerimiento.bomba_centrifuga.name[aux_inicial:aux_final]))})
+        
+        if requerimiento.estanque_hidroneumatico:
+            search_est_hid = self.env['product.product'].search([('name','=',requerimiento.estanque_hidroneumatico.name)])
+            aux_final = str(requerimiento.estanque_hidroneumatico.name).find('LT')
+            aux_inicial = aux_final - 3
+            self.update({'estanque_hidroneumatico':float(str(requerimiento.estanque_hidroneumatico.name[aux_inicial:aux_final]))})
+        
+        if requerimiento.duracion_s3:
+            self.update({'duracion_s3':requerimiento.duracion_s3})
 
         # VALIDACIONES PARA ACUERDOS DE PAGO
         for acuerdo_pago in requerimiento.payment_agreed_matriz_ids:
