@@ -61,7 +61,7 @@ class SaleOrder(models.Model):
             aux_inicial = aux_final - 3
             self.update({'estanque_hidroneumatico':float(str(requerimiento.estanque_hidroneumatico.name[aux_inicial:aux_final]))})
         
-        if requerimiento.duracion_s3:
+        if requerimiento.x_duracion_s3:
             self.update({'duracion_s3':requerimiento.x_duracion_s3})
 
         # VALIDACIONES PARA ACUERDOS DE PAGO
