@@ -315,6 +315,14 @@
                         <group string="Tratamiento, almacenamiento y distribución">
                             <div>
                                 <div>
+                                    - <label for="estanque_acumulacion"></label>
+                                    <field name="estanque_acumulacion" force_save="1"/> lts
+                                </div>
+                                <div>
+                                    - <label for="losa_hormigon"></label>
+                                    <field name="losa_hormigon" force_save="1"/> mts
+                                </div>
+                                <div>
                                     - <label for="bomba_centrifuga"></label>
                                     <field name="bomba_centrifuga" force_save="1"/> hp
                                 </div>   
@@ -326,7 +334,9 @@
                                     - Presscontrol
                                 </div>
                                 <div attrs="{'invisible': [('bomba_cloro','=',False)]}">
-                                    - Bomba dosificadora de cloro
+                                    - Bomba dosificadora de cloro                                    
+                                </div>
+                                <div attrs="{'invisible': [('bomba_cloro','=',False)]}">                                    
                                     - Estanque de cloro
                                 </div>
                                 <div>
