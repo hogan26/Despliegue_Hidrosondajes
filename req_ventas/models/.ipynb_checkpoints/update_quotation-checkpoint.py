@@ -68,6 +68,21 @@ class SaleOrder(models.Model):
             self.update({'bomba_cloro':True})
         else:
             self.update({'bomba_cloro':False})
+            
+        if requerimiento.x_superficie:
+            aux_final = str(requerimiento.estanque_acumulacion_sup.name).find('LTS')
+            aux_inicial = aux_final - 5
+            self.update({'estanque_acumulacion':int(str(requerimiento.estanque_acumulacion_sup.name[aux_inicial:aux_final]))})
+        
+        if requerimiento.x_enterrado_s3:
+            aux_final = str(requerimiento.estanque_acumulacion_ent.name).find('LTS')
+            aux_inicial = aux_final - 5
+            self.update({'estanque_acumulacion':int(str(requerimiento.estanque_acumulacion_ent.name[aux_inicial:aux_final]))})
+            
+        if requerimiento.losa_hormigon:
+            losa_name = requerimiento.losa_hormigon.name
+            losa_split = losa_name.split()                    
+            self.update({'losa_hormigon':losa_split[3]})
 
         # VALIDACIONES PARA ACUERDOS DE PAGO
         for acuerdo_pago in requerimiento.payment_agreed_matriz_ids:
