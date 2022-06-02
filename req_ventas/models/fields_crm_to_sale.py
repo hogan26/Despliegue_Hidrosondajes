@@ -108,8 +108,12 @@ class SaleOrder(models.Model):
     #servicio 3 para encabezados
     bomba_centrifuga = fields.Char(string='Bomba centrifuga de ')
     bomba_cloro = fields.Boolean(string='Bomba dosificadora encabezado')
+    #bomba_dosificadora_cloro = fields.Char(string='Bomba dosificadora de cloro de ')
+    #estanque_cloro = fields.Char(string='Estanque de cloro de ')
     presscontrol = fields.Boolean(string='presscontrol encabezado')
     estanque_hidroneumatico = fields.Char(string='Estanque hidroneumatico de ')    
+    estanque_acumulacion = fields.Char(string='Estanque de acumulacion de ')
+    losa_hormigon = fields.Char(string='losa de hormigon de ')    
     #servicio 4
     x_servicio4 = fields.Selection(related='opportunity_id.x_servicio4',string='Servicio')
     x_precios4 = fields.Integer(related='opportunity_id.x_precios4',string='Precio servicio')
@@ -287,13 +291,32 @@ class SaleOrder(models.Model):
                         {'estanque_hidroneumatico':int(str(self.opportunity_id.estanque_hidroneumatico.name[aux_inicial:aux_final]))}
                     )
                 
+                if self.opportunity_id.estanque_acumulacion_sup.name:
+                    aux_final = str(self.opportunity_id.estanque_acumulacion_sup.name).find('LTS')
+                    aux_inicial = aux_final - 4
+                    self.update(
+                        {'estanque_acumulacion':int(str(self.opportunity_id.estanque_acumulacion_sup.name[aux_inicial:aux_final]))}
+                    )
+                    
+                if self.opportunity_id.estanque_acumulacion_ent.name:
+                    aux_final = str(self.opportunity_id.estanque_acumulacion_ent.name).find('LTS')
+                    aux_inicial = aux_final - 4
+                    self.update(
+                        {'estanque_acumulacion':int(str(self.opportunity_id.estanque_acumulacion_ent.name[aux_inicial:aux_final]))}
+                    )
+                    
+                if self.opportunity_id.losa_hormigon.name:
+                    losa_name = self.opportunity_id.losa_hormigon.name
+                    losa_split = losa_name.split()                    
+                    self.update({'losa_hormigon':losa_split[3]})
+                
                 if self.opportunity_id.x_controlpress:
                     self.update({'presscontrol':True})
                 else:
                     self.update({'presscontrol':False})
                     
                 if self.opportunity_id.x_cloracion:
-                    self.update({'bomba_cloro':True})
+                    self.update({'bomba_cloro':True})                    
                 else:
                     self.update({'bomba_cloro':False})
                 

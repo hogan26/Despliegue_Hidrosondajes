@@ -59,10 +59,15 @@ class SaleOrder(models.Model):
             search_est_hid = self.env['product.product'].search([('name','=',requerimiento.estanque_hidroneumatico.name)])
             aux_final = str(requerimiento.estanque_hidroneumatico.name).find('LT')
             aux_inicial = aux_final - 3
-            self.update({'estanque_hidroneumatico':float(str(requerimiento.estanque_hidroneumatico.name[aux_inicial:aux_final]))})        
-
+            self.update({'estanque_hidroneumatico':int(str(requerimiento.estanque_hidroneumatico.name[aux_inicial:aux_final]))})
+        
         if requerimiento.x_duracion_s3:
             self.update({'duracion_s3':requerimiento.x_duracion_s3})
+        
+        if requerimiento.x_cloracion:
+            self.update({'bomba_cloro':True})
+        else:
+            self.update({'bomba_cloro':False})
 
         # VALIDACIONES PARA ACUERDOS DE PAGO
         for acuerdo_pago in requerimiento.payment_agreed_matriz_ids:
@@ -74,8 +79,7 @@ class SaleOrder(models.Model):
                 self.update({'descuento_neto_monto':acuerdo_pago.descuento_neto_monto})
                 self.update({'num_cuotas':acuerdo_pago.num_cuotas})
                 self.update({'payment_method':acuerdo_pago.payment_method})
-                self.update({'observaciones':acuerdo_pago.comentarios})
-                
+                self.update({'observaciones':acuerdo_pago.comentarios})                
                 self.update({'total_tax_discount':acuerdo_pago.descuento_iva})
                 self.update({'untaxed_percentage_discount':acuerdo_pago.descuento_neto_porcentaje})
                 self.update({'untaxed_amount_discount':acuerdo_pago.descuento_neto_monto})

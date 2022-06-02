@@ -327,6 +327,7 @@
                                 </div>
                                 <div attrs="{'invisible': [('bomba_cloro','=',False)]}">
                                     - Bomba dosificadora de cloro
+                                    - Estanque de cloro
                                 </div>
                                 <div>
                                     <field name="encabezado_s3_servicio_completo"/>
