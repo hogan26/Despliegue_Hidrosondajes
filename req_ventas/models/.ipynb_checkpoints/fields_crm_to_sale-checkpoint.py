@@ -78,7 +78,7 @@ class SaleOrder(models.Model):
     caudal_text = fields.Char(string='Caudal: ',store=True)
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
     #hp_text = fields.Char(string='HP')
-    kit_check = fields.Boolean(string='kit_check')    
+    kit_check = fields.Boolean(string='kit_check')
     kit_store = fields.Char(string='Conjunto Bomba/Motor: ',store=True)
     bombas_store = fields.Char(string='Bomba: ',store=True)
     motor_store = fields.Char(string='Motor: ',store=True)
