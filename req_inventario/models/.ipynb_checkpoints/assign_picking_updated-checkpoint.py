@@ -101,6 +101,7 @@ class StockMove(models.Model):
                         picking.write({'servicio_reservado': pickings['type']})
                         moves[slice(pickings['start'], pickings['end'])].write({'picking_id': picking.id})
                         moves[slice(pickings['start'], pickings['end'])]._assign_picking_post_process(new=new_picking)
+                        picking.action_assign()
 
                 else:
                     new_picking = True
@@ -111,13 +112,15 @@ class StockMove(models.Model):
 
                     # funcion que consolida la reserva generada por la orden de trabajo y la reserva generada por la cotizacion vinculada
                     current_ot = moves.sale_line_id.order_id  # tomamos la ot en curso
+                   
                     if current_ot.origin_sale_order:
                         # vamos a buscar la cotizacion desde la cual viene la ot
                         linked_sale_order = self.env['sale.order'].search([('name','=',current_ot.origin_sale_order)])  
                         for pickings in linked_sale_order.picking_ids:  # vamos a buscar los pickings de la cotizacion
                             if pickings.state in ['confirmed', 'assigned']:  # los que estan en estado de espera
                                 # validamos si el picking que esta creando la ot corresponde al picking del mismo servicio de la cotizacion
-                                if pickings.servicio_reservado == current_ot.service:  
+                                if pickings.servicio_reservado == current_ot.service: 
+                                    pickings.write({'ot_origen': current_ot.name})
                                     # pickings = picking del presupuesto
                                     # picking = picking de la ot (recien creado)
                                     for move_lines_picking_ot in picking.move_lines:
@@ -143,6 +146,12 @@ class StockMove(models.Model):
                                                     'location_dest_id': move_lines_picking_ot.location_dest_id.id
                                                 })]
                                             })
+                                    #finalizado el proceso llamar a action confirm para accionar el boton "marcar 'por realizar'" lo que cambia
+                                    #el estado de 'borrador'->'en espera' haciendo que el picking aparezca en la seccion 'a procesar' en la
+                                    #seccion 'ordenes de entrega' de la vista principal 
+                                    pickings.action_confirm()                                    
+                                    pickings.action_assign()
+                                    
                         # luego llamar a la funcion action_cancel pasando picking como id del record
                         picking.action_cancel()                                    
 
@@ -155,6 +164,12 @@ class Picking(models.Model):
 
     servicio_reservado = fields.Selection([('s1', 'S1'), ('s2', 'S2'), ('s3', 'S3'), ('s4', 'S4'), ('ot', 'OT')],
                                           string='Servicio Reservado')
+    location_dest_id = fields.Many2one(
+        'stock.location', "Destination Location",
+        default=lambda self: self.env['stock.picking.type'].browse(self._context.get('default_picking_type_id')).default_location_dest_id,
+        check_company=True, readonly=True, required=True,
+        states={'draft': [('readonly', False)]})
+    ot_origen = fields.Char(string="Codigo OT")
 
     def action_load_stock_origin_location(self):
         stock_origin_location = self.env['stock.location'].search([('id','=',self.location_id.id)])
@@ -169,4 +184,11 @@ class Picking(models.Model):
                     'location_id': cantidades.location_id.id,
                     'location_dest_id': self.location_dest_id.id
                 })]
+            })
+            
+    @api.onchange('location_dest_id')
+    def onchange_location_dest_id(self):
+        for picking_line in self.move_line_ids_without_package:
+            picking_line.update({
+                'location_dest_id':self.location_dest_id.id
             })

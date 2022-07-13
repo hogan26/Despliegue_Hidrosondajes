@@ -38,6 +38,7 @@
                         </div>                    
                     </div>                    
                     <field name="kit_check" invisible='1' force_save="1"/>
+                    <field name="pbbeo_dga" invisible='1' force_save="1"/>
                     <field name="tipo_servicio" invisible='1' force_save="1"/>
                     <field name="x_tipo_servicio" invisible='1' force_save="1"/>
                     <field name="generador" invisible='1' force_save="1"/>
@@ -91,6 +92,13 @@
                                 <div>
                                     - <label for="caudal_estimado_profundizar"></label>
                                     <field name="caudal_estimado_profundizar" force_save="1"/> Lts/seg
+                                </div>
+                            </div>
+                        </group>
+                        <group attrs="{'invisible': [('pbbeo_dga','=',False)]}" string="Descripción del servicio">
+                            <div>                                
+                                <div>                                    
+                                    <field name="encabezado_pbbeo_dga" force_save="1"/>
                                 </div>
                             </div>
                         </group>

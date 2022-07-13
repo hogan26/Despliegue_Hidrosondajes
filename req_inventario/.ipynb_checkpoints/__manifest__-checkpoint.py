@@ -28,5 +28,9 @@
         'views/last_update_pricelist_date_view.xml',
         'views/composite_product_form_view.xml',
         'views/servicio_reservado.xml',
+        'views/web_odoo_warehouse_config_fields_view.xml',
+        'views/picking_list_view_columns.xml',
+        'views/warehouse_picking_stock_view.xml',
+        'views/detailed_operations_warehouse_stock_view.xml',
     ],    
 }

@@ -13,6 +13,9 @@
                 <xpath expr="//header/button[@name='action_cancel']" position="after">
                     <button name="action_load_stock_origin_location" string="Cargar stock" type="object" class="btn-primary"/>
                 </xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="ot_origen"/>
+                </xpath>
             </field>
         </record>
     </data>

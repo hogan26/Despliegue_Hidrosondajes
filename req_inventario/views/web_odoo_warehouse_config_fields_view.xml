@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="web_odoo_warehouse_config_fields_view" model="ir.ui.view">
+            <field name="name">web.odoo.warehouse.config.fields.view</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="after">
+                    <group>
+                        <group>
+                            <field name="show_in_web_system"/>
+                        </group>
+                        <group attrs="{'invisible': [('show_in_web_system', '=', False)]}">
+                            <field name="servicio_perforacion"/>
+                            <field name="servicio_bombeo"/>
+                            <field name="servicio_almacenamiento"/>
+                            <field name="servicio_prueba_bombeo"/>
+                            <field name="servicio_limpieza"/>
+                            <field name="servicio_diagnostico"/>
+                        </group>    
+                    </group>    
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
