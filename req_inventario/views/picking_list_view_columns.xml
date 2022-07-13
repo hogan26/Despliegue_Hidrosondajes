@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="picking_list_view_columns" model="ir.ui.view">
+            <field name="name">picking.list.view.columns</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="ot_origen" optional="show"/>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>

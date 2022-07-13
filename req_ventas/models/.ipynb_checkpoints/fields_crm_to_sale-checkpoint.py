@@ -71,13 +71,14 @@ class SaleOrder(models.Model):
     prueba_bombeo = fields.Many2one('product.template',related='opportunity_id.prueba_bombeo',string='Prueba de bombeo.')
     prueba_bombeo_crm = fields.Char(string='Prueba de bombeo: ',store=True,readonly=True)
     generador = fields.Boolean(string='Req. Generador')
+    pbbeo_dga = fields.Boolean(string='Check prueba bombeo dga')
     #servicio 2
     x_caudal_crm = fields.Float(related='opportunity_id.x_caudal_fl',string='Caudal..: ')
     caudal_crm = fields.Float(string='Caudal.: ',store=True)
     caudal_text = fields.Char(string='Caudal: ',store=True)
     x_hp_fl = fields.Float(related='opportunity_id.x_hp_fl',string='HP')
     #hp_text = fields.Char(string='HP')
-    kit_check = fields.Boolean(string='kit_check')
+    kit_check = fields.Boolean(string='kit_check')    
     kit_store = fields.Char(string='Conjunto Bomba/Motor: ',store=True)
     bombas_store = fields.Char(string='Bomba: ',store=True)
     motor_store = fields.Char(string='Motor: ',store=True)
@@ -162,6 +163,7 @@ class SaleOrder(models.Model):
     encabezado_s3_descripcion = fields.Html(string='encabezado coti s3 descripcion')
     encabezado_s3_obra = fields.Html(string='encabezado coti s3 obra')
     encabezado_s3_servicio_completo = fields.Html(string='encabezado coti s3 servicio completo')
+    encabezado_pbbeo_dga = fields.Html(string='encabezado DGA')
     
     @api.onchange('sale_order_template_id_prueba')
     def onchange_sale_order_template_id_prueba(self):
@@ -238,7 +240,7 @@ class SaleOrder(models.Model):
             if self.opportunity_id.bomba_crm:                
                 search_bomba = self.env['product.product'].search([('name','=',self.opportunity_id.bomba_crm.name)])
                 search_bomba = search_bomba.name.lower()
-                self.update({'bombas_store':search_bomba})            
+                self.update({'bombas_store':search_bomba})
                 
             if self.opportunity_id.motor_crm:                
                 search_motor = self.env['product.product'].search([('name','=',self.opportunity_id.motor_crm.name)])
@@ -253,8 +255,13 @@ class SaleOrder(models.Model):
             if self.opportunity_id.prueba_bombeo_crm:                
                 search_pbb = self.env['product.product'].search([('name','=',self.opportunity_id.prueba_bombeo_crm.name)])
                 search_pbb = search_pbb.name.lower()
+                if search_pbb=="prueba de bombeo dga 24hrs":
+                    self.update({'pbbeo_dga':True})
+                else:
+                    self.update({'pbbeo_dga':False})                    
             else:
-                search_pbb = ''            
+                search_pbb = ''
+                self.update({'pbbeo_dga':False})
             
             self.update({'profundidad_calculada':profundidad})
             self.update({'diametro_pozo':encabezado_diametro})
