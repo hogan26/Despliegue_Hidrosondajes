@@ -45,6 +45,30 @@ class ActualizarPrecio(models.Model):
                                 line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
                             proveedor.write({'price':line.price_unit})
                             continue
+                        elif line.product_uom.display_name == 'Balde 20':
+                            nuevo_precio = line.price_unit/20
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if res.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if res.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        elif line.product_uom.display_name == 'Bidón 20':
+                            nuevo_precio = line.price_unit/20
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': res.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if res.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if res.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
+                            continue
                         else:
                             nuevo_precio = line.price_unit
                             line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
@@ -86,6 +110,30 @@ class ActualizarPrecio(models.Model):
                             continue
                         elif line.product_uom.display_name == 'Tira 6mt':
                             nuevo_precio = line.price_unit/6
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if self.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if self.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        elif line.product_uom.display_name == 'Balde 20':
+                            nuevo_precio = line.price_unit/20
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            if self.state == 'sale':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})
+                            if self.state == 'draft':
+                                line.product_id.product_tmpl_id.write({'last_update_type_selector':'cotizacion'})
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        elif line.product_uom.display_name == 'Bidón 20':
+                            nuevo_precio = line.price_unit/20
                             line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
                             line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
                             line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
@@ -140,6 +188,24 @@ class ActualizarPrecio(models.Model):
                             line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})                            
                             proveedor.write({'price':line.price_unit})
                             continue
+                        elif line.product_uom.display_name == 'Balde 20':
+                            nuevo_precio = line.price_unit/20
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})                            
+                            proveedor.write({'price':line.price_unit})
+                            continue
+                        elif line.product_uom.display_name == 'Bidón 20':
+                            nuevo_precio = line.price_unit/20
+                            line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
+                            line.product_id.product_tmpl_id.write({'standard_price': nuevo_precio})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_partner': self.partner_id})
+                            line.product_id.product_tmpl_id.write({'last_update_pricelist_date': fields.Date.context_today(self)})
+                            line.product_id.product_tmpl_id.write({'last_update_type_selector':'compra'})                            
+                            proveedor.write({'price':line.price_unit})
+                            continue                        
                         else:
                             nuevo_precio = line.price_unit
                             line.product_id.product_tmpl_id.write({'list_price': nuevo_precio})                        
