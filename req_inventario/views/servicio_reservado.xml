@@ -15,6 +15,7 @@
                 </xpath>
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="ot_origen"/>
+                    <field name="service_shutdown_creator"/>
                 </xpath>
             </field>
         </record>

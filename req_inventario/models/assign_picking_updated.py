@@ -170,6 +170,7 @@ class Picking(models.Model):
         check_company=True, readonly=True, required=True,
         states={'draft': [('readonly', False)]})
     ot_origen = fields.Char(string="Codigo OT")
+    service_shutdown_creator = fields.Char(string='Operador')
 
     def action_load_stock_origin_location(self):
         stock_origin_location = self.env['stock.location'].search([('id','=',self.location_id.id)])
