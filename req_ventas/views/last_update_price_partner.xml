@@ -94,14 +94,7 @@
                                     <field name="caudal_estimado_profundizar" force_save="1"/> Lts/seg
                                 </div>
                             </div>
-                        </group>
-                        <group attrs="{'invisible': [('pbbeo_dga','=',False)]}" string="Descripción del servicio">
-                            <div>                                
-                                <div>                                    
-                                    <field name="encabezado_pbbeo_dga" force_save="1"/>
-                                </div>
-                            </div>
-                        </group>
+                        </group>                        
                         <group attrs="{'invisible': [('x_servicios_requeridos','not in', ['s1','s2','s2s3','s1s2','s1s2s3'])]}">
                             <strong>CARACTERISTICAS TÉCNICAS DEL SERVICIO</strong>
                         </group>              
@@ -143,6 +136,13 @@
                                 <div attrs="{'invisible': [('x_duracion_s1','!=', 0)]}">
                                     - <span>Duración: </span>
                                     <field name="duracion_servicio1" force_save="1"/> Dias.
+                                </div>
+                            </div>
+                        </group>
+                        <group attrs="{'invisible': [('pbbeo_dga','=',False)]}" string="Descripción del servicio">
+                            <div>                                
+                                <div>                                    
+                                    <field name="encabezado_pbbeo_dga" force_save="1"/>
                                 </div>
                             </div>
                         </group>
