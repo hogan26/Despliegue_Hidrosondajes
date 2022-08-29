@@ -12,7 +12,8 @@
                 </xpath>
                 <xpath expr="//field[@name='x_servicios_requeridos']" position="after">
                     <field name="origin_sale_order" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>
-                    <field name="service" attrs="{'invisible': [('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])],'required':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>
+                    <field name="service" attrs="{'invisible': [('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])],'required':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>                    
+                    <button name="action_load_sale_order_items" string="Cargar Items" type="object" class="btn-primary" attrs="{'invisible':[('service','not in', ['s2','s3','s2s3','s1s2','s1s2s3'])]}"/>
                 </xpath>
             </field>
         </record>

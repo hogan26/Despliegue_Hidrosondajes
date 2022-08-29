@@ -33,5 +33,6 @@
         'views/update_quotation_button.xml',
         'views/ot_button.xml',
         'views/sale_order_template_service.xml',
+        'views/redirect_ot_coti.xml',
     ],    
 }
