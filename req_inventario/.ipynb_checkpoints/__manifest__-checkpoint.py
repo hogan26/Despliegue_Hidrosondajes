@@ -32,5 +32,6 @@
         'views/picking_list_view_columns.xml',
         'views/warehouse_picking_stock_view.xml',
         'views/detailed_operations_warehouse_stock_view.xml',
+        'views/search_picking_ot_origen.xml',
     ],    
 }

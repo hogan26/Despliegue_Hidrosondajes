@@ -34,5 +34,8 @@
         'views/ot_button.xml',
         'views/sale_order_template_service.xml',
         'views/redirect_ot_coti.xml',
+        'views/origin_sale_order_search_view.xml',
+        'views/origin_sale_order_tree_view.xml',
+        'views/redirect_coti_opportunity.xml',
     ],    
 }

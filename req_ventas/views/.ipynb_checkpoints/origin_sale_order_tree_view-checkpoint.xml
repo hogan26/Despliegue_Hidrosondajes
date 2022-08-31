@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="origin_sale_order_tree_view" model="ir.ui.view">
+            <field name="name">origin.sale.order.tree.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="origin_sale_order" string="Coti. origen"/>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
