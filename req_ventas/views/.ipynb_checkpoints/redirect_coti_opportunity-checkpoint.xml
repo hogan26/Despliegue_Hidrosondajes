@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="redirect_coti_opportunity" model="ir.ui.view">
+            <field name="name">redirect.coti.opportunity</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='x_servicios_requeridos']" position="after">
+                    <field name="opportunity_id" invisible='1'/>
+                    <button name="redirect_coti_opportunity" string="Ir al requerimiento" type="object" class="btn-primary" attrs="{'invisible':[('opportunity_id','=', False)]}"/>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
