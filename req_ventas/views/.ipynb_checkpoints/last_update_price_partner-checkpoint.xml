@@ -43,10 +43,10 @@
                     <field name="x_tipo_servicio" invisible='1' force_save="1"/>
                     <field name="generador" invisible='1' force_save="1"/>
                     <field name="presscontrol" invisible='1' force_save="1"/>
-                    <field name="bomba_cloro" invisible='1' force_save="1"/>
+                    <field name="bomba_cloro" invisible='1' force_save="1"/>                    
                 </xpath>                                    
                 <xpath expr="//field[@name='partner_shipping_id']" position="after"> 
-                    <div attrs="{'invisible': [('state','in','liquidar')]}">
+                    <div attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}">
                         <strong><span>Plantilla de presupuesto: </span></strong>
                         <field name="sale_order_template_id_prueba"/>
                     </div>                    
@@ -61,7 +61,7 @@
                         </group> 
                     </group>  
                     <group>
-                        <field name="x_servicios_requeridos"/>               
+                        <field name="x_servicios_requeridos" attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}"/>
                         <field name="observaciones" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>  
                     </group>     
                     <group>                
@@ -75,7 +75,7 @@
                 </xpath>
                 <!-- encabezados para las cotizaciones en base al select de servicios requeridos -->          
                 <xpath expr="//group[1]" position="after">
-                    <div attrs="{'invisible': ['|',('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3']),('state','in','liquidar')]}">
+                    <div attrs="{'invisible': ['|',('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3']),('state','in',['cerrar','liquidar'])]}">
                         <group attrs="{'invisible': [('x_tipo_servicio','in',['construccion'])]}" string="Pozo existente a profundizar">
                             <div>
                                 <div>
@@ -290,7 +290,7 @@
                             </div>
                         </group>
                     </div>
-                    <div attrs="{'invisible': [('x_servicios_requeridos','not in',['s4'])]}">
+                    <div attrs="{'invisible': ['|',('x_servicios_requeridos','not in',['s4']),('state','in',['cerrar','liquidar'])]}">
                         <group>  
                             <div attrs="{'invisible': [('caudal_esperado','=',0)]}">
                                 <field name="caudal_esperado"/> Lts/seg
@@ -314,14 +314,14 @@
                         </group>
                     </div>
                     -->
-                    <div attrs="{'invisible': [('state','not in','liquidar')]}">
-                        <group string="Encabezado liquidacion">                  
+                    <div attrs="{'invisible': [('state','not in',['cerrar','liquidar'])]}">
+                        <group string="Encabezado liquidacion">
                             <div>
                                 <field name="encabezado_liquidacion"/>
-                            </div>                  
+                            </div>
                         </group>
                     </div>
-                    <div attrs="{'invisible': [('x_servicios_requeridos','not in',['s3','s2s3','s1s2s3'])]}">
+                    <div attrs="{'invisible': ['|',('x_servicios_requeridos','not in',['s3','s2s3','s1s2s3']),('state','in',['cerrar','liquidar'])]}">
                         <group string="Tratamiento, almacenamiento y distribución">
                             <div>
                                 <div>
@@ -335,7 +335,7 @@
                                 <div>
                                     - <label for="bomba_centrifuga"></label>
                                     <field name="bomba_centrifuga" force_save="1"/> hp
-                                </div>   
+                                </div>
                                 <div>
                                     - <label for="estanque_hidroneumatico"></label>
                                     <field name="estanque_hidroneumatico" force_save="1"/> lts
@@ -379,38 +379,38 @@
                 </xpath>
                 <!-- datos bancarios y acuerdos de pago -->
                 <xpath expr="//field[@name='order_line']" position="after">
-                    <div class="row" attrs="{'invisible': [('state','in','liquidar')]}">
-                    <div class="col">
-                        <group string="Datos bancarios de la empresa" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s1s2','s1s2s3'])]}">
-                        <div>
-                            <div>Nombre: Hidrosondajes Limitada</div>
-                            <div>Rut: 76.481.928-4</div>
-                            <div>Giro: Contrucción</div>
-                            <div>Cta. Cte.: Banco BCI, Nº 56119259</div>
-                            <div>Email: pagos@hidrosondajes.cl</div>
-                            <div>IMPORTANTE: Para transferencia se debe especificar número de cotización, para contabilizar su pago</div>
+                    <div class="row" attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}">
+                        <div class="col">
+                            <group string="Datos bancarios de la empresa" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s1s2','s1s2s3'])]}">
+                            <div>
+                                <div>Nombre: Hidrosondajes Limitada</div>
+                                <div>Rut: 76.481.928-4</div>
+                                <div>Giro: Contrucción</div>
+                                <div>Cta. Cte.: Banco BCI, Nº 56119259</div>
+                                <div>Email: pagos@hidrosondajes.cl</div>
+                                <div>IMPORTANTE: Para transferencia se debe especificar número de cotización, para contabilizar su pago</div>
+                            </div>
+                            </group>
                         </div>
-                        </group>
-                    </div>
-                    <div class="col">
-                        <div>
-                        <group string="Acuerdos de pago" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3','s4'])]}">
-                            <field name="x_abono_crm" attrs="{'invisible': [('x_abono_crm', '=', 0)]}"/>
-                            <field name="abono_porcentaje" attrs="{'invisible': [('abono_porcentaje', '=', 0)]}" force_save="1"/>
-                            <field name="x_abono_m_crm" attrs="{'invisible': [('x_abono_m_crm', '=', 0)]}"/>
-                            <field name="abono_monto" attrs="{'invisible': [('abono_monto', '=', 0)]}" force_save="1"/>
-                            <field name="x_cuotas_crm" attrs="{'invisible': [('x_cuotas_crm', '=', 0)]}"/>
-                            <field name="num_cuotas" attrs="{'invisible': [('num_cuotas', '=', 0)]}" force_save="1"/>
-                            <field name="payment_method" attrs="{'invisible': [('payment_method', '=', False)]}" force_save="1"/>
-                            <field name="observaciones" attrs="{'invisible': [('observaciones', '=', False)]}" force_save="1"/>
-                        </group>      
+                        <div class="col">
+                            <div>
+                            <group string="Acuerdos de pago" attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3','s4'])]}">
+                                <field name="x_abono_crm" attrs="{'invisible': [('x_abono_crm', '=', 0)]}"/>
+                                <field name="abono_porcentaje" attrs="{'invisible': [('abono_porcentaje', '=', 0)]}" force_save="1"/>
+                                <field name="x_abono_m_crm" attrs="{'invisible': [('x_abono_m_crm', '=', 0)]}"/>
+                                <field name="abono_monto" attrs="{'invisible': [('abono_monto', '=', 0)]}" force_save="1"/>
+                                <field name="x_cuotas_crm" attrs="{'invisible': [('x_cuotas_crm', '=', 0)]}"/>
+                                <field name="num_cuotas" attrs="{'invisible': [('num_cuotas', '=', 0)]}" force_save="1"/>
+                                <field name="payment_method" attrs="{'invisible': [('payment_method', '=', False)]}" force_save="1"/>
+                                <field name="observaciones" attrs="{'invisible': [('observaciones', '=', False)]}" force_save="1"/>
+                            </group>      
+                            </div>
                         </div>
-                    </div>
                     </div>           
                 </xpath>
                 <!-- observaciones, terminos y condiciones del servicio -->
                 <xpath expr="//group[@name='note_group']/group[1]" position="before">
-                    <group colspan="4" string="Observaciones" attrs="{'invisible': ['|',('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3']),('state','in','liquidar')]}">
+                    <group colspan="4" string="Observaciones" attrs="{'invisible': ['|',('x_servicios_requeridos', 'not in', ['s1','s2','s3','s1s2','s1s2s3']),('state','in',['cerrar','liquidar'])]}">
                         <div>
                             <div attrs="{'invisible': [('x_servicios_requeridos', 'not in', ['s1','s1s2','s1s2s3'])]}">
                                 <span>- La ubicación de la obra será validada en terreno por el cliente y el acceso estará en condiciones de permitir la instalación de la máquina perforadora</span>
@@ -432,7 +432,7 @@
                             </div>  
                         </div>
                     </group>            
-                    <group colspan="4" string="Detalle abonos liquidacion" attrs="{'invisible': [('state','not in','liquidar')]}">
+                    <group colspan="4" string="Detalle abonos liquidacion" attrs="{'invisible': [('state','not in',['cerrar','liquidar'])]}">
                     <div>
                         <field name="detalle_abonos_liquidacion"/>
                     </div>                  

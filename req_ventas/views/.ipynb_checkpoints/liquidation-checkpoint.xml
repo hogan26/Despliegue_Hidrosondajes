@@ -10,8 +10,15 @@
           <xpath expr="//header/button[@name='action_cancel']" position="after">
             <button name="action_liquidation" string="Liquidar" type="object" class="btn-primary" attrs="{'invisible': [('state','in','liquidar')]}"/>
           </xpath>  
-          <xpath expr="//header/field[@name='state']" position="attributes">
-            <attribute name="statusbar_visible">draft,sent,sale,liquidar</attribute>
+          <xpath expr="//header/field[@name='state']" position="replace">              
+              <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale" attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}"/>
+              <field name="state_settlement" widget="statusbar" statusbar_visible="cerrar,liquidar" attrs="{'invisible': [('state','in',['draft','sent','sale','done','cancel'])]}"/>
+          </xpath>
+          <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+              <attribute name="required">False</attribute>
+          </xpath>
+          <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+              <attribute name="required">False</attribute>
           </xpath>
       </field>          
     </record>

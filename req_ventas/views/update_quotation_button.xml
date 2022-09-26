@@ -8,7 +8,7 @@
       <field name="inherit_id" ref="req_ventas.sale_order_liquidation"/>
       <field name="arch" type="xml">
           <xpath expr="//header/button[@name='action_liquidation']" position="after">
-            <button name="action_update_quotation" string="Actualizar" type="object" class="btn-primary" attrs="{'invisible': [('state','in',['sale','done','cancel','liquidar'])]}"/>
+            <button name="action_update_quotation" string="Actualizar" type="object" class="btn-primary" attrs="{'invisible': [('state','in',['sale','done','cancel','cerrar','liquidar'])]}"/>
           </xpath>
       </field>          
     </record>
