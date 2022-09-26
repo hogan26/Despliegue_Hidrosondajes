@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="verification_settlements_button_view" model="ir.ui.view">
+      <field name="name">verification.settlements.button.view</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//button[@name='action_set_won_rainbowman']" position="before">
+              <button name="new_settlement_form" string="NUEVA LIQUIDACIÓN" class="btn-primary" type="object"/>
+              <button name="verification_service_closures" string="VERIFICAR CIERRES" class="btn-primary" type="object"/>
+          </xpath>
+          <xpath expr="//field[@name='stage_id']" position="after">
+              <field name="pending_settlements" invisible="1"/>
+          </xpath>
+          <xpath expr="//div[hasclass('oe_title')]" position="before">
+              <div class="alert alert-warning" role="alert" attrs="{'invisible': [('pending_settlements','=',False)]}">
+                Existen liquidaciones pendientes para este requerimiento.
+              </div>
+              <div class="alert alert-success" role="alert" attrs="{'invisible': [('pending_settlements','=',True)]}">
+                No existen liquidaciones pendientes para este requerimiento.
+              </div>
+          </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

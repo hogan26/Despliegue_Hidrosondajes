@@ -37,5 +37,6 @@
         'views/origin_sale_order_search_view.xml',
         'views/origin_sale_order_tree_view.xml',
         'views/redirect_coti_opportunity.xml',
+        'views/pending_settlements_select.xml',
     ],    
 }

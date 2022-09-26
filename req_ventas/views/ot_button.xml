@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//header/button[@name='action_cancel']" position="before">
-                    <button name="action_new_ot" string="Generar O.T." type="object" class="btn-primary" attrs="{'invisible':[('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>
+                    <button name="action_new_ot" string="Generar O.T." type="object" class="btn-primary" attrs="{'invisible':['|',('x_servicios_requeridos','not in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4']),('state','in',['cerrar','liquidar'])]}"/>
                 </xpath>
                 <xpath expr="//field[@name='x_servicios_requeridos']" position="after">
                     <field name="origin_sale_order" attrs="{'invisible':[('x_servicios_requeridos','in', ['s1','s2','s3','s2s3','s1s2','s1s2s3','s4'])]}"/>

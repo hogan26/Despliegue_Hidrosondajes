@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="pending_settlements_select" model="ir.ui.view">
+            <field name="name">pending_settlements_select</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='x_servicios_requeridos']" position="before">                    
+                    <field name="pending_settlements_select" attrs="{'invisible':[('state','not in',['cerrar'])]}"/>
+                    <button name="load_settlements_products" string="Cargar productos" type="object" class="btn-primary" attrs="{'invisible': [('state','not in','cerrar')]}"/>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
