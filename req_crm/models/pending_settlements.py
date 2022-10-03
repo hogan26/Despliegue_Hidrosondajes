@@ -20,12 +20,13 @@ class Lead(models.Model):
                 partner_shipping_id = sale_order.partner_shipping_id.id
                 _logger.info('partner_invoice_id = {},partner_shipping_id = {}'.format(partner_invoice_id,partner_shipping_id))
                 for picking_ids in sale_order.picking_ids:                    
-                    closure_picking = self.env['stock.picking'].search([('id','!=',picking_ids.id),('servicio_reservado','=',picking_ids.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
-                    if closure_picking:                        
-                        if closure_picking.settlement_code:                            
-                            continue
-                        else:                            
-                            settlements.append(closure_picking.servicio_reservado)
+                    closure_pickings = self.env['stock.picking'].search([('id','!=',picking_ids.id),('servicio_reservado','=',picking_ids.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
+                    if closure_pickings:                        
+                        for closure_picking in closure_pickings:
+                            if closure_picking.settlement_code:                            
+                                continue
+                            else:                            
+                                settlements.append(closure_picking.servicio_reservado)
                     else:                        
                         continue
                         
@@ -191,15 +192,16 @@ class Lead(models.Model):
             if sale_order.state == "sale":
                 for picking_ids in sale_order.picking_ids:
                     _logger.info('revisando picking = {}'.format(picking_ids.servicio_reservado))
-                    closure_picking = self.env['stock.picking'].search([('id','!=',picking_ids.id),('servicio_reservado','=',picking_ids.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
-                    if closure_picking:
-                        _logger.info('existe cierre aprobado para = {}'.format(picking_ids.servicio_reservado))
-                        if closure_picking.settlement_code:
-                            _logger.info('existe liquidacion para = {}'.format(picking_ids.servicio_reservado))
-                            continue
-                        else:                        
-                            _logger.info('liquidacion pendiente para = {}'.format(picking_ids.servicio_reservado))
-                            cierre = True
+                    closure_pickings = self.env['stock.picking'].search([('id','!=',picking_ids.id),('servicio_reservado','=',picking_ids.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
+                    if closure_pickings:
+                        for closure_picking in closure_pickings:
+                            _logger.info('existe cierre aprobado para = {}'.format(picking_ids.servicio_reservado))
+                            if closure_picking.settlement_code:
+                                _logger.info('existe liquidacion para = {}'.format(picking_ids.servicio_reservado))
+                                continue
+                            else:                        
+                                _logger.info('liquidacion pendiente para = {}'.format(picking_ids.servicio_reservado))
+                                cierre = True
                     else:                        
                         _logger.info('no existe cierre aprobado para = {}'.format(picking_ids.servicio_reservado))
                         continue
