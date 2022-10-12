@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="supplementary_closure_information" model="ir.ui.view">
+            <field name="name">supplementary_closure.information</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='extra']" position="before">
+                    <page string="Información complementaria">                        
+                        <group string="Datos Generales">
+                            <group>
+                                <field name="service_shutdown_creator"/>
+                                <field name="fecha_ing"/>
+                                <field name="fecha_ter"/>
+                                <field name="dias_trabajados"/>
+                            </group>
+                            <group>
+                                <field name="bonos_pagados"/>
+                                <field name="revision_supervisor"/>
+                                <field name="informe"/>
+                                <field name="revision_gerente_continuidad"/>
+                            </group>
+                            <group string="Trabajadores involucrados">
+                                <field name="employee_closure_line_ids" mode="tree" nolabel="1">
+                                    <form>
+                                        <div class="o_row" invisible="1">
+                                            <label for="employee_closure_id"/>
+                                            <field name="employee_closure_id"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="employee_id"/>
+                                            <field name="employee_id"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="employee_job"/>
+                                            <field name="employee_job"/>
+                                        </div>
+                                    </form>
+                                    <tree>
+                                        <field name="employee_id" force_save="1"/>
+                                        <field name="employee_job" force_save="1"/>
+                                    </tree>    
+                                </field>    
+                            </group>
+                        </group>
+                        <group string="Servicio 1" attrs="{'invisible': [('servicio_reservado','not in',['s1'])]}">
+                            <group>
+                                <field name="agua"/>
+                                <field name="prof_tot"/>
+                                <field name="m_pincha"/>
+                                <field name="vol_req"/>
+                                <field name="maquina"/>
+                                <field name="coordenadas_este"/>
+                                <field name="coordenadas_oeste"/>
+                                <field name="comentarios_s1"/>  
+                            </group>
+                            <group string="Estratigrafía y ubicación ranuraciones">
+                                <field name="stratigraphy_line_ids" mode="tree" nolabel="1">
+                                    <form>
+                                        <div class="o_row" invisible="1">
+                                            <label for="stratigraphy_id"/>
+                                            <field name="stratigraphy_id"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="floor"/>
+                                            <field name="floor"/>
+                                        </div>
+                                    </form>
+                                    <tree>
+                                        <field name="floor" force_save="1"/>                                        
+                                    </tree>    
+                                </field>                                
+                                <field name="detail_grooves_line_ids" mode="tree" nolabel="1">
+                                    <form>
+                                        <div class="o_row" invisible="1">
+                                            <label for="grooves_id"/>
+                                            <field name="grooves_id"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="detail_grooves"/>
+                                            <field name="detail_grooves"/>
+                                        </div>
+                                    </form>
+                                    <tree>
+                                        <field name="detail_grooves" force_save="1"/>                                        
+                                    </tree>    
+                                </field>
+                            </group>
+                            <group string="Encuesta supervisor">
+                                <field name="participa"/>
+                                <field name="problemas_hm"/>
+                                <field name="cambio_punto_perforacion"/>
+                                <field name="detalle_materiales_defectuosos"/>
+                                <field name="herramientas_mal_estado"/>
+                                <field name="corte_caneria"/>
+                                <field name="amonestacion_verbal"/>
+                                <field name="mejora_condiciones_seguridad"/>
+                                <field name="oportunidad_mejora"/>
+                                <field name="comentarios_cliente"/>
+                            </group>
+                            <group string="Registro fotografico">
+                                <field name="tapa_pozo" widget="image"/>
+                                <field name="foto_entorno" widget="image"/>
+                                <field name="foto_rotura" widget="image"/>
+                                <field name="foto_coordenadas" widget="image"/>
+                            </group>
+                        </group>
+                        <group string="Servicio 2" attrs="{'invisible': [('servicio_reservado','not in',['s2'])]}">
+                            <group string="Aforo">
+                                <field name="pumping_capacity_line_ids" mode="tree" nolabel="1">
+                                    <form>
+                                        <div class="o_row" invisible="1">
+                                            <label for="pumping_capacity_id"/>
+                                            <field name="pumping_capacity_id"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="level"/>
+                                            <field name="level"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="flow"/>
+                                            <field name="flow"/>
+                                        </div>
+                                    </form>
+                                    <tree>
+                                        <field name="level" force_save="1"/>                                        
+                                        <field name="flow" force_save="1"/>                                        
+                                    </tree>    
+                                </field>
+                            </group>
+                            <group>
+                                <field name="comentarios_s2"/>
+                            </group>
+                            <group string="Registro fotográfico">
+                                <field name="salida_pozo" widget="image"/>
+                                <field name="panoramico" widget="image"/>
+                                <field name="tramo_conexion_zanja" widget="image"/>
+                                <field name="tablero_panoramico" widget="image"/>
+                                <field name="interior_tablero" widget="image"/>
+                                <field name="coordenadas_gps" widget="image"/>
+                            </group>
+                        </group>
+                        <group string="Servicio 3" attrs="{'invisible': [('servicio_reservado','not in',['s3'])]}">
+                            <group>
+                                <field name="comentarios_s3"/>
+                            </group>
+                        </group>
+                        <group string="Prueba de bombeo" attrs="{'invisible': [('servicio_reservado','not in',['s4'])]}">
+                            <group>
+                                <field name="tipo_pb"/>
+                                <field name="diametro_pb"/>
+                                <field name="profundidad_pb"/>
+                                <field name="nivel_estatico"/>
+                                <field name="mas_caudal"/>
+                                <field name="comentarios_pb"/>
+                            </group>
+                            <group string="Caudales y niveles">
+                                <field name="dinamic_level_line_ids" mode="tree" nolabel="1">
+                                    <form>
+                                        <div class="o_row" invisible="1">
+                                            <label for="dinamic_level_id"/>
+                                            <field name="dinamic_level_id"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="flow_pb"/>
+                                            <field name="flow_pb"/>
+                                        </div>
+                                        <div class="o_row">
+                                            <label for="dinamic_level"/>
+                                            <field name="dinamic_level"/>
+                                        </div>
+                                    </form>
+                                    <tree>
+                                        <field name="flow_pb" force_save="1"/>                                        
+                                        <field name="dinamic_level" force_save="1"/>                                        
+                                    </tree>    
+                                </field>
+                            </group>
+                            <group>
+                                <field name="registro_fotografico"/>
+                            </group>
+                        </group>
+                        <group string="Servicio de limpieza" attrs="{'invisible': [('servicio_reservado','not in',['s4'])]}">
+                            <group>
+                                <field name="agua_limpieza"/>
+                                <field name="diametro_limpieza"/>
+                                <field name="espesor_limpieza"/>
+                                <field name="profundidad_limpieza"/>
+                                <field name="vol_estimado_limpieza"/>
+                                <field name="maquina_limpieza"/>
+                                <field name="comentarios_limpieza"/>
+                                <field name="coordenada_este_limpieza"/>
+                                <field name="coordenada_oeste_limpieza"/>
+                            </group>
+                            <group string="Registro fotográfico">
+                                <field name="foto_coordenadas_limpieza"/>
+                            </group>
+                        </group>
+                        <group string="Diagnóstico" attrs="{'invisible': [('servicio_reservado','not in',['s4'])]}">
+                            <field name="descripcion_diagnostico"/>
+                            <field name="diagnostico"/>
+                            <field name="comentarios_diag"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
