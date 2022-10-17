@@ -179,7 +179,7 @@
                                 </field>
                             </group>
                             <group>
-                                <field name="registro_fotografico"/>
+                                <field name="registro_fotografico" widget="image"/>
                             </group>
                         </group>
                         <group string="Servicio de limpieza" attrs="{'invisible': [('servicio_reservado','not in',['s4'])]}">
@@ -195,10 +195,11 @@
                                 <field name="coordenada_oeste_limpieza"/>
                             </group>
                             <group string="Registro fotográfico">
-                                <field name="foto_coordenadas_limpieza"/>
+                                <field name="foto_coordenadas_limpieza" widget="image"/>
                             </group>
                         </group>
                         <group string="Diagnóstico" attrs="{'invisible': [('servicio_reservado','not in',['s4'])]}">
+                            <field name="duracion_hrs"/>
                             <field name="descripcion_diagnostico"/>
                             <field name="diagnostico"/>
                             <field name="comentarios_diag"/>
