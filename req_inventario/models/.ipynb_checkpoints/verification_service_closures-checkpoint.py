@@ -106,6 +106,7 @@ class StockPicking(models.Model):
     #CAMPOS EXCLUSIVOS PARA CIERRE DE SERVICIO DIAGNOSTICO
     
     descripcion_diagnostico = fields.Text(string="Descripción trabajo realizado")
+    duracion_hrs = fields.Integer(string="Duración (hrs)")
     diagnostico = fields.Text(string="Diagnostico")
     comentarios_diag = fields.Text(string="Comentarios diag.")
     
