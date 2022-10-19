@@ -30,5 +30,6 @@
         'views/required_fields.xml',
         'views/create_date_kanban_view.xml',
         'views/verification_settlements_button_view.xml',
+        'views/hidden_action_set_won_view.xml',
     ],    
 }
