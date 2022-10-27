@@ -1141,24 +1141,22 @@ class SaleOrder(models.Model):
                         entra_categoria=1
                         if self.opportunity_id.x_tipo_caneria in ['pvc']:
                             
-                            llave_bola_object = self.env['product.product'].search([('name','=',llave_bola)])
+#                             llave_bola_object = self.env['product.product'].search([('name','=',llave_bola)])
 
                             data.update({
-                                'name': llave_bola_object.name,
-                                'price_unit': llave_bola_object.list_price,
+                                'name': line.name,
+                                'price_unit': line.price_unit,
                                 'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
-                                'product_id': llave_bola_object.id,
-                                'product_uom': llave_bola_object.uom_id.id,
-                                'customer_lead': self._get_customer_lead(llave_bola_object),
-                                'last_update_price_date': llave_bola_object.last_update_pricelist_date,
-                                'last_update_price_partner': llave_bola_object.last_update_pricelist_partner,                            
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id),                           
                             })                        
                             if self.pricelist_id:
                                 data.update(self.env['sale.order.line']._get_purchase_price(
-                                    llave_bola_object.pricelist_id, 
-                                    llave_bola_object.id, 
-                                    llave_bola_object.uom_id, 
+                                    line.product_id.pricelist_id, 
+                                    line.product_id.id, 
+                                    line.product_id.uom_id, 
                                     fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
@@ -1166,24 +1164,22 @@ class SaleOrder(models.Model):
                         
                         if self.opportunity_id.x_tipo_caneria in ['vwell'] and self.opportunity_id.x_pul_canerias_s2 in ['1','1,25','1,5','2']:
                             
-                            llave_bola_object = self.env['product.product'].search([('name','=',llave_bola)])
+#                             llave_bola_object = self.env['product.product'].search([('name','=',llave_bola)])
 
                             data.update({
-                                'name': llave_bola_object.name,
-                                'price_unit': llave_bola_object.list_price,
+                                'name': line.name,
+                                'price_unit': line.price_unit,
                                 'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
                                 'product_uom_qty': line.product_uom_qty,
-                                'product_id': llave_bola_object.id,
-                                'product_uom': llave_bola_object.uom_id.id,
-                                'customer_lead': self._get_customer_lead(llave_bola_object),
-                                'last_update_price_date': llave_bola_object.last_update_pricelist_date,
-                                'last_update_price_partner': llave_bola_object.last_update_pricelist_partner,                            
+                                'product_id': line.product_id.id,
+                                'product_uom': line.product_uom_id.id,
+                                'customer_lead': self._get_customer_lead(line.product_id),                           
                             })                        
                             if self.pricelist_id:
                                 data.update(self.env['sale.order.line']._get_purchase_price(
-                                    llave_bola_object.pricelist_id, 
-                                    llave_bola_object.id, 
-                                    llave_bola_object.uom_id, 
+                                    line.product_id.pricelist_id, 
+                                    line.product_id.id, 
+                                    line.product_id.uom_id, 
                                     fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        

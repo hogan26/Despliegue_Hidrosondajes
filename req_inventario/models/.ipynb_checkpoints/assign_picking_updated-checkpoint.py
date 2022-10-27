@@ -174,10 +174,8 @@ class Picking(models.Model):
 
     def action_load_stock_origin_location(self):
         stock_origin_location = self.env['stock.location'].search([('id','=',self.location_id.id)])
-        for cantidades in stock_origin_location.quant_ids:
-            #move_line_ids, move_line_ids_without_package, move_line_nosuggest_ids
-            #intentar con estos valores
-            self.write({
+        for cantidades in stock_origin_location.quant_ids:            
+            self.update({
                 'move_line_ids': [(0, 0, {
                     'product_id': cantidades.product_id.id,
                     'qty_done': cantidades.quantity,
