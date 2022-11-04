@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="hidden_standart_confirm_button" model="ir.ui.view">
+      <field name="name">hidden.standart.confirm.button</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//button[@name='action_confirm'][1]" position="replace">
+<!--               <button name="action_confirm" id="action_confirm" string="Confirm" class="btn-primary" type="object" invisible="1"/>  -->
+              <button name="action_confirm" id="action_confirm" string="Confirmar" class="btn-primary" type="object" attrs="{'invisible': ['|',('state', 'not in', ['sent']),('opportunity_id','!=',False)]}"/>
+          </xpath>
+          <xpath expr="//button[@name='action_confirm'][2]" position="replace">
+<!--               <button name="action_confirm" string="Confirm" type="object" invisible="1"/> -->
+              <button name="action_confirm" string="Confirmar" type="object" attrs="{'invisible': ['|',('state', 'not in', ['draft']),('opportunity_id','!=',False)]}"/>
+          </xpath>
+          <xpath expr="//button[@name='action_confirm'][2]" position="after">
+                <button name="action_confirm_wizard" string="Confirmar" type="object" attrs="{'invisible': ['|',('state', 'not in', ['draft','sent']),('opportunity_id','=',False)]}"/>
+          </xpath>          
+      </field>          
+    </record>
+  </data>
+</odoo>
