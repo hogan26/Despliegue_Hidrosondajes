@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="alert_action_confirm_button" model="ir.ui.view">
+      <field name="name">alert.action.confirm.button</field>
+      <field name="model">wizard.confirm</field>      
+      <field name="arch" type="xml">
+          <form>
+              <group string="Acuerdo comercial">
+                      <field name="abono_porcentaje" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="abono_monto" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="descuento_iva" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="descuento_neto_porcentaje" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="descuento_neto_monto" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="num_cuotas" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="payment_method" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+                      <field name="observaciones" attrs="{'readonly':[('set_new_payment_agreed','=',False)]}"/>
+              </group>
+              <group>
+                  <span>Desea confirmar esta cotización con este acuerdo comercial?</span>
+              </group>
+              <group>
+                  <span>En caso contrario, haga click en "Fijar nuevo acuerdo comercial" y edite el formulario.</span>                  
+              </group>
+              <group>
+                  <span>Esta acción creará, fijará y actualizará el requerimiento y la cotización con los datos ingresados</span>
+              </group>
+              <group>
+                  <field name="set_new_payment_agreed"/>
+              </group>
+              <footer>
+                  <button string="Si, Confirmar" name="sale_confirm_wizard" type="object" class="btn-primary"/>
+                  <button string="Cancelar" class="btn-secondary" special="cancel"/>
+              </footer>
+          </form>  
+      </field>          
+    </record>
+  </data>
+</odoo>
