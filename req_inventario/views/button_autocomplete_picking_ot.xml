@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="button_autocomplete_picking_ot" model="ir.ui.view">
+            <field name="name">button_autocomplete_picking_ot</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">                
+                <xpath expr="//field[@name='ot_origen']" position="after">
+                    <button name="autocomplete_from_ot_code" string="Autocompletar" type="object" help="Este botón autocompletará los campos 'Documento origen', 'Contacto', 'Servicio reservado' y 'Dirección destino' en base al código de Orden de trabajo ingresado" class="btn-primary"/>
+                </xpath>                 
+            </field>
+        </record>
+    </data>
+</odoo>

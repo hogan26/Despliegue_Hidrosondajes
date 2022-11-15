@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="ot_origen" optional="show"/>
+                    <field name="servicio_reservado" optional="show"/>
                 </xpath>                
             </field>
         </record>

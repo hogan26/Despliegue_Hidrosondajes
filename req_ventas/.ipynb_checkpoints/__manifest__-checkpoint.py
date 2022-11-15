@@ -24,8 +24,8 @@
     # always loaded
     'data': [
         #'security/ir.model.access.csv',
-        'views/utility_lines_view.xml',
         'views/last_update_price_partner.xml',
+        'views/utility_lines_view.xml',        
         #'views/sale_order_template_id_prueba.xml',
         'views/sheet_width_increase.xml',
         'views/total_tax_discount.xml',
@@ -40,5 +40,6 @@
         'views/pending_settlements_select.xml',
         'views/hidden_standart_confirm_button.xml',
         'wizard/alert_action_confirm_wizard.xml',
+        'views/new_transfer_from_ot.xml',
     ],    
 }

@@ -35,5 +35,7 @@
         'views/search_picking_ot_origen.xml',
         'views/inches_field_view.xml',
         'views/supplementary_closure_information.xml',
+        'views/button_autocomplete_picking_ot.xml',
+        'views/product_name_location_list.xml',
     ],    
 }

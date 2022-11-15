@@ -56,7 +56,7 @@ class SaleOrder(models.Model):
                 if sale_order.state=="sale":
                     for picking_id in sale_order.picking_ids:
                         if picking_id.state == 'done':
-                            closure_pickings = self.env['stock.picking'].search([('id','!=',picking_id.id),('servicio_reservado','=',picking_id.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
+                            closure_pickings = self.env['stock.picking'].search([('id','!=',picking_id.id),('servicio_reservado','=',picking_id.servicio_reservado),('origin','=',sale_order.name),('service_shutdown_creator','!=',False),('state','=','done')])
                             if closure_pickings:
                                 for closure_picking in closure_pickings:
                                     if not(closure_picking.settlement_code):
@@ -163,6 +163,7 @@ class SaleOrder(models.Model):
                                                     'product_id': settlement_line.product_id.id,
                                                     'name': settlement_line.name,
                                                     'product_uom_qty': settlement_line.product_uom_qty,
+                                                    'sale_qty': settlement_line.product_uom_qty,
                                                     'product_uom': settlement_line.product_uom.id,
                                                     'price_unit': settlement_line.price_unit,
                                                     'utilidad_porcentaje': settlement_line.utilidad_porcentaje,
@@ -175,6 +176,7 @@ class SaleOrder(models.Model):
                                                     'discount': settlement_line.discount,
                                                     'price_subtotal': settlement_line.price_subtotal,
                                                     'margen_total': settlement_line.margen_total,
+                                                    'settlement_line': True,
                                                     'customer_lead': settlement_line.customer_lead,
                                                 })]
                                             })
@@ -187,7 +189,7 @@ class SaleOrder(models.Model):
                             #LIQUIDACION CON LAS CANTIDADES CONSUMIDAS, DE MANERA QUE LA INFORMACION DE LA LIQUIDACION SEA FIDEDIGNA AL CIERRE
                             for picking_id in sale_order.picking_ids:
                                 if picking_id.state == 'done':
-                                    closure_pickings = self.env['stock.picking'].search([('id','!=',picking_id.id),('servicio_reservado','=',picking_id.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
+                                    closure_pickings = self.env['stock.picking'].search([('id','!=',picking_id.id),('servicio_reservado','=',picking_id.servicio_reservado),('origin','=',sale_order.name),('service_shutdown_creator','!=',False),('state','=','done')])
                                     if closure_pickings:                                    
                                         for closure_picking in closure_pickings:                                        
                                             if not(closure_picking.settlement_code) and closure_picking.servicio_reservado in settlement_services:
@@ -327,6 +329,8 @@ class SaleOrder(models.Model):
                                                                             'last_update_price_partner': picking_line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                                                             'last_update_type_selector': picking_line.product_id.product_tmpl_id.last_update_type_selector,
                                                                             'last_update_number_days': picking_line.product_id.product_tmpl_id.last_update_number_days,
+                                                                            'settlement_added_product': True,
+                                                                            'settlement_line': True,
                                                                             'discount': 0,
                                                                             'customer_lead': self._get_customer_lead(picking_line.product_id.product_tmpl_id),
                                                                         })]
@@ -342,6 +346,8 @@ class SaleOrder(models.Model):
     encabezado_liquidacion = fields.Html(string='Titulo principal')
     detalle_abonos_liquidacion = fields.Html(string='Detalle abonos')
     pending_settlements_select = fields.Selection([('s1','S1'),('s2','S2'),('s3','S3'),('s4','S4'),('s1s2','S1 + S2'),('s1s2s3','S1 + S2 + S3'),('s2s3','S2 + S3'),('no','No hay')],string="Liquidaciones pendientes") 
+    order_lines_special_view = fields.Boolean(string="Vista tree especial",default=False)
+    order_lines_special_view2 = fields.Boolean(string="Vista tree especial")
     partner_invoice_id = fields.Many2one(
         'res.partner', string='Invoice Address',
         readonly=True, required=True,
