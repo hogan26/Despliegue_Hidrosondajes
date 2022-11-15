@@ -28,22 +28,22 @@ class Lead(models.Model):
                             continue
                             
                             
-                    if len(closure_ids)>0:
-                        pickings = closure_ids
-                        _logger.info('pickings = {}'.format(pickings))
-                        if len(pickings) > 1:
-                            action['domain'] = [('id', 'in', pickings)]
-                        elif pickings:
-                            form_view = [(self.env.ref('stock.view_picking_form').id, 'form')]
-                            if 'views' in action:
-                                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
-                            else:
-                                action['views'] = form_view
-                            action['res_id'] = pickings[0]
-
-                        return action
+            if len(closure_ids)>0:
+                pickings = closure_ids
+                _logger.info('pickings = {}'.format(pickings))
+                if len(pickings) > 1:
+                    action['domain'] = [('id', 'in', pickings)]
+                elif pickings:
+                    form_view = [(self.env.ref('stock.view_picking_form').id, 'form')]
+                    if 'views' in action:
+                        action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
                     else:
-                        raise ValidationError("No se han encontrado cierres validados")                        
+                        action['views'] = form_view
+                    action['res_id'] = pickings[0]
+
+                return action
+            else:
+                raise ValidationError("No se han encontrado cierres validados")
         else:
             raise ValidationError("No existen documentos de ventas vinculados a este requerimiento")
 
