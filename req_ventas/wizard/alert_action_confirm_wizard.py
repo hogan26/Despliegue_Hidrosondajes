@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class ConfirmWizard(models.TransientModel):
     _name = 'wizard.confirm'
+    _description = 'ventana de alerta para acuerdos comerciales'
     
     abono_porcentaje = fields.Integer(string='Abono inicial (%)')
     abono_monto = fields.Integer(string='Abono ($)')
