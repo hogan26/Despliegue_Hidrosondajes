@@ -347,7 +347,7 @@ class SaleOrder(models.Model):
     detalle_abonos_liquidacion = fields.Html(string='Detalle abonos')
     pending_settlements_select = fields.Selection([('s1','S1'),('s2','S2'),('s3','S3'),('s4','S4'),('s1s2','S1 + S2'),('s1s2s3','S1 + S2 + S3'),('s2s3','S2 + S3'),('no','No hay')],string="Liquidaciones pendientes") 
     order_lines_special_view = fields.Boolean(string="Vista tree especial",default=False)
-    order_lines_special_view2 = fields.Boolean(string="Vista tree especial")
+    order_lines_special_view2 = fields.Boolean(string="Vista tree especial.")
     partner_invoice_id = fields.Many2one(
         'res.partner', string='Invoice Address',
         readonly=True, required=True,
