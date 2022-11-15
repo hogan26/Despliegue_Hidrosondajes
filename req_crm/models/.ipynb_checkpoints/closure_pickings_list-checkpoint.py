@@ -46,3 +46,4 @@ class Lead(models.Model):
                         raise ValidationError("No se han encontrado cierres validados")                        
         else:
             raise ValidationError("No existen documentos de ventas vinculados a este requerimiento")
+
