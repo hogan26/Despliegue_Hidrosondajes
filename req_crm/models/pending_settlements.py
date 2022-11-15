@@ -48,6 +48,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s1s2s3'
                     }                
                 }
@@ -67,6 +68,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s1s2'
                     }                
                 }
@@ -86,6 +88,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s1'
                     }                
                 }
@@ -105,6 +108,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s2'
                     }                
                 }
@@ -124,6 +128,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s3'
                     }                
                 }               
@@ -143,6 +148,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s2s3'
                     }                
                 }
@@ -162,6 +168,7 @@ class Lead(models.Model):
                         'default_num_telefono':self.partner_id.mobile,
                         'default_direccion':self.partner_id.city,
                         'default_calle':self.partner_id.street2,
+                        'default_order_lines_special_view':True,
                         'default_pending_settlements_select':'s4'
                     }                
                 }
@@ -181,6 +188,7 @@ class Lead(models.Model):
                     'default_num_telefono':self.partner_id.mobile,
                     'default_direccion':self.partner_id.city,
                     'default_calle':self.partner_id.street2,
+                    'default_order_lines_special_view':True,
                     'default_pending_settlements_select':'no'
                 }                
             }
@@ -192,7 +200,7 @@ class Lead(models.Model):
             if sale_order.state == "sale":
                 for picking_ids in sale_order.picking_ids:
                     _logger.info('revisando picking = {}'.format(picking_ids.servicio_reservado))
-                    closure_pickings = self.env['stock.picking'].search([('id','!=',picking_ids.id),('servicio_reservado','=',picking_ids.servicio_reservado),('origin','=',sale_order.name),('state','=','done')])
+                    closure_pickings = self.env['stock.picking'].search([('id','!=',picking_ids.id),('servicio_reservado','=',picking_ids.servicio_reservado),('origin','=',sale_order.name),('service_shutdown_creator','!=',False),('state','=','done')])
                     if closure_pickings:
                         for closure_picking in closure_pickings:
                             _logger.info('existe cierre aprobado para = {}'.format(picking_ids.servicio_reservado))

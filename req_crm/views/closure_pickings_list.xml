@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="closure_pickings_list" model="ir.ui.view">
+      <field name="name">closure.pickings.list</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//button[@name='action_schedule_meeting']" position="after">
+              <!-- solo falta hacer que este boton sean visible cuando el estado del requerimiento sea de cerrado hacia adelante-->
+                <button class="oe_stat_button" type="object" name="action_view_closure_pickings" icon="fa-flag-checkered">
+                    <span class="o_stat_text">Cierres validados</span>                    
+                </button>
+          </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

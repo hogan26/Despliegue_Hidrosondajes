@@ -15,8 +15,8 @@
                 </xpath>
                 <xpath expr="//field[@name='origin']" position="after">
                     <field name="ot_origen"/>
-                    <field name="service_shutdown_creator"/>
-                    <field name="settlement_code"/>
+                    <field name="service_shutdown_creator" attrs="{'readonly': [('picking_type_code', '!=', 'outgoing')]}"/>
+                    <field name="settlement_code" attrs="{'readonly': [('picking_type_code', '!=', 'outgoing')]}"/>
                 </xpath>
             </field>
         </record>

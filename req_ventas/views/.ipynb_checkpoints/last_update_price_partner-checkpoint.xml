@@ -43,7 +43,7 @@
                     <field name="x_tipo_servicio" invisible='1' force_save="1"/>
                     <field name="generador" invisible='1' force_save="1"/>
                     <field name="presscontrol" invisible='1' force_save="1"/>
-                    <field name="bomba_cloro" invisible='1' force_save="1"/>                    
+                    <field name="bomba_cloro" invisible='1' force_save="1"/>
                 </xpath>                                    
                 <xpath expr="//field[@name='partner_shipping_id']" position="after"> 
                     <div attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}">
@@ -299,21 +299,7 @@
                                 <field name="x_encabezado_coti_s4"/>
                             </div>                  
                         </group>
-                    </div>
-                    <!--
-                    <div attrs="{'invisible': [('x_servicios_requeridos','not in', ['s3'])]}">
-                        <group string="DESCRIPCIÓN DEL SERVICIO">                  
-                            <div>
-                                <field name="encabezado_s3_descripcion"/>
-                            </div>                  
-                        </group>
-                        <group string="ESTA OBRA INCLUYE">                  
-                            <div>
-                                <field name="encabezado_s3_obra"/>
-                            </div>                  
-                        </group>
-                    </div>
-                    -->
+                    </div>                    
                     <div attrs="{'invisible': [('state','not in',['cerrar','liquidar'])]}">
                         <group string="Encabezado liquidacion">
                             <div>
@@ -359,11 +345,16 @@
                             </div>
                         </group>
                     </div>
-                </xpath>          
+                </xpath>
+                
                 <!-- columnas de informacion para ultima compra del producto -->
-                <xpath expr="//tree" position="attributes">              
-                    <attribute name="decoration-danger">number_days_context==True</attribute>
-                    <attribute name="decoration-success">number_days_context==False</attribute>
+                <xpath expr="//tree" position="attributes">
+                    <!--las lineas serán rojas cuando la ultima actualización del precio del producto en el sistema esté obsoleta-->
+                    <attribute name="decoration-danger">(number_days_context==True and settlement_line==False) or (settlement_added_product==True and settlement_line==True)</attribute>                    
+                    <!--las lineas serán verdes cuando el precio del producto esté actualizado dentro del rango establecido-->
+                    <attribute name="decoration-success">number_days_context==False and settlement_line==False</attribute>
+                    <!--las lineas serán amarillas si la cantidad cerrada es diferente a la cantidad cotizada, no es un producto agregado de manera adicional en el cierre y corresponde a una linea de un documento de liquidación-->
+                    <attribute name="decoration-warning">product_uom_qty!=sale_qty and settlement_added_product==False and settlement_line==True</attribute>
                 </xpath>
                 <xpath expr="//notebook/page[1]/field/form/group[1]/group[1]/field[@name='tax_id']" position="after">
                     <field name="last_update_price_date"/>
@@ -371,12 +362,18 @@
                     <field name="last_update_type_selector"/>
                     <field name="last_update_number_days"/>
                 </xpath>
+                <xpath expr="//tree/field[@name='product_uom_qty']" position="after">
+                    <field name="sale_qty" optional="show"/>                    
+                </xpath>                
                 <xpath expr="//tree/field[@name='tax_id']" position="after">
                     <field name="last_update_price_date" optional="show"/>
                     <field name="last_update_price_partner" optional="show"/>
                     <field name="last_update_type_selector" optional="show"/>
-                    <field name="number_days_context" optional="show"/>  
+                    <field name="number_days_context" optional="show"/>
+                    <field name="settlement_added_product" optional="show"/>
+                    <field name="settlement_line" optional="show"/>
                 </xpath>
+                
                 <!-- datos bancarios y acuerdos de pago -->
                 <xpath expr="//field[@name='order_line']" position="after">
                     <div class="row" attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}">

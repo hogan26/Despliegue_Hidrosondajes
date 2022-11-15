@@ -6,7 +6,7 @@
       <field name="name">sale.order.form.utility</field>
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_order_form"/>
-      <field name="arch" type="xml">          
+      <field name="arch" type="xml">
           <xpath expr="//tree/field[@name='price_unit']" position="after">
             <field name="utilidad_porcentaje"/>
             <field name="precio_venta"/>

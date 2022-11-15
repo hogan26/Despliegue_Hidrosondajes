@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="new_transfer_from_ot" model="ir.ui.view">
+            <field name="name">new.transfer.from.ot</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">                
+                <xpath expr="//button[@name='action_cancel']" position="before">
+                    <button name="new_transfer_from_ot" string="Nueva transferencia" type="object" help="Este botón permite crear un nuevo documento de order de trabajo vinculado al proceso de tranferencia anterior para adicionar nuevos materiales una vez que la primera orden de trabajo ya fue confirmada" class="btn-primary" attrs="{'invisible':['|','|',('opportunity_id','!=',False),('state','not in',['sale']),('ot_origen','!=',False)]}"/>
+                </xpath>  
+                <xpath expr="//field[@name='origin_sale_order']" position="after">
+                    <field name="ot_origen" attrs="{'invisible':[('opportunity_id','!=',False)]}"/>
+                </xpath>  
+            </field>
+        </record>
+    </data>
+</odoo>

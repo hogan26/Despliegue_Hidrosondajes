@@ -106,14 +106,22 @@ class StockMove(models.Model):
                 else:
                     new_picking = True
                     picking = Picking.create(moves._get_new_picking_values())
-                    picking.write({'servicio_reservado': 'ot'})
+                    location_dest_id = self.env['stock.location'].search([('complete_name','=',moves.sale_line_id.order_id.x_equipo_asignado+'/Stock')])
+                    picking.write({
+                        'servicio_reservado': moves.sale_line_id.order_id.service,
+                        'origin':moves.sale_line_id.order_id.origin_sale_order,
+                        'ot_origen':moves.sale_line_id.order_id.name,
+                        'location_dest_id':location_dest_id.id
+                                  })
                     moves.write({'picking_id': picking.id})
                     moves._assign_picking_post_process(new=new_picking)
+                    
+#                     moves.sale_line_id.order_id.service
 
                     # funcion que consolida la reserva generada por la orden de trabajo y la reserva generada por la cotizacion vinculada
                     current_ot = moves.sale_line_id.order_id  # tomamos la ot en curso
                    
-                    if current_ot.origin_sale_order:
+                    if current_ot.origin_sale_order and not(current_ot.ot_origen):
                         # vamos a buscar la cotizacion desde la cual viene la ot
                         linked_sale_order = self.env['sale.order'].search([('name','=',current_ot.origin_sale_order)])  
                         for pickings in linked_sale_order.picking_ids:  # vamos a buscar los pickings de la cotizacion
@@ -154,6 +162,7 @@ class StockMove(models.Model):
                                     
                         # luego llamar a la funcion action_cancel pasando picking como id del record
                         picking.action_cancel()                                    
+                        
 
         OriginalStockMove._assign_picking = self._assign_picking
         return True
