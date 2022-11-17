@@ -9,7 +9,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="origin_sale_order" string="Coti. origen"/>
-                </xpath>                
+                </xpath> 
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="suma_margen" string="Utilidad"/>
+                </xpath>
             </field>
         </record>
     </data>
