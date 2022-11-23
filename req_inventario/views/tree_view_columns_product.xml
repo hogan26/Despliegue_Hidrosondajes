@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="tree_view_columns_product" model="ir.ui.view">
+            <field name="name">tree.view.columns.product</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_stock_product_template_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='virtual_available']" position="after">
+                    <field name="last_update_pricelist_date" optional="show"/>                    
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
