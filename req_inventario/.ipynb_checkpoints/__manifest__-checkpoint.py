@@ -37,5 +37,6 @@
         'views/supplementary_closure_information.xml',
         'views/button_autocomplete_picking_ot.xml',
         'views/product_name_location_list.xml',
+        'views/tree_view_columns_product.xml',
     ],    
 }
