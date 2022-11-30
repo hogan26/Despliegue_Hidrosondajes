@@ -23,5 +23,8 @@
         'views/fijar_proveedor_form_view.xml',
         'views/fijar_proveedor_tree_view.xml',
         'views/line_discount_view.xml',
+        'views/supplier_vat_form_view.xml',
+        'views/supplier_vat_tree_view.xml',
+        'wizard/date_order_action_confirm_wizard.xml',
     ],    
 }

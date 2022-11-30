@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record id="purchase_date_order_verification_confirm_button" model="ir.ui.view">
+      <field name="name">purchase.date.order.verification.confirm.button</field>
+      <field name="model">wizard.date.purchase</field>      
+      <field name="arch" type="xml">
+          <form>
+              <group>
+                  <span>Si este documento corresponde a un ingreso de factura de compras, recuerde que el campo 'Fecha de pedido' debe ser igual al campo 'Fecha docto.' de la factura. Una vez verificado, presione el botón 'Si, confirmar'</span>
+              </group>
+              <group>
+                  <span>En caso contrario (cotización para ventas), no es necesaria esta corrección y presione el botón 'Si, confirmar'</span>
+              </group>
+              <group>
+                  <field name="date_order"/>
+              </group>
+              <footer>
+                  <button string="Si, Confirmar" name="purchase_order_confirm_wizard" type="object" class="btn-primary"/>
+                  <button string="Cancelar" class="btn-secondary" special="cancel"/>
+              </footer>
+          </form>  
+      </field>          
+    </record>
+  </data>
+</odoo>
