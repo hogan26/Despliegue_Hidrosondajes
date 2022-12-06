@@ -70,14 +70,47 @@ class SaleOrder(models.Model):
             self.update({'bomba_cloro':False})
             
         if requerimiento.x_superficie:
-            aux_final = str(requerimiento.estanque_acumulacion_sup.name).find('LTS')
-            aux_inicial = aux_final - 5
-            self.update({'estanque_acumulacion':int(str(requerimiento.estanque_acumulacion_sup.name[aux_inicial:aux_final]))})
+            pre_string = ''
+            if 'ESTANQUE VERTICAR ESTANDAR' in requerimiento.estanque_acumulacion_sup.name:
+                pre_string = requerimiento.estanque_acumulacion_sup.name.replace('ESTANQUE VERTICAR ESTANDAR','')
+                if 'LTS' in pre_string:
+                    pre_string = pre_string.replace('LTS','')
+                if '.' in pre_string:
+                    pre_string = pre_string.replace('.','')
+                    
+            if 'ESTANQUE VERTICAR REFORZADO' in requerimiento.estanque_acumulacion_sup.name:
+                pre_string = requerimiento.estanque_acumulacion_sup.name.replace('ESTANQUE VERTICAR REFORZADO','')
+                if 'LTS' in pre_string:
+                    pre_string = pre_string.replace('LTS','')
+                if '.' in pre_string:
+                    pre_string = pre_string.replace('.','')
+                
+            if pre_string:
+                self.update({'estanque_acumulacion':int(str(pre_string))})
+            
+            
+            # aux_final = str(requerimiento.estanque_acumulacion_sup.name).find('LTS')
+            # aux_inicial = aux_final - 7
+            # pre_string = requerimiento.estanque_acumulacion_sup.name[aux_inicial:aux_final].replace('.','')
+            # self.update({'estanque_acumulacion':int(str(pre_string))})
         
         if requerimiento.x_enterrado_s3:
-            aux_final = str(requerimiento.estanque_acumulacion_ent.name).find('LTS')
-            aux_inicial = aux_final - 5
-            self.update({'estanque_acumulacion':int(str(requerimiento.estanque_acumulacion_ent.name[aux_inicial:aux_final]))})
+            pre_string = ''
+            if 'ESTANQUE HORIZONTAL REFORZADO' in requerimiento.estanque_acumulacion_sup.name:
+                pre_string = requerimiento.estanque_acumulacion_sup.name.replace('ESTANQUE HORIZONTAL REFORZADO','')
+                if 'LTS' in pre_string:
+                    pre_string = pre_string.replace('LTS','')
+                if '.' in pre_string:
+                    pre_string = pre_string.replace('.','')
+                    
+            if pre_string:
+                self.update({'estanque_acumulacion':int(str(pre_string))})
+            
+            
+            # aux_final = str(requerimiento.estanque_acumulacion_ent.name).find('LTS')
+            # aux_inicial = aux_final - 7
+            # pre_string = requerimiento.estanque_acumulacion_ent.name[aux_inicial:aux_final].replace('.','')
+            # self.update({'estanque_acumulacion':int(str(pre_string))})
             
         if requerimiento.losa_hormigon:
             losa_name = requerimiento.losa_hormigon.name
