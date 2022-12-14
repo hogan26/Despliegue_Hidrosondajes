@@ -116,7 +116,8 @@ class SaleOrder(models.Model):
                                 if order_line.product_id.id and not(order_line.display_type):
                                     line_detail.append({'display_type':'product','line_id':order_line.id})
                                 else:
-                                    line_detail.append({'display_type':'section_note','line_id':'no'})                            
+                                    if order_line.display_type!='line_note':
+                                        line_detail.append({'display_type':'section_note','line_id':'no'})                            
                             
                             #PASO 6: DETERMINAR DONDE EMPIEZA Y TERMINA CADA SECCION Y A QUE SERVICIO CORRESPONDE
                             section = 0
