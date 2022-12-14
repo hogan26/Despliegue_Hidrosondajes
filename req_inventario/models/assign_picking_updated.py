@@ -36,7 +36,9 @@ class StockMove(models.Model):
                             if lines.product_type!='service':
                                 order_lines.append({'display_type': lines.display_type, 'product_id': lines.product_id.id})
                         else:
-                            order_lines.append({'display_type': 'section_note', 'product_id': 0})
+                            if lines.display_type!='line_note':
+                                order_lines.append({'display_type': 'section_note', 'product_id': 0})
+
 
                     # identificamos que servicios fueron requeridos en el presupuesto
                     servicios_requeridos = sale_order.x_servicios_requeridos
