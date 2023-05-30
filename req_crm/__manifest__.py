@@ -29,10 +29,10 @@
         # 'security/ir.model.access.csv',        
         'views/automatic_quotations_inputs_view.xml',
         'views/servicios_requeridos_label.xml',
-        'views/required_fields.xml',
-        'views/create_date_kanban_view.xml',
+        # 'views/required_fields.xml',
+        # 'views/create_date_kanban_view.xml',
         'views/verification_settlements_button_view.xml',
         'views/hidden_action_set_won_view.xml',
-        'views/closure_pickings_list.xml',
+        # 'views/closure_pickings_list.xml',
     ],    
 }

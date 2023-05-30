@@ -28,7 +28,7 @@
         'views/utility_lines_view.xml',        
         #'views/sale_order_template_id_prueba.xml',
         'views/sheet_width_increase.xml',
-        'views/total_tax_discount.xml',
+        # 'views/total_tax_discount.xml',
         'views/liquidation.xml',
         'views/update_quotation_button.xml',
         'views/ot_button.xml',
