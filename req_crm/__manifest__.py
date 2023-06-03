@@ -26,7 +26,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',        
+        'security/ir.model.access.csv',        
         'views/automatic_quotations_inputs_view.xml',
         'views/servicios_requeridos_label.xml',
         'views/required_fields.xml',
