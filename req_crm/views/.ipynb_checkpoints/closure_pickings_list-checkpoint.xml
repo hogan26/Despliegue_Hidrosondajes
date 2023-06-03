@@ -7,7 +7,7 @@
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
       <field name="arch" type="xml">
-          <xpath expr="//button[hasclass('oe_stat_button')][3]" position="after">
+          <xpath expr="//button[hasclass('oe_stat_button')][2]" position="after">
               <!-- solo falta hacer que este boton sean visible cuando el estado del requerimiento sea de cerrado hacia adelante-->
               <button class="oe_stat_button" type="object" name="action_view_settlement" icon="fa-check-square-o">
                   <div class="o_field_widget o_stat_info">

@@ -230,16 +230,16 @@
                     <field name="payment_agreed_matriz_ids" mode="tree">
                         <form>
                             <div>
-                                <label>Para num. cuotas:</label>
+                                <span>Para num. cuotas:</span>
                             </div>
                             <div>
-                                <label>0 - A convenir</label>
+                                <span>0 - A convenir</span>
                             </div>
                             <div>
-                                <label>1 - Contra entrega</label>
+                                <span>1 - Contra entrega</span>
                             </div>
                             <div>
-                                <label>2+ - Cuotas en cheque</label>
+                                <span>2+ - Cuotas en cheque</span>
                             </div>                                                        
                             <div class="o_row" invisible="1">
                                 <label for="payment_agreed_id"/>
