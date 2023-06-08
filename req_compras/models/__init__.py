@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import actualizar_precio,fijar_proveedor,set_purchase_tax,supplier_vat
+from . import actualizar_precio,fijar_proveedor,set_purchase_tax,supplier_vat,bill_entry_validation

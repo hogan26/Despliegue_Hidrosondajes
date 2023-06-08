@@ -38,5 +38,6 @@
         'views/button_autocomplete_picking_ot.xml',
         'views/product_name_location_list.xml',
         'views/tree_view_columns_product.xml',
+        'views/picking_type_and_locations_form_view.xml',
     ],    
 }

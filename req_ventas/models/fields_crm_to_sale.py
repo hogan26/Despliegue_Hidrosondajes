@@ -437,24 +437,20 @@ class SaleOrder(models.Model):
             #_logger.info('line_id= {}'.format(line.id))
             data = self._compute_line_data_for_template_change(line)
             if line.product_id:
-                discount = 0
-                """
-                if self.pricelist_id:
-                    price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1, False)
-                    if self.pricelist_id.discount_policy == 'without_discount' and line.price_unit:
-                        discount = (line.price_unit - price) / line.price_unit * 100
-                        # negative discounts (= surcharge) are included in the display price
-                        if discount < 0:
-                            discount = 0
-                        else:
-                            price = line.price_unit
-                    elif line.price_unit:
-                        price = line.price_unit
 
-                else:
-                    price = line.price_unit
-                """    
-                price = line.product_id.product_tmpl_id.list_price        
+                
+                price = line.product_id.lst_price
+                discount = 0
+    
+                # if self.pricelist_id:
+                #     pricelist_price = self.pricelist_id.with_context(uom=line.product_uom_id.id).get_product_price(line.product_id, 1, False)
+    
+                #     if self.pricelist_id.discount_policy == 'without_discount' and price:
+                #         discount = max(0, (price - pricelist_price) * 100 / price)
+                #     else:
+                #         price = pricelist_price
+
+                
                 #validacion si la plantilla que se esta cargando corresponde a un presupuesto o una orden de trabajo
                 if self.opportunity_id:                    
                     entra_categoria=0
@@ -472,7 +468,7 @@ class SaleOrder(models.Model):
                                 data.update({
                                     'name': matriz_perforacion.tipo_servicio_perforacion.name,
                                     'price_unit': matriz_perforacion.valor_metro,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'discount': discount,
                                     'product_uom_qty': matriz_perforacion.cantidad_metros,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
@@ -481,15 +477,9 @@ class SaleOrder(models.Model):
                                     'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                     'utilidad_porcentaje': 0,                            
                                 })                        
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        self.pricelist_id, 
-                                        line.product_id, 
-                                        line.product_uom_id, 
-                                        fields.Date.context_today(self)))
 
-                                    order_lines.append((0, 0, data))                    
-                                    seleccionado=1                        
+                                order_lines.append((0, 0, data))                    
+                                seleccionado=1                        
 
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN PERFORACIÓN / HERRAMIENTAS PERFORACIÓN / CORONAS':
                         entra_categoria=1
@@ -500,7 +490,7 @@ class SaleOrder(models.Model):
                                 #_logger.info('corona plantilla= {}'.format(line.product_id.product_tmpl_id.id))
                                 data.update({
                                     'price_unit': matriz_corona.precio,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'discount': discount,
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
@@ -509,12 +499,6 @@ class SaleOrder(models.Model):
                                     'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                     'utilidad_porcentaje': 0,
                                 })                        
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        self.pricelist_id, 
-                                        line.product_id, 
-                                        line.product_uom_id, 
-                                        fields.Date.context_today(self)))
 
                                 order_lines.append((0, 0, data))  
                                 seleccionado=1
@@ -525,7 +509,7 @@ class SaleOrder(models.Model):
                             
                             data.update({
                                 'price_unit': self.opportunity_id.x_valorpb,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -536,13 +520,6 @@ class SaleOrder(models.Model):
                             })
 
                             if line.product_id.product_tmpl_id.id != 2211: #verifica que no sea el item 'sin prueba de bombeo' 
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        self.pricelist_id, 
-                                        line.product_id, 
-                                        line.product_uom_id, 
-                                        fields.Date.context_today(self)))
-
                                 order_lines.append((0, 0, data)) 
                                 seleccionado=1
 
@@ -551,7 +528,7 @@ class SaleOrder(models.Model):
                         if line.product_id.product_tmpl_id.id == 546: #logistica de equipos y suministros                        
                             data.update({
                                 'price_unit': self.opportunity_id.x_faena + self.opportunity_id.retiro_material,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -560,12 +537,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                 'utilidad_porcentaje': 0,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -573,7 +544,7 @@ class SaleOrder(models.Model):
                         if line.product_id.product_tmpl_id.id == 1521: #instalacion de bomba, cañerias y conexionado electrico                       
                             data.update({
                                 'price_unit': self.opportunity_id.x_valor_instalacion,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -582,12 +553,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                 'utilidad_porcentaje': 0,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -595,7 +560,7 @@ class SaleOrder(models.Model):
                         if line.product_id.product_tmpl_id.id == 2195 and self.opportunity_id.x_insc_dga!=0: #inscripcion DGA                        
                             data.update({
                                 'price_unit': self.opportunity_id.x_insc_dga,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -604,12 +569,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                                 'utilidad_porcentaje': 0,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -621,7 +580,7 @@ class SaleOrder(models.Model):
                                 data.update({
                                     'name':self.opportunity_id.kits.name,
                                     'price_unit': self.opportunity_id.kits.list_price,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'discount': discount,
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': self.opportunity_id.kits.id,
                                     'product_uom': self.opportunity_id.kits.uom_id.id,
@@ -629,12 +588,6 @@ class SaleOrder(models.Model):
                                     'last_update_price_date': self.opportunity_id.kits.last_update_pricelist_date,
                                     'last_update_price_partner': self.opportunity_id.kits.last_update_pricelist_partner,
                                 })                        
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        self.opportunity_id.kits.list_price, 
-                                        self.opportunity_id.kits.id, 
-                                        self.opportunity_id.kits.uom_id.id, 
-                                        fields.Date.context_today(self)))
 
                                 order_lines.append((0, 0, data))
                                 seleccionado=1  
@@ -648,7 +601,7 @@ class SaleOrder(models.Model):
                                 data.update({
                                     'name': bomba_pozo.name,
                                     'price_unit': bomba_pozo.list_price,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'discount': discount,
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': bomba_pozo.id,
                                     'product_uom': bomba_pozo.uom_id.id,
@@ -656,12 +609,6 @@ class SaleOrder(models.Model):
                                     'last_update_price_date': bomba_pozo.last_update_pricelist_date,
                                     'last_update_price_partner': bomba_pozo.last_update_pricelist_partner,
                                 })                        
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        bomba_pozo.list_price, 
-                                        bomba_pozo.id, 
-                                        bomba_pozo.uom_id.id, 
-                                        fields.Date.context_today(self)))
 
                                 order_lines.append((0, 0, data))
                                 seleccionado=1
@@ -674,7 +621,7 @@ class SaleOrder(models.Model):
                                 data.update({
                                     'name': motor.name,
                                     'price_unit': motor.list_price,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'discount': discount,
                                     'product_uom_qty': line.product_uom_qty,
                                     'product_id': motor.id,
                                     'product_uom': motor.uom_id.id,
@@ -682,12 +629,6 @@ class SaleOrder(models.Model):
                                     'last_update_price_date': motor.last_update_pricelist_date,
                                     'last_update_price_partner': motor.last_update_pricelist_partner,
                                 })                        
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        motor.list_price, 
-                                        motor.id, 
-                                        motor.uom_id.id, 
-                                        fields.Date.context_today(self)))
 
                                 order_lines.append((0, 0, data))
                                 seleccionado=1 
@@ -701,7 +642,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tuberia_pvc.name,
                                 'price_unit': tuberia_pvc.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': self.opportunity_id.x_impulsion,
                                 'product_id': tuberia_pvc.id,
                                 'product_uom': tuberia_pvc.uom_id.id,
@@ -709,12 +650,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': tuberia_pvc.last_update_pricelist_date,
                                 'last_update_price_partner': tuberia_pvc.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    tuberia_pvc.pricelist_id, 
-                                    tuberia_pvc.id, 
-                                    tuberia_pvc.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -733,7 +668,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tuberia_vwell.name,
                                 'price_unit': tuberia_vwell.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': calc_impulsion,
                                 'product_id': tuberia_vwell.id,
                                 'product_uom': tuberia_vwell.uom_id.id,
@@ -741,12 +676,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': tuberia_vwell.last_update_pricelist_date,
                                 'last_update_price_partner': tuberia_vwell.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    tuberia_vwell.pricelist_id, 
-                                    tuberia_vwell.id, 
-                                    tuberia_vwell.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -767,7 +696,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': terminal_hi_pvc.name,
                                 'price_unit': terminal_hi_pvc.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': cant_terminales,
                                 'product_id': terminal_hi_pvc.id,
                                 'product_uom': terminal_hi_pvc.uom_id.id,
@@ -775,12 +704,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': terminal_hi_pvc.last_update_pricelist_date,
                                 'last_update_price_partner': terminal_hi_pvc.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    terminal_hi_pvc.pricelist_id, 
-                                    terminal_hi_pvc.id, 
-                                    terminal_hi_pvc.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -801,7 +724,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': terminal_he_pvc.name, 
                                 'price_unit': terminal_he_pvc.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': cant_terminales,
                                 'product_id': terminal_he_pvc.id,
                                 'product_uom': terminal_he_pvc.uom_id.id,
@@ -809,12 +732,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': terminal_he_pvc.last_update_pricelist_date,
                                 'last_update_price_partner': terminal_he_pvc.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    terminal_he_pvc.pricelist_id, 
-                                    terminal_he_pvc.id, 
-                                    terminal_he_pvc.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -829,7 +746,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': adaptador_sup_vwell.name,
                                 'price_unit': adaptador_sup_vwell.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 1,
                                 'product_id': adaptador_sup_vwell.id,
                                 'product_uom': adaptador_sup_vwell.uom_id.id,
@@ -837,12 +754,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': adaptador_sup_vwell.last_update_pricelist_date,
                                 'last_update_price_partner': adaptador_sup_vwell.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    adaptador_sup_vwell.pricelist_id, 
-                                    adaptador_sup_vwell.id, 
-                                    adaptador_sup_vwell.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -857,7 +768,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': adaptador_inf_vwell.name,
                                 'price_unit': adaptador_inf_vwell.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 1,
                                 'product_id': adaptador_inf_vwell.id,
                                 'product_uom': adaptador_inf_vwell.uom_id.id,
@@ -865,12 +776,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': adaptador_inf_vwell.last_update_pricelist_date,
                                 'last_update_price_partner': adaptador_inf_vwell.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    adaptador_inf_vwell.pricelist_id, 
-                                    adaptador_inf_vwell.id, 
-                                    adaptador_inf_vwell.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -878,7 +783,7 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'OPERACIÓN BOMBEO / TUBOS Y CAÑERIAS / CONDUIT' and line.product_id.product_tmpl_id.id == 1573:                        
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': self.opportunity_id.x_impulsion,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
@@ -886,12 +791,6 @@ class SaleOrder(models.Model):
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))
                         seleccionado=1
@@ -899,7 +798,7 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.id == 535:    #CUERDA DE POLIPROPILENO                     
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': self.opportunity_id.x_impulsion,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
@@ -907,12 +806,6 @@ class SaleOrder(models.Model):
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))
                         seleccionado=1  
@@ -926,7 +819,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tablero_electrico.name,
                                 'price_unit': tablero_electrico.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': tablero_electrico.id,
                                 'product_uom': tablero_electrico.uom_id.id,
@@ -934,12 +827,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': tablero_electrico.last_update_pricelist_date,
                                 'last_update_price_partner': tablero_electrico.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    tablero_electrico.pricelist_id, 
-                                    tablero_electrico.id, 
-                                    tablero_electrico.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -959,7 +846,7 @@ class SaleOrder(models.Model):
                         if hp_motor <= 7.5 and line.product_id.product_tmpl_id.id == 495:                            
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': self.opportunity_id.x_impulsion+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -967,12 +854,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -980,7 +861,7 @@ class SaleOrder(models.Model):
                         if hp_motor > 7.5 and hp_motor < 30 and line.product_id.product_tmpl_id.id == 56:                            
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -988,12 +869,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1001,7 +876,7 @@ class SaleOrder(models.Model):
                         if hp_motor >= 30 and hp_motor < 50 and line.product_id.product_tmpl_id.id == 496:                            
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1009,12 +884,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1022,7 +891,7 @@ class SaleOrder(models.Model):
                         if hp_motor >= 50 and hp_motor < 75 and line.product_id.product_tmpl_id.id == 497:                            
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1030,12 +899,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1043,7 +906,7 @@ class SaleOrder(models.Model):
                         if hp_motor >= 75 and hp_motor < 100 and (line.product_id.product_tmpl_id.id == 498 or line.product_id.product_tmpl_id.id == 2352):                            
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1051,12 +914,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1064,7 +921,7 @@ class SaleOrder(models.Model):
                         if hp_motor >= 100 and line.product_id.product_tmpl_id.id == 2353:                            
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': (self.opportunity_id.x_altura*2)+5,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1072,12 +929,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                         
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1085,7 +936,7 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.categ_id.display_name == 'HERRAMIENTAS Y EQUIPOS / INSUMOS ELECTRICOS / CORDONES Y CABLES' and line.product_id.product_tmpl_id.id == 55:    #CABLE SONDA                     
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': (self.opportunity_id.x_impulsion+5)*2,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
@@ -1093,12 +944,6 @@ class SaleOrder(models.Model):
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))
                         seleccionado=1
@@ -1118,7 +963,7 @@ class SaleOrder(models.Model):
                             #_logger.info('entra al if------hp_motor = {}'.format(hp_motor))
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 2,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1126,12 +971,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1145,19 +984,13 @@ class SaleOrder(models.Model):
 
                             data.update({
                                 'name': line.name,
-                                'price_unit': line.price_unit,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'price_unit': price,
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(line.product_id),                           
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    line.product_id.pricelist_id, 
-                                    line.product_id.id, 
-                                    line.product_id.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1168,19 +1001,13 @@ class SaleOrder(models.Model):
 
                             data.update({
                                 'name': line.name,
-                                'price_unit': line.price_unit,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'price_unit': price,
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
                                 'customer_lead': self._get_customer_lead(line.product_id),                           
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    line.product_id.pricelist_id, 
-                                    line.product_id.id, 
-                                    line.product_id.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1194,7 +1021,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': union_americana_object.name,
                                 'price_unit': union_americana_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': union_americana_object.id,
                                 'product_uom': union_americana_object.uom_id.id,
@@ -1202,12 +1029,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': union_americana_object.last_update_pricelist_date,
                                 'last_update_price_partner': union_americana_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    union_americana_object.pricelist_id, 
-                                    union_americana_object.id, 
-                                    union_americana_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1219,7 +1040,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': union_americana_object.name,
                                 'price_unit': union_americana_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': union_americana_object.id,
                                 'product_uom': union_americana_object.uom_id.id,
@@ -1227,13 +1048,7 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': union_americana_object.last_update_pricelist_date,
                                 'last_update_price_partner': union_americana_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    union_americana_object.pricelist_id, 
-                                    union_americana_object.id, 
-                                    union_americana_object.uom_id, 
-                                    fields.Date.context_today(self)))
-
+                            
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
                     
@@ -1246,7 +1061,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': codo_hi_galva_object.name,
                                 'price_unit': codo_hi_galva_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': codo_hi_galva_object.id,
                                 'product_uom': codo_hi_galva_object.uom_id.id,
@@ -1254,12 +1069,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': codo_hi_galva_object.last_update_pricelist_date,
                                 'last_update_price_partner': codo_hi_galva_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    codo_hi_galva_object.pricelist_id, 
-                                    codo_hi_galva_object.id, 
-                                    codo_hi_galva_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1271,7 +1080,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': codo_hi_galva_object.name,
                                 'price_unit': codo_hi_galva_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': codo_hi_galva_object.id,
                                 'product_uom': codo_hi_galva_object.uom_id.id,
@@ -1279,13 +1088,7 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': codo_hi_galva_object.last_update_pricelist_date,
                                 'last_update_price_partner': codo_hi_galva_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    codo_hi_galva_object.pricelist_id, 
-                                    codo_hi_galva_object.id, 
-                                    codo_hi_galva_object.uom_id, 
-                                    fields.Date.context_today(self)))
-
+                            
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
                             
@@ -1302,7 +1105,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tuberia_pvc_vwell_object.name,
                                 'price_unit': tuberia_pvc_vwell_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': cantidad,
                                 'product_id': tuberia_pvc_vwell_object.id,
                                 'product_uom': tuberia_pvc_vwell_object.uom_id.id,
@@ -1310,12 +1113,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': tuberia_pvc_vwell_object.last_update_pricelist_date,
                                 'last_update_price_partner': tuberia_pvc_vwell_object.last_update_pricelist_partner,                       
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    tuberia_pvc_vwell_object.pricelist_id, 
-                                    tuberia_pvc_vwell_object.id, 
-                                    tuberia_pvc_vwell_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1335,7 +1132,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': terminal_he_pvc_vwell_object.name,
                                 'price_unit': terminal_he_pvc_vwell_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': cantidad,
                                 'product_id': terminal_he_pvc_vwell_object.id,
                                 'product_uom': terminal_he_pvc_vwell_object.uom_id.id,
@@ -1343,12 +1140,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': terminal_he_pvc_vwell_object.last_update_pricelist_date,
                                 'last_update_price_partner': terminal_he_pvc_vwell_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    terminal_he_pvc_vwell_object.pricelist_id, 
-                                    terminal_he_pvc_vwell_object.id, 
-                                    terminal_he_pvc_vwell_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1366,7 +1157,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': flange_hi_acero_object.name,
                                 'price_unit': flange_hi_acero_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': flange_hi_acero_object.id,
                                 'product_uom': flange_hi_acero_object.uom_id.id,
@@ -1374,12 +1165,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': flange_hi_acero_object.last_update_pricelist_date,
                                 'last_update_price_partner': flange_hi_acero_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    flange_hi_acero_object.pricelist_id, 
-                                    flange_hi_acero_object.id, 
-                                    flange_hi_acero_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1 
@@ -1392,7 +1177,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': curva_brida_brida_acero_object.name,
                                 'price_unit': curva_brida_brida_acero_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': curva_brida_brida_acero_object.id,
                                 'product_uom': curva_brida_brida_acero_object.uom_id.id,
@@ -1400,12 +1185,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': curva_brida_brida_acero_object.last_update_pricelist_date,
                                 'last_update_price_partner': curva_brida_brida_acero_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    curva_brida_brida_acero_object.pricelist_id, 
-                                    curva_brida_brida_acero_object.id, 
-                                    curva_brida_brida_acero_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1418,7 +1197,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': valvula_elastoamerica_object.name,
                                 'price_unit': valvula_elastoamerica_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': valvula_elastoamerica_object.id,
                                 'product_uom': valvula_elastoamerica_object.uom_id.id,
@@ -1426,12 +1205,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': valvula_elastoamerica_object.last_update_pricelist_date,
                                 'last_update_price_partner': valvula_elastoamerica_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    valvula_elastoamerica_object.pricelist_id, 
-                                    valvula_elastoamerica_object.id, 
-                                    valvula_elastoamerica_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1 
@@ -1444,7 +1217,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': goma_brida_object.name,
                                 'price_unit': goma_brida_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 2,
                                 'product_id': goma_brida_object.id,
                                 'product_uom': goma_brida_object.uom_id.id,
@@ -1452,12 +1225,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': goma_brida_object.last_update_pricelist_date,
                                 'last_update_price_partner': goma_brida_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    goma_brida_object.pricelist_id, 
-                                    goma_brida_object.id, 
-                                    goma_brida_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1470,7 +1237,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': copla_hi_galva_object.name,
                                 'price_unit': copla_hi_galva_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': copla_hi_galva_object.id,
                                 'product_uom': copla_hi_galva_object.uom_id.id,
@@ -1478,12 +1245,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': copla_hi_galva_object.last_update_pricelist_date,
                                 'last_update_price_partner': copla_hi_galva_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    copla_hi_galva_object.pricelist_id, 
-                                    copla_hi_galva_object.id, 
-                                    copla_hi_galva_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1501,7 +1262,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': tapa_pozo_object.name,
                                 'price_unit': tapa_pozo_object.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 1,
                                 'product_id': tapa_pozo_object.id,
                                 'product_uom': tapa_pozo_object.uom_id.id,
@@ -1509,12 +1270,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': tapa_pozo_object.last_update_pricelist_date,
                                 'last_update_price_partner': tapa_pozo_object.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    tapa_pozo_object.pricelist_id, 
-                                    tapa_pozo_object.id, 
-                                    tapa_pozo_object.uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))                        
                             seleccionado=1
@@ -1524,7 +1279,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1532,12 +1287,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1547,7 +1296,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 32,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1555,12 +1304,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1570,7 +1313,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1578,12 +1321,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1593,7 +1330,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_tipo_caneria in ['vwell']:
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 16,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1601,13 +1338,7 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id,
-                                    line.product_id,
-                                    line.product_uom_id,
-                                    fields.Date.context_today(self)))
-
+                            
                             order_lines.append((0, 0, data))
                             seleccionado=1                    
                         
@@ -1618,26 +1349,19 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.estanque_acumulacion_sup.name,
                                 'price_unit': self.opportunity_id.estanque_acumulacion_sup.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': 1,
                                 'product_id': self.opportunity_id.estanque_acumulacion_sup.id,
                                 'product_uom': self.opportunity_id.estanque_acumulacion_sup.uom_id.id,
                                 'customer_lead': self._get_customer_lead(self.opportunity_id.estanque_acumulacion_sup),
                                 'last_update_price_date': self.opportunity_id.estanque_acumulacion_sup.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.estanque_acumulacion_sup.last_update_pricelist_partner,
-                            })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.estanque_acumulacion_sup.list_price, 
-                                    self.opportunity_id.estanque_acumulacion_sup, 
-                                    self.opportunity_id.estanque_acumulacion_sup.uom_id.id, 
-                                    fields.Date.context_today(self)))
-                                
+                            })                                
                         elif self.opportunity_id.x_enterrado_s3:                                
                             data.update({
                                 'name': self.opportunity_id.estanque_acumulacion_ent.name,
                                 'price_unit': self.opportunity_id.estanque_acumulacion_ent.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.estanque_acumulacion_ent.id,
                                 'product_uom': self.opportunity_id.estanque_acumulacion_ent.uom_id.id,
@@ -1645,13 +1369,7 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.estanque_acumulacion_ent.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.estanque_acumulacion_ent.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.estanque_acumulacion_ent.list_price, 
-                                    self.opportunity_id.estanque_acumulacion_ent.id, 
-                                    self.opportunity_id.estanque_acumulacion_ent.uom_id.id, 
-                                    fields.Date.context_today(self)))
-
+                            
                         order_lines.append((0, 0, data))
                         seleccionado=1
                     
@@ -1659,7 +1377,7 @@ class SaleOrder(models.Model):
                         data.update({
                             'name': self.opportunity_id.bomba_centrifuga.name,
                             'price_unit': self.opportunity_id.bomba_centrifuga.list_price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': self.opportunity_id.bomba_centrifuga.id,
                             'product_uom': self.opportunity_id.bomba_centrifuga.uom_id.id,
@@ -1667,13 +1385,7 @@ class SaleOrder(models.Model):
                             'last_update_price_date': self.opportunity_id.bomba_centrifuga.last_update_pricelist_date,
                             'last_update_price_partner': self.opportunity_id.bomba_centrifuga.last_update_pricelist_partner,
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.opportunity_id.bomba_centrifuga.list_price, 
-                                self.opportunity_id.bomba_centrifuga.id, 
-                                self.opportunity_id.bomba_centrifuga.uom_id.id, 
-                                fields.Date.context_today(self)))
-
+                        
                         order_lines.append((0, 0, data))
                         seleccionado=1
                         
@@ -1683,7 +1395,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.losa_hormigon.name,
                                 'price_unit': self.opportunity_id.losa_hormigon.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.losa_hormigon.id,
                                 'product_uom': self.opportunity_id.losa_hormigon.uom_id.id,
@@ -1691,12 +1403,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.losa_hormigon.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.losa_hormigon.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.losa_hormigon.list_price, 
-                                    self.opportunity_id.losa_hormigon.id, 
-                                    self.opportunity_id.losa_hormigon.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1705,7 +1411,7 @@ class SaleOrder(models.Model):
                         data.update({
                             'name': self.opportunity_id.guardamotor.name,
                             'price_unit': self.opportunity_id.guardamotor.list_price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': self.opportunity_id.guardamotor.id,
                             'product_uom': self.opportunity_id.guardamotor.uom_id.id,
@@ -1713,12 +1419,6 @@ class SaleOrder(models.Model):
                             'last_update_price_date': self.opportunity_id.guardamotor.last_update_pricelist_date,
                             'last_update_price_partner': self.opportunity_id.guardamotor.last_update_pricelist_partner,
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.opportunity_id.guardamotor.list_price, 
-                                self.opportunity_id.guardamotor.id, 
-                                self.opportunity_id.guardamotor.uom_id.id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))
                         seleccionado=1
@@ -1729,7 +1429,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.estanque_hidroneumatico.name,
                                 'price_unit': self.opportunity_id.estanque_hidroneumatico.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.estanque_hidroneumatico.id,
                                 'product_uom': self.opportunity_id.estanque_hidroneumatico.uom_id.id,
@@ -1737,12 +1437,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.estanque_hidroneumatico.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.estanque_hidroneumatico.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.estanque_hidroneumatico.list_price, 
-                                    self.opportunity_id.estanque_hidroneumatico.id, 
-                                    self.opportunity_id.estanque_hidroneumatico.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1753,7 +1447,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.manometro.name,
                                 'price_unit': self.opportunity_id.manometro.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.manometro.id,
                                 'product_uom': self.opportunity_id.manometro.uom_id.id,
@@ -1761,12 +1455,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.manometro.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.manometro.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.manometro.list_price, 
-                                    self.opportunity_id.manometro.id, 
-                                    self.opportunity_id.manometro.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1777,7 +1465,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.presscontrol.name,
                                 'price_unit': self.opportunity_id.presscontrol.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.presscontrol.id,
                                 'product_uom': self.opportunity_id.presscontrol.uom_id.id,
@@ -1785,12 +1473,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.presscontrol.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.presscontrol.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.presscontrol.list_price, 
-                                    self.opportunity_id.presscontrol.id, 
-                                    self.opportunity_id.presscontrol.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1801,7 +1483,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.presostato.name,
                                 'price_unit': self.opportunity_id.presostato.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.presostato.id,
                                 'product_uom': self.opportunity_id.presostato.uom_id.id,
@@ -1809,12 +1491,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.presostato.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.presostato.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.presostato.list_price, 
-                                    self.opportunity_id.presostato.id, 
-                                    self.opportunity_id.presostato.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1822,7 +1498,7 @@ class SaleOrder(models.Model):
                     if line.product_id.name == 'EXCAVACIÓN' and self.opportunity_id.x_enterrado_s3 == True:                            
                         data.update({
                             'price_unit': self.opportunity_id.excavacion,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
@@ -1830,12 +1506,6 @@ class SaleOrder(models.Model):
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))
                         seleccionado=1
@@ -1845,7 +1515,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_hidropack:                                
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1853,12 +1523,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1868,7 +1532,7 @@ class SaleOrder(models.Model):
                         if self.opportunity_id.x_hidropack:                                
                             data.update({
                                 'price_unit': price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': line.product_id.id,
                                 'product_uom': line.product_uom_id.id,
@@ -1876,12 +1540,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                                 'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.pricelist_id, 
-                                    line.product_id, 
-                                    line.product_uom_id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1889,7 +1547,7 @@ class SaleOrder(models.Model):
                     if line.product_id.product_tmpl_id.id == 1530 and self.opportunity_id.x_servicios_requeridos != 's4':
                         data.update({
                             'price_unit': self.opportunity_id.x_valor_instalacion_s3,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
@@ -1897,12 +1555,6 @@ class SaleOrder(models.Model):
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))
                         seleccionado=1
@@ -1913,7 +1565,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.bomba_cloro.name,
                                 'price_unit': self.opportunity_id.bomba_cloro.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.bomba_cloro.id,
                                 'product_uom': self.opportunity_id.bomba_cloro.uom_id.id,
@@ -1921,12 +1573,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.bomba_cloro.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.bomba_cloro.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.bomba_cloro.list_price, 
-                                    self.opportunity_id.bomba_cloro.id, 
-                                    self.opportunity_id.bomba_cloro.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1
@@ -1937,7 +1583,7 @@ class SaleOrder(models.Model):
                             data.update({
                                 'name': self.opportunity_id.estanque_cloro.name,
                                 'price_unit': self.opportunity_id.estanque_cloro.list_price,
-                                'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                'discount': discount,
                                 'product_uom_qty': line.product_uom_qty,
                                 'product_id': self.opportunity_id.estanque_cloro.id,
                                 'product_uom': self.opportunity_id.estanque_cloro.uom_id.id,
@@ -1945,12 +1591,6 @@ class SaleOrder(models.Model):
                                 'last_update_price_date': self.opportunity_id.estanque_cloro.last_update_pricelist_date,
                                 'last_update_price_partner': self.opportunity_id.estanque_cloro.last_update_pricelist_partner,
                             })                        
-                            if self.pricelist_id:
-                                data.update(self.env['sale.order.line']._get_purchase_price(
-                                    self.opportunity_id.estanque_cloro.list_price, 
-                                    self.opportunity_id.estanque_cloro.id, 
-                                    self.opportunity_id.estanque_cloro.uom_id.id, 
-                                    fields.Date.context_today(self)))
 
                             order_lines.append((0, 0, data))
                             seleccionado=1                        
@@ -1964,27 +1604,21 @@ class SaleOrder(models.Model):
                                 #_logger.info('plantilla= {}'.format(line.product_id.product_tmpl_id.id))
                                 data.update({
                                     'price_unit': matriz_servicio4.valor_servicio,
-                                    'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                                    'discount': discount,
                                     'product_uom_qty': 1,
                                     'product_id': line.product_id.id,
                                     'product_uom': line.product_uom_id.id,
                                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),                                        
                                     'utilidad_porcentaje': 0,                            
                                 })                        
-                                if self.pricelist_id:
-                                    data.update(self.env['sale.order.line']._get_purchase_price(
-                                        self.pricelist_id, 
-                                        line.product_id, 
-                                        line.product_uom_id, 
-                                        fields.Date.context_today(self)))
 
-                                    order_lines.append((0, 0, data))                    
-                                    seleccionado=1 
+                                order_lines.append((0, 0, data))                    
+                                seleccionado=1 
 
                     if entra_categoria==0 and seleccionado == 0:                        
                         data.update({
                             'price_unit': price,
-                            'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                            'discount': discount,
                             'product_uom_qty': line.product_uom_qty,
                             'product_id': line.product_id.id,
                             'product_uom': line.product_uom_id.id,
@@ -1992,19 +1626,13 @@ class SaleOrder(models.Model):
                             'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                             'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,                            
                         })                        
-                        if self.pricelist_id:
-                            data.update(self.env['sale.order.line']._get_purchase_price(
-                                self.pricelist_id, 
-                                line.product_id, 
-                                line.product_uom_id, 
-                                fields.Date.context_today(self)))
 
                         order_lines.append((0, 0, data))                    
                 else:
                     _logger.info('es una orden de trabajo')
                     data.update({
                         'price_unit': price,
-                        'discount': 100 - ((100 - discount) * (100 - line.discount) / 100),
+                        'discount': discount,
                         'product_uom_qty': line.product_uom_qty,
                         'product_id': line.product_id.id,
                         'product_uom': line.product_uom_id.id,
@@ -2012,16 +1640,11 @@ class SaleOrder(models.Model):
                         'last_update_price_date': line.product_id.product_tmpl_id.last_update_pricelist_date,
                         'last_update_price_partner': line.product_id.product_tmpl_id.last_update_pricelist_partner,
                     })
-                    if self.pricelist_id:
-                        data.update(self.env['sale.order.line']._get_purchase_price(
-                            self.pricelist_id, 
-                            line.product_id, 
-                            line.product_uom_id, 
-                            fields.Date.context_today(self)))
                         
                     order_lines.append((0, 0, data))
             else:
                 order_lines.append((0, 0, data))
+                
         self.order_line = order_lines
         self.order_line._compute_tax_id()
 

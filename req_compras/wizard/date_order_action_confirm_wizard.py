@@ -18,6 +18,5 @@ class DateOrderWizard(models.TransientModel):
         if self.date_order:            
             purchase_order.write({'date_order':self.date_order})            
             purchase_order.button_confirm()
-        
-        
-
+        else:
+            raise ValidationError('Debe ingresar una fecha')

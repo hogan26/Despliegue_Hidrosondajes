@@ -8,10 +8,10 @@
       <field name="arch" type="xml">
           <form>
               <group>
-                  <span>Si este documento corresponde a un ingreso de factura de compras, recuerde que el campo 'Fecha de pedido' debe ser igual al campo 'Fecha docto.' de la factura. Una vez verificado, presione el botón 'Si, confirmar'</span>
+                  <span>Recuerde que el campo 'Fecha de pedido' debe ser igual al campo 'Fecha docto.' de la factura. Una vez verificado y corregido según el caso, presione el botón 'Si, confirmar'</span>
               </group>
               <group>
-                  <span>En caso contrario (cotización para ventas), no es necesaria esta corrección y presione el botón 'Si, confirmar'</span>
+                  <span>En caso contrario (cotización para ventas), actualice el campo 'Tipo de entrada' y confirme nuevamente</span>
               </group>
               <group>
                   <field name="date_order"/>

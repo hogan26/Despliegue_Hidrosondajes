@@ -2,8 +2,8 @@
 
 <odoo>
   <data>
-    <record id="closure_pickings_list" model="ir.ui.view">
-      <field name="name">closure.pickings.list</field>
+    <record id="closure_pickings_list_view" model="ir.ui.view">
+      <field name="name">closure.pickings.list.view</field>
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
       <field name="arch" type="xml">

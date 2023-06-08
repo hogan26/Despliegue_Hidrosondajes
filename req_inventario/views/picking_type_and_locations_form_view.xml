@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="picking_type_and_locations_form_view" model="ir.ui.view">
+            <field name="name">picking.type.and.locations.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">                
+                <xpath expr="//field[@name='picking_type_id']" position="replace">
+                    <field name="picking_type_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='location_id']" position="attributes">
+                    <attribute name="attrs">{'readonly':False}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                    <attribute name="attrs">{'readonly':False}</attribute>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>

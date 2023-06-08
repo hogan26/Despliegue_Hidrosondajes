@@ -25,7 +25,8 @@
         'views/line_discount_view.xml',
         'views/supplier_vat_form_view.xml',
         'views/supplier_vat_tree_view.xml',
-        # 'wizard/date_order_action_confirm_wizard.xml',
+        'wizard/date_order_action_confirm_wizard.xml',
         'views/new_searchers.xml',
+        'views/bill_entry_validation_form_view.xml',
     ],    
 }
