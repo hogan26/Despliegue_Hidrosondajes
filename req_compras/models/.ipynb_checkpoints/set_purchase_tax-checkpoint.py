@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
     
-    
+    # esto deberia funcionar con un default
     @api.onchange('product_id')
     def onchange_set_tax(self):
         purchase_tax = self.env['account.tax'].search([('name','=','IVA 19% Compra')])

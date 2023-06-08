@@ -10,6 +10,12 @@
           <xpath expr="//group/field[@name='name']" position="attributes">
             <attribute name="string">Servicios Requeridos</attribute>
           </xpath>
+          <xpath expr="//label[@for='expected_revenue']" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </xpath>
+          <xpath expr="//group/div[1]" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </xpath>          
       </field>          
     </record>
   </data>

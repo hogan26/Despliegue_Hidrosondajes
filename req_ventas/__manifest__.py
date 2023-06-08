@@ -23,11 +23,11 @@
 
     # always loaded
     'data': [
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/last_update_price_partner.xml',
         'views/utility_lines_view.xml',        
-        #'views/sale_order_template_id_prueba.xml',
-        'views/sheet_width_increase.xml',
+        'views/sale_order_template_id_prueba.xml',
+        # 'views/sheet_width_increase.xml', no funciona
         'views/total_tax_discount.xml',
         'views/liquidation.xml',
         'views/update_quotation_button.xml',

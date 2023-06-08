@@ -3,7 +3,7 @@
     'name': "req_compras",
 
     'summary': """
-        purshase requerimient of hidrosondajes""",
+        purshase requirement of hidrosondajes""",
     
     'author': "Hidrosondajes",
     'website': "http://www.yourcompany.com",
@@ -19,7 +19,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/fijar_proveedor_form_view.xml',
         'views/fijar_proveedor_tree_view.xml',
         'views/line_discount_view.xml',
@@ -27,5 +27,6 @@
         'views/supplier_vat_tree_view.xml',
         'wizard/date_order_action_confirm_wizard.xml',
         'views/new_searchers.xml',
+        'views/bill_entry_validation_form_view.xml',
     ],    
 }

@@ -6,7 +6,7 @@
       <field name="name">hidden.action.set.won.view</field>
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="crm.crm_lead_view_form"/>
-      <field name="arch" type="xml">            
+      <field name="arch" type="xml">
           <xpath expr="//button[@name='action_set_won_rainbowman']" position="replace">
                 <button name="action_set_won_rainbowman" string="Mark Won" type="object" class="oe_highlight" invisible="1"/>
           </xpath>

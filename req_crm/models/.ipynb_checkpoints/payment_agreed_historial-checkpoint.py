@@ -11,19 +11,21 @@ class Lead(models.Model):
         comodel_name="payment.agreed",
         inverse_name="payment_agreed_id", string=' ')
     
+    @api.onchange('payment_agreed_matriz_ids')
+    def onchange_matriz_s4(self):
+        #_logger.info('cambio en matriz de servicio 4= {}'.format(True))        
+        for line_s4 in self.lead_matriz_s4_lines_ids:
+            if 'PRUEBA DE BOMBEO' in line_s4.listado_servicios.name:
+                self.update({'caudal_esperado_check':True})
+            """    
+            else:
+                self.update({'caudal_esperado_check':False})
+            """
+    
 class PaymentAgreed(models.Model):
     _name = "payment.agreed" 
     _description = "registro de acuerdos de pago"
     
-    @api.model
-    def default_get(self,fields_list):
-        res = super(PaymentAgreed,self).default_get(fields_list)
-        _logger.info('payment_agreed_matriz_ids= {}'.format(self.payment_agreed_id.payment_agreed_matriz_ids))
-        '''
-        if self.partner_id.vat:
-            self.update({'rut_facturacion':self.partner_id.vat})
-        '''            
-        return res
     
     payment_agreed_id = fields.Many2one(comodel_name="crm.lead")
     Abono_monto = fields.Integer(string="Abono ($)")
@@ -35,4 +37,5 @@ class PaymentAgreed(models.Model):
     fijar_ac = fields.Boolean(string="Fijar a.c",default=True)
     comentarios = fields.Char(string="Comentarios")
     rut_facturacion = fields.Char(string="Rut Facturación")
+    payment_method = fields.Selection([('efectivo','Efectivo'),('tarjeta_credito','Tarjeta de crédito'),('cheque','Cheque'),('transferencia','Transferencia')],string="Forma de pago",default="transferencia",required=True)
     

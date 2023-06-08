@@ -37,5 +37,5 @@ class PaymentAgreed(models.Model):
     fijar_ac = fields.Boolean(string="Fijar a.c",default=True)
     comentarios = fields.Char(string="Comentarios")
     rut_facturacion = fields.Char(string="Rut Facturación")
-    payment_method = fields.Selection([('efectivo','Efectivo'),('tarjeta_credito','Tarjeta de crédito'),('cheque','Cheque'),('transferencia','Transferencia')],string="Forma de pago",required=True)
+    payment_method = fields.Selection([('efectivo','Efectivo'),('tarjeta_credito','Tarjeta de crédito'),('cheque','Cheque'),('transferencia','Transferencia')],string="Forma de pago",default="transferencia",required=True)
     
