@@ -10,7 +10,7 @@
           <xpath expr="//group[@name='sale_total']" position="attributes">              
             <attribute name="string">Detalle Vendedor</attribute>
           </xpath>
-          <xpath expr="//field[@name='amount_untaxed']" position="before">
+          <!-- <xpath expr="//field[@name='amount_untaxed']" position="before">
               <field name="total_tax_discount"/>            
               <field name="total_tax_amount_discount"/>
               <field name="untaxed_percentage_discount"/>
@@ -34,7 +34,7 @@
                     <field name="code"/>
                 </group>
             </group>            
-          </xpath>
+          </xpath> -->
       </field>          
     </record>
   </data>
