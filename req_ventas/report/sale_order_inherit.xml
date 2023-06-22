@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_sale_order_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t[@t-set='forced_vat']" position="replace"></xpath>
+        <xpath expr="//t[@t-set='address']" position="replace"></xpath>
+        <xpath expr="//h2[@class='mt16']" position="replace"></xpath>
+        <xpath expr="//div[@id='informations']" position="replace"></xpath>
+        <xpath expr="//div[@class='oe_structure']" position="after">
+            <div class="row">
+                <div class="col-8" style="text-align:right; margin-top:40px;" t-if="doc.x_servicios_requeridos">                    
+                    <h2 class="mt16 mb16">
+                        <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                            <span t-if="doc.state not in ['draft','sent']">Order Num: </span>
+                            <span t-if="doc.state in ['draft','sent']">Cotización</span>
+                        </t>
+                        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                            <span>Pro-Forma Invoice # </span>
+                        </t>
+                        <span t-field="doc.name"/>
+                    </h2>
+                </div>
+                <div class="col-8" style="text-align:right; margin-top:40px;" t-if="not(doc.x_servicios_requeridos)">
+                    <h2 class="mt16">
+                        <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                            <span t-if="doc.state not in ['draft','sent']">Orden de trabajo: </span>
+                            <span t-if="doc.state in ['draft','sent']">Orden de trabajo</span>
+                        </t>
+                        <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                            <span>Pro-Forma Invoice # </span>
+                        </t>
+                        <span t-field="doc.name"/>
+                    </h2>
+                </div>
+                <div class="col-2">
+                    <div t-if="doc.date_order and doc.state in ['draft','sent']" style="position:absolute; right:-70px;">
+                        <p class="m-0" t-field="doc.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:30px; margin-bottom:30px;">                
+                <div class="col" t-foreach="doc.partner_id" t-as="p" t-if="doc.state!='liquidar'">
+                    <div>
+                        <strong><span t-esc="'Sr/a '+p.name"></span></strong>
+                    </div>
+                    <div t-if="doc.city_sale_order">
+                        <span t-field="doc.city_sale_order"></span>
+                    </div>
+                    <div t-if="not(doc.city_sale_order)">
+                        <span t-field="p.city"></span>
+                    </div>
+                    <div t-if="p.state_id.name">
+                        <span t-esc="'Región: '+p.state_id.name"></span>
+                    </div>
+                    <div t-if="doc.direccion and not(doc.street_sale_order)">
+                        <span t-field="doc.direccion"></span>
+                    </div>
+                    <div t-if="doc.calle and not(doc.street_sale_order)">
+                        <span t-field="doc.calle"></span>
+                    </div>
+                    <div t-if="doc.street_sale_order">
+                        <span t-field="doc.street_sale_order"></span>
+                    </div>
+                    <div>
+                        <span t-field="p.mobile"></span>
+                    </div>
+                    <div>
+                        <span t-field="p.email"></span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div t-if="not(doc.x_servicios_requeridos)">
+                    <div t-if="doc.origin_sale_order">
+                        <span><strong>Presupuesto origen</strong></span>
+                        <span t-field="doc.origin_sale_order"></span>
+                    </div>
+                    <div>
+                        <span><strong>Equipo Asignado</strong></span>
+                        <span t-field="doc.x_equipo_asignado"></span>
+                    </div>
+                    <div>
+                        <span><strong>Fecha de retiro</strong></span>
+                        <span t-field="doc.x_fecha_retiro"></span>
+                    </div>
+                    <div t-if="doc.observaciones">
+                        <span><strong>Observaciones</strong></span>
+                        <span t-field="doc.observaciones"></span>
+                    </div>
+                </div>
+            </div>
+            <div t-if="not(doc.x_servicios_requeridos)" class="row" style="margin-bottom: 30px;">
+                <div t-if="not is_html_empty(doc.configuracion_perforacion)" class="col-6">
+                    <span><strong>Configuración de perforacion</strong></span>
+                    <span t-field="doc.configuracion_perforacion"></span>
+                </div>
+                <div t-if="not is_html_empty(doc.detalle_stock_seguridad)" class="col-4">
+                    <span><strong>Detalle stock de seguridad</strong></span>
+                    <span t-field="doc.detalle_stock_seguridad"></span>
+                </div>
+            </div>
+            <div class="row mt32 mb32" id="informations">
+                <div t-if="doc.client_order_ref" class="col-auto mw-100 mb-2">
+                    <strong>Your Reference:</strong>
+                    <p class="m-0" t-field="doc.client_order_ref"/>
+                </div>                
+                <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto mw-100 mb-2" name="expiration_date">
+                    <strong>Expiration:</strong>
+                    <p class="m-0" t-field="doc.validity_date"/>
+                </div>
+            </div>
+            <!--ACA COMIENZAN LOS ENCABEZADOS-->
+            <t t-if="doc.tipo_servicio == 'profundizar' and doc.x_servicios_requeridos!='s4' and doc.state_settlement!='liquidar'">
+                <div>
+                    <div>
+                        <strong style="font-size:20px;">POZO EXISTENTE A PROFUNDIZAR</strong>
+                    </div>
+                    <div>
+                        <span><strong style="font-size:20px;">Datos aportados por el cliente</strong></span>
+                    </div>
+                    <div>
+                        <span>- Profundidad del pozo:</span>
+                        <span t-field="doc.profundidad_profundizar"></span>mts
+                    </div>
+                    <div>
+                        <span>- Diametro:</span>
+                        <span t-field="doc.diametro_profundizar"></span>mts
+                    </div>
+                    <div>
+                        <span>- Caudal estimado:</span>
+                        <span t-field="doc.caudal_estimado_profundizar"></span>mts
+                    </div>
+                </div>
+            </t>
+            <t style="margin-bottom:20px;" t-if="doc.x_servicios_requeridos and doc.x_servicios_requeridos!='s4' and doc.state_settlement!='liquidar'">
+                <strong style="font-size:20px;">CARACTERISTICAS TÉCNICAS DEL SERVICIO</strong>
+            </t>
+            <t t-if="doc.x_servicios_requeridos and doc.state_settlement!='liquidar'">
+                <t t-if="doc.x_servicios_requeridos in ['s1','s1s2','s1s2s3']">
+                    <div>
+                        <span t-if="doc.tipo_servicio=='construccion'"><strong style="font-size:20px;">Construcción de pozo</strong></span>
+                        <span t-if="doc.tipo_servicio=='profundizar'"><strong style="font-size:20px;">Profundizacion</strong></span>
+                        <div t-if="doc.x_profundidad_pozo != 0">
+                            <span t-if="doc.tipo_servicio=='construccion'">- Profundidad estimada del pozo:</span>
+                            <span t-if="doc.tipo_servicio=='profundizar'">- Metros a profundizar:</span>
+                            <span t-field="doc.x_profundidad_pozo"></span>mts
+                        </div>
+                        <div t-if="doc.profundidad_calculada != 0">
+                            <span>- Profundidad estimada del pozo:</span>
+                            <span t-field="doc.profundidad_calculada"></span>mts
+                        </div>
+                        <div t-if="doc.x_diametro_pozo != 0">
+                            <span>- Diámetro de habilitación:</span>
+                            <span t-field="doc.x_diametro_pozo"></span>"
+                        </div>
+                        <div t-if="doc.diametro_pozo">
+                            <span>- Diámetro de habilitación:</span>
+                            <span t-field="doc.diametro_pozo"></span>
+                        </div>
+                        <div>
+                            <span t-field="doc.x_encabezado_coti1"></span>
+                        </div>
+                        <div t-if="doc.x_duracion_s1==1 and doc.x_duracion_s1 != 0">
+                            <span>- Duración: </span>
+                            <span t-field="doc.x_duracion_s1"></span> dia.
+                        </div>
+                        <div t-if="doc.duracion_servicio1==1 and doc.duracion_servicio1 != 0">
+                            <span>- Duración: </span>
+                            <span t-field="doc.duracion_servicio1"></span> dia.
+                        </div>
+                        <div t-if="doc.x_duracion_s1!=1">
+                            <div t-if="doc.x_duracion_s1 != 0">
+                                <span>- Duración: </span>
+                                <span t-field="doc.x_duracion_s1"></span> dias.
+                            </div>
+                        </div>
+                        <div t-if="doc.duracion_servicio1!=1">
+                            <div t-if="doc.duracion_servicio1 != 0">
+                                <span>- Duración: </span>
+                                <span t-field="doc.duracion_servicio1"></span> dias.
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.x_servicios_requeridos in ['s1s2','s1s2s3']">
+                    <div class="mt16">
+                        <span><strong style="font-size:20px;">Sistema de bombeo</strong></span>
+                        <div t-if="doc.x_caudal_crm!=0">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.x_caudal_crm"></span>lt/s
+                        </div>
+                        <div t-if="doc.caudal_crm!=0">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.caudal_crm"></span>lt/s
+                        </div>
+                        <div t-if="doc.caudal_text">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.caudal_text"></span>lt/s
+                        </div>
+                        <div t-if="doc.kit_store">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.kit_store"></span>lt/s
+                        </div>
+                        <div t-if="doc.x_bomba_crm.name">
+                            <span>- Modelo de bomba:</span>
+                            <span t-esc="(doc.x_bomba_crm.name.replace('BOMBA ','')).lower() if doc.x_bomba_crm.name.find('KIT')==-1 else  doc.x_bomba_crm.name.lower()"></span>
+                        </div>
+                        <div t-if="doc.bombas_store">
+                            <span>- Modelo de bomba:</span>
+                            <span t-field="doc.bombas_store"></span>
+                        </div>
+                        <div t-if="doc.x_motor_crm.name">
+                            <span>- Modelo motor:</span>
+                            <span t-esc="(doc.x_motor_crm.name.replace('MOTOR ','')).lower()"></span>
+                        </div>
+                        <div t-if="doc.motor_store">
+                            <span>- Modelo motor:</span>
+                            <span t-field="doc.motor_store"></span>
+                        </div>
+                        <div>
+                            <span t-field="doc.x_encabezado_coti2"></span>
+                        </div>
+                        <div t-if="doc.x_duracion_total==1">
+                            <span>- Duración:</span>
+                            <span t-field="doc.x_duracion_total"></span> día.
+                        </div>
+                        <div t-if="doc.duracion_s2==1">
+                            <span>- Duración:</span>
+                            <span t-field="doc.duracion_s2"></span> día.
+                        </div>
+                        <div t-if="doc.x_duracion_total!=1 and doc.x_duracion_total!=0">
+                            <span>- Duración:</span>
+                            <span t-field="doc.x_duracion_total"></span> días.
+                        </div>
+                        <div t-if="doc.duracion_s2!=1 and doc.duracion_s2!=0">
+                            <span>- Duración:</span>
+                            <span t-field="doc.duracion_s2"></span> días.
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.x_servicios_requeridos in ['s2','s2s3']">
+                    <div class="mt16">
+                        <span><strong style="font-size:20px;">Características técnicas del servicio de bombeo</strong></span>
+                        <div t-if="doc.x_caudal_crm!=0">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.x_caudal_crm"></span>lt/s
+                        </div>
+                        <div t-if="doc.caudal_crm!=0">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.caudal_crm"></span>lt/s
+                        </div>
+                        <div t-if="doc.caudal_text">
+                            <span>- Bomba de explotación:</span>
+                            <span t-field="doc.caudal_text"></span>lt/s
+                        </div>
+                        <div t-if="doc.kit_store">
+                            <span>- Conjunto Bomba/Motor:</span>
+                            <span t-field="doc.kit_store"></span>lt/s
+                        </div>
+                        <div t-if="doc.x_bomba_crm.name">
+                            <span>- Modelo de bomba:</span>
+                            <span t-esc="(doc.x_bomba_crm.name.replace('BOMBA ','')).lower() if doc.x_bomba_crm.name.find('KIT')==-1 else  doc.x_bomba_crm.name.lower()"></span>
+                        </div>
+                        <div t-if="doc.bombas_store">
+                            <span>- Modelo de bomba:</span>
+                            <span t-field="doc.bombas_store"></span>
+                        </div>
+                        <div t-if="doc.x_motor_crm.name">
+                            <span>- Modelo motor:</span>
+                            <span t-esc="(doc.x_motor_crm.name.replace('MOTOR ','')).lower()"></span>
+                        </div>
+                        <div t-if="doc.motor_store">
+                            <span>- Modelo motor:</span>
+                            <span t-esc="doc.motor_store"></span>
+                        </div>
+                        <div>
+                            <span t-field="doc.x_encabezado_coti2"></span>
+                        </div>
+                        <div t-if="doc.x_duracion_total==1">
+                            <span>- Duración:</span>
+                            <span t-field="doc.x_duracion_total"></span> día.
+                        </div>
+                        <div t-if="doc.duracion_s2==1 and doc.duracion_s2!=0">
+                            <span>- Duración:</span>
+                            <span t-field="doc.duracion_s2"></span> día.
+                        </div>
+                        <div t-if="doc.x_duracion_total!=1 and doc.x_duracion_total!=0">
+                            <span>- Duración:</span>
+                            <span t-field="doc.x_duracion_total"></span> días.
+                        </div>
+                        <div t-if="doc.duracion_s2!=1 and doc.duracion_s2!=0">
+                            <span>- Duración:</span>
+                            <span t-field="doc.duracion_s2"></span> días.
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.prueba_bombeo_crm == 'prueba de bombeo dga 24hrs'">
+                    <div>
+                        <div>
+                            <strong style="font-size:20px;">DESCRIPCIÓN DEL SERVICIO</strong>
+                        </div>
+                        <div>
+                            <span t-field="doc.encabezado_pbbeo_dga"></span>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.x_servicios_requeridos in ['s1','s1s2','s1s2s3']">
+                    <div style="margin: 16px 0px 16px 0px">
+                        <div>
+                            <span><strong style="font-size:20px;">Esta obra incluye</strong></span>
+                        </div>
+                        <div>
+                            <span t-field="doc.x_encabezado_coti3"></span>
+                        </div>
+                        <div t-if="doc.prueba_bombeo">
+                            <div t-if="doc.prueba_bombeo.display_name != '[2000019] SIN PRUEBA DE BOMBEO'">
+                                <span>- Prueba de bombeo:</span>
+                                <span t-esc="doc.prueba_bombeo.name.replace('PRUEBA DE BOMBEO','').lower()"></span>
+                            </div>
+                        </div>
+                        <div t-if="doc.prueba_bombeo_crm">
+                            <div t-if="doc.prueba_bombeo_crm != 'sin prueba de bombeo'">
+                                <span>- Prueba de bombeo:</span>
+                                <span t-field="doc.prueba_bombeo_crm"></span>
+                            </div>
+                        </div>
+                        <div t-if="doc.x_servicios_requeridos in ['s1s2','s1s2s3']">
+                            <span t-field="doc.x_encabezado_coti4"></span>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.x_servicios_requeridos in ['s2','s2s3']">
+                    <div style="margin: 16px 0px 16px 0px">
+                        <div>
+                            <span><strong style="font-size:20px;">Esta obra incluye</strong></span>
+                        </div>
+                        <div>
+                            <span t-field="doc.x_encabezado_coti5"></span>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.x_servicios_requeridos in ['s4']">
+                    <div style="margin: 16px 0px 16px 0px">
+                        <div>
+                            <span t-field="doc.x_encabezado_coti_s4"></span>
+                        </div>
+                    </div>
+                </t>                
+                <t t-if="doc.x_servicios_requeridos in ['s3','s2s3','s1s2s3']">
+                    <div style="margin: 16px 0px 16px 0px">
+                        <div>
+                            <span><strong style="font-size:20px;">Tratamiento, Almacenamiento y distribución</strong></span>
+                        </div>
+                        <div t-if="doc.estanque_acumulacion">
+                            <span>- Estanque de acumulacion de:</span>
+                            <span t-field="doc.estanque_acumulacion"></span> lts
+                        </div>
+                        <div t-if="doc.losa_hormigon">
+                            <span>- losa de hormigon de:</span>
+                            <span t-field="doc.losa_hormigon"></span> mts
+                        </div>
+                        <div t-if="doc.bomba_centrifuga">
+                            <span>- Bomba centrífuga de:</span>
+                            <span t-field="doc.bomba_centrifuga"></span> hp
+                        </div>
+                        <div t-if="doc.estanque_hidroneumatico">
+                            <span>- Estanque hidroneumático de:</span>
+                            <span t-field="doc.estanque_hidroneumatico"></span> lts
+                        </div>
+                        <div t-if="doc.presscontrol">
+                            <span>- Presscontrol</span>
+                        </div>
+                        <div t-if="doc.bomba_cloro">
+                            <span>- Bomba dosificadora de cloro</span>
+                        </div>
+                        <div t-if="doc.bomba_cloro">
+                            <span>- estanque de cloro</span>
+                        </div>
+                        <div>
+                            <span t-field="doc.encabezado_s3_servicio_completo"></span>
+                        </div>
+                        <div t-if="doc.duracion_s3!=1 and doc.duracion_s3!=0">
+                            <span>- Duración:</span>
+                            <span t-field="doc.duracion_s3"></span> días.
+                        </div>
+                        <div t-if="doc.duracion_s3==1">
+                            <span>- Duración:</span>
+                            <span t-field="doc.duracion_s3"></span> día.
+                        </div>
+                    </div>
+                </t>
+                <div style="page-break-after: always;">
+                    <br/>
+                </div>
+            </t>
+            <t t-if="doc.state_settlement == 'liquidar'">
+                <div class="row">
+                    <div class="col" style="margin-bottom:50px;">
+                        <span t-field="doc.encabezado_liquidacion"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="margin-bottom:10px; margin-top:10px;">
+                        <span>Estimado:</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="margin-bottom:20px;">
+                        <span>Junto con saludarle, adjunto el detalle del servicio prestado:</span>
+                    </div>
+                </div>
+            </t>            
+        </xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+            <table class="table table-sm o_main_table">
+                <thead style="display: table-row-group">
+                    <tr>
+                        <th name="th_description" class="text-left">Description</th>
+                        <th name="th_quantity" class="text-right">Quantity</th>
+                        <th name="th_uom" class="text-right">Un</th>                        
+                        <th t-if="doc.x_servicios_requeridos" name="th_priceunit" class="text-right">Precio unitario</th>     
+                        <th t-if="doc.x_servicios_requeridos" name="th_subtotal" class="text-right">
+                            <t groups="account.group_show_line_subtotals_tax_excluded">Total</t>
+                            <t groups="account.group_show_line_subtotals_tax_included">Total Price</t>
+                        </th>
+                        <th t-if="not(doc.x_servicios_requeridos)" name="th_revision" class="text-right">Revisión</th>
+                    </tr>
+                </thead>
+                <tbody class="sale_tbody">
+                    <t t-set="current_subtotal" t-value="0"/>
+                    <t t-foreach="doc.order_line" t-as="line">                                                    
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                        <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                            <t t-if="not line.display_type">                                                                
+                                <td name="td_name"><span t-esc = "line.product_id.name"/></td>
+                                <td name="td_quantity" class="text-right">
+                                    <span t-esc="int(line.product_uom_qty)"/>
+                                </td>
+                                <td name="td_uom" class="text-right">
+                                    <div t-if="line.product_uom.name == 'metro (tira 3mt)' or line.product_uom.name == 'metro (tira 6mt)' or line.product_uom.name == 'MT'">
+                                        <span groups="uom.group_uom">m</span>
+                                    </div>
+                                    <div t-if="line.product_uom.name != 'metro (tira 3mt)' and line.product_uom.name != 'metro (tira 6mt)' and line.product_uom.name != 'MT'">
+                                        <span t-esc="line.product_uom.name.lower()" groups="uom.group_uom"/>
+                                    </div>
+                                </td>
+                                <td t-if="doc.x_servicios_requeridos" name="td_priceunit" class="text-right">
+                                    <span t-field="line.precio_venta"/>
+                                </td>                                 
+                                <td t-if="doc.x_servicios_requeridos" name="td_subtotal" class="text-right o_price_total">       
+                                    <span t-field="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                                </td>
+                                <td t-if="not(doc.x_servicios_requeridos)" name="td_revision" class="text-right"></td>
+                            </t>
+                            <t t-if="line.display_type == 'line_section'">
+                                <td name="td_section_line" colspan="99">
+                                    <span t-field="line.name"/>
+                                </td>
+                                <t t-if="doc.x_servicios_requeridos" t-set="current_section" t-value="line"/>
+                                <t t-if="doc.x_servicios_requeridos" t-set="current_subtotal" t-value="0"/>
+                            </t>
+                            <t t-if="line.display_type == 'line_note'">
+                                <td name="td_note_line" colspan="99">
+                                    <span t-field="line.name"/>
+                                </td>
+                            </t>
+                        </tr>
+                        <t t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')">
+                            <tr class="is-subtotal text-right">
+                                <td name="td_section_subtotal" colspan="99">
+                                    <strong class="mr16">Subtotal</strong>
+                                    <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.pricelist_id.currency_id}"/>
+                                </td>
+                            </tr>
+                        </t>                                                                
+                    </t>
+                </tbody>
+            </table>
+        </xpath>
+        <xpath expr="//div[@class='clearfix']" position="replace">
+            <div t-if="doc.x_servicios_requeridos" class="clearfix" name="so_total_summary">            
+                <div id="total" class="row" name="total">
+                    <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                        <table class="table table-sm">                            
+                            <t t-set="tax_totals" t-value="json.loads(doc.tax_totals_json)"/>
+                            <t t-call="account.document_tax_totals"/>
+                        </table>
+                        <div t-if="doc.code" class="oe_inline text-right">
+                            <strong>Código:</strong>
+                            <span t-esc="'cot-'+str(int(doc.code))+'-hs'"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//div[@class='clearfix']" position="after">
+            <div t-if="doc.x_servicios_requeridos and doc.state_settlement!='liquidar'" style="page-break-after: always;">
+                <br/>
+            </div>
+            <t t-if="doc.x_servicios_requeridos and doc.state_settlement!='liquidar'">
+                <t t-if="not(doc.x_servicios_requeridos in ['s2','s4'])">
+                    <div class="row" style="margin: 32px 0px 32px 0px">
+                        <div class="col-6">
+                            <div>
+                                <strong>Observaciones</strong>
+                                <div t-if="doc.x_servicios_requeridos in ['s1','s1s2','s1s2s3']">
+                                    <span>- La ubicación de la obra será validada en terreno por el cliente y el acceso estará en condiciones de permitir la instalación de la máquina perforadora</span>
+                                </div>
+                                <div t-if="doc.x_servicios_requeridos in ['s1']">
+                                    <span>- Se facturarán solo los metros perforados al valor cotizado.</span>
+                                </div>
+                                <div t-if="doc.x_servicios_requeridos in ['s1']">
+                                    <span t-field="doc.observacion_s1"></span>
+                                </div>
+                                <div t-if="doc.x_servicios_requeridos in ['s2','s1s2','s1s2s3']">
+                                    <span>- Se facturarán los metros perforados y servicios de bomba al valor cotizado.</span>
+                                </div>
+                                <div>
+                                    <span>- Validez de la presente oferta: 30 días.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div style="position:absolute; right:-40px;">
+                                <span><strong style="font-size:20px;">Acuerdos de pago</strong></span>
+                                <div t-if="doc.x_abono_crm != 0">
+                                    <span>Abono(%): </span>
+                                    <span t-field="doc.x_abono_crm"></span>
+                                </div>
+                                <div t-if="doc.abono_porcentaje != 0">
+                                    <span>Abono(%): </span>
+                                    <span t-field="doc.abono_porcentaje"></span>
+                                </div>
+                                <div t-if="doc.x_abono_m_crm != 0">
+                                    <span>Abono($): </span>
+                                    <span t-field="doc.x_abono_m_crm"></span>
+                                </div>
+                                <div t-if="doc.abono_monto != 0">
+                                    <span>Abono($): </span>
+                                    <span t-field="doc.abono_monto"></span>
+                                </div>
+                                <div t-if="doc.x_cuotas_crm==0 and doc.num_cuotas == 0">
+                                    <span>Saldo a convenir</span>
+                                </div>
+                                <div t-if="doc.x_cuotas_crm==1">
+                                    <div>
+                                        <span>Cuotas: </span>
+                                        <span t-field="doc.x_cuotas_crm"></span>
+                                    </div>
+                                    <div>
+                                        <span>Contra entrega</span>
+                                    </div>
+                                </div>
+                                <div t-if="doc.x_cuotas_crm>1">
+                                    <span>Cuotas: </span>
+                                    <span t-field="doc.x_cuotas_crm"></span>
+                                </div>
+                                <div t-if="doc.num_cuotas==1">
+                                    <div>
+                                        <span>Cuotas: </span>
+                                        <span t-field="doc.num_cuotas"></span>
+                                    </div>
+                                    <div>
+                                        <span>Contra entrega</span>
+                                    </div>
+                                </div>
+                                <div t-if="doc.num_cuotas>1">
+                                    <span>Cuotas: </span>
+                                    <span t-field="doc.num_cuotas"></span>
+                                </div>
+                                <div t-if="doc.payment_method">
+                                    <span>Forma de pago: </span>
+                                    <span t-field="doc.payment_method"></span>
+                                </div>
+                                <div t-if="doc.observaciones">
+                                    <span>observaciones: </span>
+                                    <span t-field="doc.observaciones"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="doc.x_servicios_requeridos in ['s2','s4']">
+                    <div class="row" style="margin: 32px 0px 32px 0px">
+                        <div class="col-6">
+                            <div>
+                                <strong>Observaciones</strong>
+                                <div>
+                                    <span>- Se facturarán todos los servicios al valor cotizado.</span>
+                                </div>
+                                <div t-if="doc.x_servicios_requeridos in ['s2']">
+                                    <span t-field="doc.observacion_s2"></span>
+                                </div>
+                                <div>
+                                    <span>- Validez de la presente oferta: 30 días.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 mr10">
+                            <div style="position:absolute; right:-40px;">
+                                <span><strong style="font-size:20px;">Acuerdos de pago</strong></span>
+                                <div t-if="doc.x_abono_crm != 0">
+                                    <span>Abono(%): </span>
+                                    <span t-field="doc.x_abono_crm"></span>
+                                </div>
+                                <div t-if="doc.abono_porcentaje != 0">
+                                    <span>Abono(%): </span>
+                                    <span t-field="doc.abono_porcentaje"></span>
+                                </div>
+                                <div t-if="doc.x_abono_m_crm != 0">
+                                    <span>Abono($): </span>
+                                    <span t-field="doc.x_abono_m_crm"></span>
+                                </div>
+                                <div t-if="doc.abono_monto != 0">
+                                    <span>Abono($): </span>
+                                    <span t-field="doc.abono_monto"></span>
+                                </div>
+                                <div t-if="doc.x_cuotas_crm==0 and doc.num_cuotas == 0">
+                                    <span>Saldo a convenir</span>
+                                </div>
+                                <div t-if="doc.x_cuotas_crm==1">
+                                    <div>
+                                        <span>Cuotas: </span>
+                                        <span t-field="doc.x_cuotas_crm"></span>
+                                    </div>
+                                    <div>
+                                        <span>Contra entrega</span>
+                                    </div>
+                                </div>
+                                <div t-if="doc.x_cuotas_crm>1">
+                                    <span>Cuotas: </span>
+                                    <span t-field="doc.x_cuotas_crm"></span>
+                                </div>
+                                <div t-if="doc.num_cuotas==1">
+                                    <div>
+                                        <span>Cuotas: </span>
+                                        <span t-field="doc.num_cuotas"></span>
+                                    </div>
+                                    <div>
+                                        <span>Contra entrega</span>
+                                    </div>
+                                </div>
+                                <div t-if="doc.num_cuotas>1">
+                                    <span>Cuotas: </span>
+                                    <span t-field="doc.num_cuotas"></span>
+                                </div>
+                                <div t-if="doc.payment_method">
+                                    <span>Forma de pago: </span>
+                                    <span t-field="doc.payment_method"></span>
+                                </div>
+                                <div t-if="doc.observaciones">
+                                    <span>observaciones: </span>
+                                    <span t-field="doc.observaciones"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='oe_structure'][2]" position="after">
+            <div style="margin-top:30px; margin-bottom:30px;">
+                <span t-field="doc.detalle_abonos_liquidacion"></span>
+            </div>
+            <div t-foreach="doc.user_id" t-as="u" class="mt32 mb32" t-if="doc.state not in ['liquidar']">
+                <strong>Atentamente:</strong>
+                <div t-if="u.name" t-field="u.name"></div>
+                <div t-if="u.email" t-field="u.email"></div>
+                <div t-if="u.mobile" t-field="u.mobile"></div>
+            </div>
+            <div t-if="doc.x_servicios_requeridos" style="width:420px; border-color: #aaaaaa; border-width: 1px; border-style: solid;">
+                <span><strong style="font-size:20px;">Datos bancarios de la empresa</strong></span>
+                <div>
+                    <div>Nombre: Hidrosondajes Limitada</div>
+                    <div>Rut: 76.481.928-4</div>
+                    <div>Giro: Contrucción</div>
+                    <div>Cta. Cte.: Banco BCI, Nº 56119259</div>
+                    <div>Email: pagos@hidrosondajes.cl</div>
+                    <div>IMPORTANTE: Para transferencia se debe especificar número de cotización, para contabilizar su pago</div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

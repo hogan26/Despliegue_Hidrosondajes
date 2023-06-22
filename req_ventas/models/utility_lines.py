@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+import json
+import logging
+_logger = logging.getLogger(__name__)
 
 class MargenTotal(models.Model):
     _inherit='sale.order'
@@ -13,10 +16,21 @@ class MargenTotal(models.Model):
                 suma_margen += line.margen_total
             order.update({'suma_margen':suma_margen})
             
-    suma_margen = fields.Monetary(
-        string='Margen Utilidad', 
-        readonly=True, 
-        compute=suma_margen)
+    suma_margen = fields.Monetary(string='Margen Utilidad',readonly=True,compute=suma_margen)
+
+    @api.depends('order_line.tax_id', 'order_line.price_unit','order_line.precio_venta','order_line.utilidad_porcentaje', 'amount_total', 'amount_untaxed')
+    def _compute_tax_totals_json(self):
+        # _logger.info('dentro de _compute_tax_totals_json')
+        def compute_taxes(order_line):
+            price = order_line.precio_venta * (1 - (order_line.discount or 0.0) / 100.0)
+            order = order_line.order_id
+            return order_line.tax_id._origin.compute_all(price, order.currency_id, order_line.product_uom_qty, product=order_line.product_id, partner=order.partner_shipping_id)
+
+        account_move = self.env['account.move']
+        for order in self:
+            tax_lines_data = account_move._prepare_tax_lines_data_for_totals_from_object(order.order_line, compute_taxes)
+            tax_totals = account_move._get_tax_totals(order.partner_id, tax_lines_data, order.amount_total, order.amount_untaxed, order.currency_id)
+            order.tax_totals_json = json.dumps(tax_totals)
 
 class SaleOrderLine(models.Model):
     _inherit='sale.order.line'

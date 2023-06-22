@@ -28,7 +28,7 @@
         'views/utility_lines_view.xml',        
         'views/sale_order_template_id_prueba.xml',
         # 'views/sheet_width_increase.xml', no funciona
-        'views/total_tax_discount.xml',
+        'views/sale_order_total_tax_discount_view.xml',
         'views/liquidation.xml',
         'views/update_quotation_button.xml',
         'views/ot_button.xml',
@@ -41,5 +41,7 @@
         'views/hidden_standart_confirm_button.xml',
         'wizard/alert_action_confirm_wizard.xml',
         'views/new_transfer_from_ot.xml',
+        'report/sale_order_inherit.xml',
+        'report/external_layout_standard_inherit.xml',
     ],    
 }

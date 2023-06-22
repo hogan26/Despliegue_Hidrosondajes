@@ -39,3 +39,9 @@ class StockPicking(models.Model):
                 raise ValidationError("No se ha encontrado el documento de orden de trabajo, ingrese un valor válido")
         else:
             raise ValidationError("Ingrese un Codigo de orden de trabajo")
+
+        if self.location_dest_id:
+            warehouse_stock_location = self.env['stock.location'].search([('id','=',self.location_dest_id.id)])
+            
+            for detailed_operations_lines in self.move_line_ids_without_package:                                                
+                detailed_operations_lines.write({'location_dest_id':warehouse_stock_location.id}) 

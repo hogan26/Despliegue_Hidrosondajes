@@ -8,7 +8,10 @@ _logger = logging.getLogger(__name__)
 
 class PurchaseOrder(models.Model):
     _inherit='purchase.order'
-    
+
+    #este metodo realiza las siguientes operaciones
+    #al momento de confirmar una cotizacion perteneciente a una licitacion, se cancelarán todas las demás (exclusividad)
+    #cierra el documento de licitacion
     def button_confirm(self):
         res = super(PurchaseOrder,self).button_confirm()
         if self.requisition_id:            

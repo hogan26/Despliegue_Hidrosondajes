@@ -28,5 +28,8 @@
         'wizard/date_order_action_confirm_wizard.xml',
         'views/new_searchers.xml',
         'views/bill_entry_validation_form_view.xml',
+        'views/flow_fields_view.xml',
+        'report/purchase_quotation_inherit.xml',
+        'report/purchase_order_inherit.xml',
     ],    
 }
