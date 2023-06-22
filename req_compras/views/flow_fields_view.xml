@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="purchase_flow_fields_view" model="ir.ui.view">
+            <field name="name">purchase.flow.fields.view</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='809']" position="replace"></xpath>
+                <xpath expr="//div[@name='date_planned_div']" position="after">
+                    <div class="o_row">
+                        <button name="809" class="oe_link" type="action" context="{'search_default_partner_id': partner_id}" attrs="{'invisible': ['|', ('state', 'in', ['purchase', 'done']), ('partner_id', '=', False)]}">
+                            <span attrs="{'invisible': [('on_time_rate', '&lt;', 0)]}"><field name="on_time_rate" widget="integer" class="oe_inline"/>% On-Time Delivery</span>
+                            <span attrs="{'invisible': [('on_time_rate', '&gt;=', 0)]}">No On-time Delivery Data</span>
+                        </button>
+                    </div>                    
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name='invisible'>1</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

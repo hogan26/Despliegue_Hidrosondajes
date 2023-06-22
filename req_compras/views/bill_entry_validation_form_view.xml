@@ -13,12 +13,10 @@
                 <xpath expr="//button[@name='button_confirm']" position="after">
                     <button name="button_confirm_date_validation" string="CONFIRMAR PEDIDO" class="btn-primary" type="object" attrs="{'invisible':['|',('purchase_order_type_entry','not in','factura'),('state','not in',('draft','sent'))]}"/>                    
                 </xpath>          
-                <xpath expr="//button[@id='bid_confirm']" position="replace">          
-                    <!-- <attribute name="attrs">{'invisible':[('purchase_order_type_entry','=','factura'),('state','not in','sent')]}</attribute>           -->
+                <xpath expr="//button[@id='bid_confirm']" position="replace">
                     <button name="button_confirm" type="object" string="CONFIRMAR PEDIDO" class="oe_highlight" id="bid_confirm" attrs="{'invisible':['|',('purchase_order_type_entry','=','factura'),('state','not in','sent')]}"/>
                 </xpath>                
                 <xpath expr="//button[@id='draft_confirm']" position="replace">
-                    <!-- <attribute name="attrs">{'invisible':[('purchase_order_type_entry','=','factura'),('state','not in','sent')]}</attribute>     -->
                     <button name="button_confirm" type="object" string="CONFIRMAR PEDIDO" id="draft_confirm" attrs="{'invisible':['|',('purchase_order_type_entry','=','factura'),('state','not in','draft')]}"/>
                 </xpath> 
             </field>

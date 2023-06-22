@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, models, fields
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class ActualizarPrecio(models.Model):
@@ -233,40 +235,34 @@ class ActualizarPrecio(models.Model):
 class DescuentoLineaCompra(models.Model):
     _inherit = 'purchase.order.line'
 
-    @api.depends('product_qty', 'price_unit', 'taxes_id','descuento_porcentaje', 'descuento_monto')
-    def _compute_amount(self):
-        for line in self:
-            vals = line._prepare_compute_all_values()
-            taxes = line.taxes_id.compute_all(
-                vals['price_unit'],
-                vals['currency_id'],
-                vals['product_qty'],
-                vals['product'],
-                vals['partner'])
-
-            if line.descuento_porcentaje:
-                line.update({
-                    'price_tax': sum(
-                        t.get('amount', 0.0) for t in taxes.get('taxes', []))-(sum(
-                        t.get('amount', 0.0) for t in taxes.get('taxes', []))*(line.descuento_porcentaje/100)),
-                    'price_total': taxes['total_included'],
-                    'price_subtotal': taxes['total_excluded']-(taxes['total_excluded']*(line.descuento_porcentaje/100)),
-                })
-            elif line.descuento_monto:
-                line.update({
-                    'price_tax': sum(
-                        t.get('amount', 0.0) for t in
-                        taxes.get('taxes', [])),
-                    'price_total': taxes['total_included'],
-                    'price_subtotal': taxes['total_excluded'] - line.descuento_monto,
-                })
-            else:
-                line.update({
-                    'price_tax': sum(t.get('amount', 0.0) for t in
-                                     taxes.get('taxes', [])),
-                    'price_total': taxes['total_included'],
-                    'price_subtotal': taxes['total_excluded'],
-                })
+    
+    def _prepare_compute_all_values(self):        
+        # _logger.info('dentro de prepare_compute_all_values')
+        self.ensure_one()
+        if self.descuento_porcentaje:
+            return {
+                'price_unit': self.price_unit - (self.price_unit*(self.descuento_porcentaje/100)),
+                'currency': self.order_id.currency_id,
+                'quantity': self.product_qty,
+                'product': self.product_id,
+                'partner': self.order_id.partner_id,
+            }
+        elif self.descuento_monto:
+            return {
+                'price_unit': self.price_unit - self.descuento_monto,
+                'currency': self.order_id.currency_id,
+                'quantity': self.product_qty,
+                'product': self.product_id,
+                'partner': self.order_id.partner_id,
+            }
+        else:
+            return {
+                'price_unit': self.price_unit,
+                'currency': self.order_id.currency_id,
+                'quantity': self.product_qty,
+                'product': self.product_id,
+                'partner': self.order_id.partner_id,
+            }                
 
     descuento_porcentaje = fields.Float(string="Descuento(%)", default=0.0)
     descuento_monto = fields.Float(string="Descuento($)", default=0.0)

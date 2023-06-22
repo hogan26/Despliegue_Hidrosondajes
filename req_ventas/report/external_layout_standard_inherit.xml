@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="external_layout_standard_inherit" inherit_id="web.external_layout_standard">
+        <xpath expr="//li[@t-if='company.company_details']" position="replace">
+            <li t-if="company.display_name"> <t t-esc="company.display_name"/></li>
+        </xpath>
+        <xpath expr="//li[@t-if='forced_vat']" position="replace"></xpath>
+    </template>
+</odoo>

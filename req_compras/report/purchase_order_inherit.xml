@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_purchase_order_inherit" inherit_id="purchase.report_purchaseorder_document">
+        <xpath expr="//t[@t-set='address']" position="replace"></xpath>
+        <xpath expr="//div[@class='page']/h2[1]" position="replace"></xpath> <!-- elimina el primer nodo (plantilla original) -->
+        <xpath expr="//div[@class='page']/h2[1]" position="replace"></xpath> <!-- elimina el segundo nodo (plantilla original) -->
+        <xpath expr="//div[@class='page']/h2[1]" position="replace"></xpath> <!-- elimina el tercer nodo (plantilla original) -->
+        <xpath expr="//div[@class='oe_structure']" position="after">
+            <div class="row" style="margin-bottom:30px;">
+                    <div class="col-8" style="text-align; right; margin-top:50px;">
+                        <h2 t-if="o.state in ['draft', 'sent', 'to approve']">Solicitud de presupuesto #<span t-field="o.name"/></h2>
+                        <h2 t-if="o.state in ['purchase', 'done']">Orden de compra #<span t-field="o.name"/></h2>
+                        <h2 t-if="o.state == 'cancel'">Pedido de compra cancelado #<span t-field="o.name"/></h2>
+                    </div>
+                    <div class="col-2">
+                        <div style="position:absolute; right:-70px;">
+                            <p class="m-0" t-field="o.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+                        </div>
+                    </div>
+                </div>                
+        </xpath>
+        <xpath expr="//div[@id='informations']/div[@t-if='o.user_id']" position="replace"></xpath>
+        <xpath expr="//div[@id='informations']/div[@t-if='o.date_order']" position="replace"></xpath>
+        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace"></xpath>
+        <xpath expr="//div[@id='informations']" position="after">
+            <div style="margin-bottom:30px;">
+                <strong>DATOS DEL CLIENTE Y DE LA FACTURA</strong>
+                <table class="table table-sm">
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Razón social</th>
+                        <td>Hidrosondajes Ltda.</td>
+                        <th scope="row" style="background-color:#E8F6EF;">RUT</th>
+                        <td>76.481.928-4</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Giro</th>
+                        <td>Contrucción</td>
+                        <th scope="row" style="background-color:#E8F6EF;">Contacto</th>
+                        <td>
+                            <span t-field="o.x_contacto"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Email</th>
+                        <td>
+                            <div t-foreach="o.user_id" t-as="u">
+                                <span t-field="u.login"></span>
+                            </div>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">telefono</th>
+                        <td>
+                            <div t-foreach="o.user_id" t-as="u">
+                                <span t-field="u.mobile"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Dirección</th>
+                        <td>
+                            <div t-foreach="o.company_id" t-as="u">
+                                <span t-field="u.street"></span>
+                            </div>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">Ciudad</th>
+                        <td>
+                            <div t-foreach="o.company_id" t-as="u">
+                                <span t-field="u.city"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="margin-bottom:50px;">
+                <strong>DATOS DEL PROVEEDOR</strong>
+                <table class="table table-sm">
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Razón social</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.name"></span>
+                            </div>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">Cuidad</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.city"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Contacto</th>
+                        <td>
+                            <span t-field="o.x_contacto"></span>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">Rut</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.vat"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Email</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.email"></span>
+                            </div>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">Num. Cot.</th>
+                        <td>
+                            <span t-field="o.x_coti_ref"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Dirección</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.street"></span>
+                            </div>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">Telefono</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.phone"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Cta. Cte.</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.bank_ids.bank_id"></span>
+                            </div>
+                        </td>
+                        <th scope="row" style="background-color:#E8F6EF;">Banco</th>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="u">
+                                <span t-field="u.bank_ids.acc_number"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="background-color:#E8F6EF;">Acuerdos de pago</th>
+                        <td>
+                            <span t-field="o.x_acuerdo_pago"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <strong>DETALLES</strong>
+                <table class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th name="th_description"><strong>Descripción</strong></th>                            
+                            <th name="th_quantity" class="text-right"><strong>Cantidad</strong></th>
+                            <th name="th_price_unit" class="text-right"><strong>Precio unitario</strong></th>
+                            <th name="th_descuento_porcentaje" class="text-right"><strong>Descuento (%)</strong></th>
+                            <th name="th_descuento_monto" class="text-right"><strong>Descuento ($)</strong></th>
+                            <th name="th_amount" class="text-right"><strong>Total</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="current_subtotal" t-value="0"/>
+                        <t t-foreach="o.order_line" t-as="line">
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                <t t-if="not line.display_type">
+                                    <td id="product">
+                                        <span t-esc="line.name [line.name.find (']') +1:]"/>
+                                    </td>                                    
+                                    <td class="text-right">
+                                        <span t-field="line.product_qty"/>
+                                        <span t-field="line.product_uom.name" groups="uom.group_uom"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.descuento_porcentaje"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="int(line.descuento_monto)"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                    </td>
+                                </t>
+                                <t t-if="line.display_type == 'line_section'">
+                                    <td colspan="99" id="section">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <t t-set="current_section" t-value="line"/>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                </t>
+                                <t t-if="line.display_type == 'line_note'">
+                                    <td colspan="99" id="note">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            <t t-if="current_section and (line_last or o.order_line[line_index+1].display_type == 'line_section')">
+                                <tr class="is-subtotal text-right">
+                                    <td colspan="99" id="subtotal">
+                                        <strong class="mr16">Subtotal</strong>
+                                        <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </xpath>        
+    </template>
+</odoo>

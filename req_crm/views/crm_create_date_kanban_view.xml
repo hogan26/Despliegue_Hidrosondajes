@@ -2,8 +2,8 @@
 
 <odoo>
   <data>
-    <record id="create_date_kanban_view" model="ir.ui.view">
-      <field name="name">create.date.kanban.view</field>
+    <record id="crm_create_date_kanban_view" model="ir.ui.view">
+      <field name="name">crm.create.date.kanban.view</field>
       <field name="model">crm.lead</field>
       <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
       <field name="arch" type="xml">            
@@ -11,7 +11,10 @@
             <field name="color_settlement"/>
           </xpath>
           <xpath expr="//templates/t/div" position="replace">
-              <div t-attf-class="#{kanban_color(record.color_settlement.raw_value)} oe_kanban_global_click">
+              <div t-attf-class="#{kanban_color(record.color_settlement.raw_value)} #{lost_ribbon ? 'oe_kanban_card_ribbon' : ''} oe_kanban_global_click oe_kanban_card d-flex flex-column">
+                <div class="ribbon ribbon-top-right" attrs="{'invisible': ['|', ('probability', '&gt;', 0), ('active', '=', True)]}">
+                    <span class="bg-danger">Lost</span>
+                </div>
                 <div class="o_dropdown_kanban dropdown">
                     <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
                         <span class="fa fa-ellipsis-v"/>
@@ -22,11 +25,11 @@
                         <!-- <ul class="oe_kanban_colorpicker" data-field="color"/> -->
                     </div>
                 </div>
-                <div class="oe_kanban_content">
-                    <div class="o_kanban_record_title">
+                <div class="oe_kanban_content flex-grow-1">
+                    <div class="o_kanban_record_title oe_kanban_details">
                         <strong><field name="name"/></strong>
                     </div>
-<!--                     <div class="o_kanban_record_subtitle">
+                    <!-- <div class="o_kanban_record_subtitle">
                         <t t-if="record.expected_revenue.raw_value">
                             <field name="expected_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/>
                             <span t-if="record.recurring_revenue and record.recurring_revenue.raw_value"> + </span>
@@ -37,11 +40,13 @@
                         </t>
                     </div> -->
                     <div>
-                        <span t-if="record.partner_id.value" t-esc="record.partner_id.value"></span>
+                        <span class="o_text_overflow" t-if="record.partner_id.value" t-esc="record.partner_id.value"/>
                     </div>
                     <div>
                         <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     </div>
+                </div>
+                <div class="oe_kanban_footer">
                     <div class="o_kanban_record_bottom">
                         <div class="oe_kanban_bottom_left">
                             <field name="priority" widget="priority" groups="base.group_user"/>
@@ -54,9 +59,9 @@
                 </div>
                 <div class="oe_clear"/>
             </div>
-          </xpath>
-          <xpath expr="//div[hasclass('o_kanban_record_bottom')]" position="before">
-            <div>
+          </xpath>          
+          <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
+            <div class="oe_kanban_bottom_center">
                 <field name="create_date"/>
             </div>
           </xpath>          

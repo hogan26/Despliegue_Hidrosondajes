@@ -37,13 +37,13 @@
                             <field name="street_sale_order"/>                        
                         </div>                    
                     </div>                    
-                    <field name="kit_check" invisible='1' force_save="1"/>
-                    <field name="pbbeo_dga" invisible='1' force_save="1"/>
-                    <field name="tipo_servicio" invisible='1' force_save="1"/>
-                    <field name="x_tipo_servicio" invisible='1' force_save="1"/>
-                    <field name="generador" invisible='1' force_save="1"/>
-                    <field name="presscontrol" invisible='1' force_save="1"/>
-                    <field name="bomba_cloro" invisible='1' force_save="1"/>
+                    <field name="kit_check" invisible="1" force_save="1"/>
+                    <field name="pbbeo_dga" invisible="1" force_save="1"/>
+                    <field name="tipo_servicio" invisible="1" force_save="1"/>
+                    <field name="x_tipo_servicio" invisible="1" force_save="1"/>
+                    <field name="generador" invisible="1" force_save="1"/>
+                    <field name="presscontrol" invisible="1" force_save="1"/>
+                    <field name="bomba_cloro" invisible="1" force_save="1"/>
                 </xpath>                                    
                 <xpath expr="//field[@name='partner_shipping_id']" position="after"> 
                     <div attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}">
@@ -439,9 +439,9 @@
                         </div>
                     </group>            
                     <group colspan="4" string="Detalle abonos liquidacion" attrs="{'invisible': [('state','not in',['cerrar','liquidar'])]}">
-                    <div>
-                        <field name="detalle_abonos_liquidacion"/>
-                    </div>                  
+                        <div>
+                            <field name="detalle_abonos_liquidacion"/>
+                        </div>                  
                     </group>              
                 </xpath> 
             </field>          
