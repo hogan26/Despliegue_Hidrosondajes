@@ -17,9 +17,16 @@
     # for the full list
     'category': 'Sale',
     'version': '0.1',
+    'license': 'LGPL-3',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale','req_crm','sale_management'],
+    'depends': ['sale','req_crm','sale_management','base'],
+
+    'assets': {
+        'web.assets_backend': [
+            'req_ventas/static/src/css/sheet_width_increase.css',
+        ],
+    },
 
     # always loaded
     'data': [
@@ -27,7 +34,7 @@
         'views/last_update_price_partner.xml',
         'views/utility_lines_view.xml',        
         'views/sale_order_template_id_prueba.xml',
-        # 'views/sheet_width_increase.xml', no funciona
+        # 'views/sheet_width_increase.xml',
         'views/sale_order_total_tax_discount_view.xml',
         'views/liquidation.xml',
         'views/update_quotation_button.xml',

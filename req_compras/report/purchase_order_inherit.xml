@@ -2,10 +2,10 @@
 <odoo>
     <template id="report_purchase_order_inherit" inherit_id="purchase.report_purchaseorder_document">
         <xpath expr="//t[@t-set='address']" position="replace"></xpath>
-        <xpath expr="//div[@class='page']/h2[1]" position="replace"></xpath> <!-- elimina el primer nodo (plantilla original) -->
-        <xpath expr="//div[@class='page']/h2[1]" position="replace"></xpath> <!-- elimina el segundo nodo (plantilla original) -->
-        <xpath expr="//div[@class='page']/h2[1]" position="replace"></xpath> <!-- elimina el tercer nodo (plantilla original) -->
-        <xpath expr="//div[@class='oe_structure']" position="after">
+        <xpath expr="//div[hasclass('page')]/h2[1]" position="replace"></xpath> <!-- elimina el primer nodo (plantilla original) -->
+        <xpath expr="//div[hasclass('page')]/h2[1]" position="replace"></xpath> <!-- elimina el segundo nodo (plantilla original) -->
+        <xpath expr="//div[hasclass('page')]/h2[1]" position="replace"></xpath> <!-- elimina el tercer nodo (plantilla original) -->
+        <xpath expr="//div[hasclass('oe_structure')]" position="after">
             <div class="row" style="margin-bottom:30px;">
                     <div class="col-8" style="text-align; right; margin-top:50px;">
                         <h2 t-if="o.state in ['draft', 'sent', 'to approve']">Solicitud de presupuesto #<span t-field="o.name"/></h2>
@@ -21,7 +21,7 @@
         </xpath>
         <xpath expr="//div[@id='informations']/div[@t-if='o.user_id']" position="replace"></xpath>
         <xpath expr="//div[@id='informations']/div[@t-if='o.date_order']" position="replace"></xpath>
-        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace"></xpath>
+        <xpath expr="//table[hasclass('o_main_table')]" position="replace"></xpath>
         <xpath expr="//div[@id='informations']" position="after">
             <div style="margin-bottom:30px;">
                 <strong>DATOS DEL CLIENTE Y DE LA FACTURA</strong>

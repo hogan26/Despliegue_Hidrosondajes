@@ -2,7 +2,7 @@
 <odoo>
     <template id="assets_backend" name="web_sheet_full_width" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/req_ventas/static/src/scss/sheet_width_increase.scss"/>
+            <link rel="stylesheet" href="/req_ventas/static/src/css/sheet_width_increase.css"/>
         </xpath>
     </template>
 </odoo>
