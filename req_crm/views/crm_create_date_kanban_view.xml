@@ -60,7 +60,7 @@
                 <div class="oe_clear"/>
             </div>
           </xpath>          
-          <xpath expr="//div[@class='o_kanban_record_bottom']" position="before">
+          <xpath expr="//div[hasclass('o_kanban_record_bottom')]" position="before">
             <div class="oe_kanban_bottom_center">
                 <field name="create_date"/>
             </div>

@@ -3,9 +3,9 @@
     <template id="report_purchase_quotation_inherit" inherit_id="purchase.report_purchasequotation_document">
         <xpath expr="//t/t/t[2]" position="replace"></xpath> <!-- elimina el primer nodo (plantilla original) -->
         <xpath expr="//t/t/t[2]" position="replace"></xpath> <!-- elimina el segundo nodo (plantilla original) -->
-        <xpath expr="//div[@class='page']/h2" position="replace"></xpath>
-        <xpath expr="//table[@class='table table-sm']" position="replace"></xpath>
-        <xpath expr="//div[@class='oe_structure']" position="after">
+        <xpath expr="//div[hasclass('page')]/h2" position="replace"></xpath>
+        <xpath expr="//table[hasclass('table-sm')]" position="replace"></xpath>
+        <xpath expr="//div[hasclass('oe_structure')]" position="after">
             <div class="row" style="margin-bottom:30px;">
                 <div class="col-8" style="text-align; right; margin-top:50px;">
                     <h2>Solicitud de presupuesto <span t-field="o.name"/></h2>

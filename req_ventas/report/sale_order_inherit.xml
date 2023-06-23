@@ -3,9 +3,9 @@
     <template id="report_sale_order_inherit" inherit_id="sale.report_saleorder_document">
         <xpath expr="//t[@t-set='forced_vat']" position="replace"></xpath>
         <xpath expr="//t[@t-set='address']" position="replace"></xpath>
-        <xpath expr="//h2[@class='mt16']" position="replace"></xpath>
+        <xpath expr="//h2[hasclass('mt16')]" position="replace"></xpath>
         <xpath expr="//div[@id='informations']" position="replace"></xpath>
-        <xpath expr="//div[@class='oe_structure']" position="after">
+        <xpath expr="//div[hasclass('oe_structure')]" position="after">
             <div class="row">
                 <div class="col-8" style="text-align:right; margin-top:40px;" t-if="doc.x_servicios_requeridos">                    
                     <h2 class="mt16 mb16">
@@ -410,7 +410,7 @@
                 </div>
             </t>            
         </xpath>
-        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+        <xpath expr="//table[hasclass('o_main_table')]" position="replace">
             <table class="table table-sm o_main_table">
                 <thead style="display: table-row-group">
                     <tr>
@@ -478,7 +478,7 @@
                 </tbody>
             </table>
         </xpath>
-        <xpath expr="//div[@class='clearfix']" position="replace">
+        <xpath expr="//div[hasclass('clearfix')]" position="replace">
             <div t-if="doc.x_servicios_requeridos" class="clearfix" name="so_total_summary">            
                 <div id="total" class="row" name="total">
                     <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
@@ -494,7 +494,7 @@
                 </div>
             </div>
         </xpath>
-        <xpath expr="//div[@class='clearfix']" position="after">
+        <xpath expr="//div[hasclass('clearfix')]" position="after">
             <div t-if="doc.x_servicios_requeridos and doc.state_settlement!='liquidar'" style="page-break-after: always;">
                 <br/>
             </div>
@@ -659,7 +659,7 @@
                 </t>
             </t>
         </xpath>
-        <xpath expr="//div[@class='oe_structure'][2]" position="after">
+        <xpath expr="//div[hasclass('oe_structure')][2]" position="after">
             <div style="margin-top:30px; margin-bottom:30px;">
                 <span t-field="doc.detalle_abonos_liquidacion"></span>
             </div>

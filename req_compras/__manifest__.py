@@ -13,6 +13,7 @@
     # for the full list
     'category': 'custom modules',
     'version': '0.1',
+    'license': 'LGPL-3',
 
     # any module necessary for this one to work correctly
     'depends': ['purchase','req_inventario','stock'],
