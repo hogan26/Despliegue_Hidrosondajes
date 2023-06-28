@@ -35,6 +35,18 @@ class StockPicking(models.Model):
                     'location_id':location_id.id,
                     'picking_type_id':picking_type_id.id    
                             })
+                    for items in ot_document.order_line:
+                        _logger.info(items.product_id.name)
+                        if items.display_type!='line_section' and items.display_type!='line_note':
+                            self.update({
+                                'move_line_ids': [(0, 0, {
+                                    'product_id': items.product_id.id,
+                                    'qty_done': items.product_uom_qty,
+                                    'product_uom_id': items.product_uom.id,
+                                    'location_id': self.location_id.id,
+                                    'location_dest_id': self.location_dest_id.id
+                                })]
+                            })
             else:            
                 raise ValidationError("No se ha encontrado el documento de orden de trabajo, ingrese un valor válido")
         else:

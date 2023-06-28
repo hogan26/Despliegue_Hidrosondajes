@@ -8,7 +8,7 @@
       <field name="inherit_id" ref="sale.view_order_form"/>
       <field name="arch" type="xml">
           <xpath expr="//header/button[@name='action_cancel']" position="after">
-            <button name="action_liquidation" string="Liquidar" type="object" class="btn-primary" attrs="{'invisible': [('state','in','liquidar')]}"/>
+            <button name="action_liquidation" string="Liquidar" type="object" class="btn-primary" attrs="{'invisible': [('state_settlement','in','liquidar')]}"/>
           </xpath>  
           <xpath expr="//header/field[@name='state']" position="replace">              
               <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale" attrs="{'invisible': [('state','in',['cerrar','liquidar'])]}"/>

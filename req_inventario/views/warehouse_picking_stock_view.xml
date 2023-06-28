@@ -9,7 +9,7 @@
             <field name="arch" type="xml">                
                 <xpath expr="//header/button[@name='action_load_stock_origin_location']" position="after">
                     <button name="action_warehouse_picking_stock" string="Stock B.S." type="object" class="btn-primary"/>
-                </xpath>                 
+                </xpath>                
             </field>
         </record>
     </data>
