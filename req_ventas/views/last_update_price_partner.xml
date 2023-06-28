@@ -312,7 +312,7 @@
                     <div attrs="{'invisible': [('state','not in',['cerrar','liquidar'])]}">
                         <group string="Encabezado liquidacion">
                             <div>
-                                <field name="encabezado_liquidacion"/>
+                                <field name="encabezado_liquidacion" class="oe-bordered-editor" options="{'collaborative':True,'resizable':True,'codeview':true}"/>
                             </div>
                         </group>
                     </div>
@@ -440,7 +440,7 @@
                     </group>            
                     <group colspan="4" string="Detalle abonos liquidacion" attrs="{'invisible': [('state','not in',['cerrar','liquidar'])]}">
                         <div>
-                            <field name="detalle_abonos_liquidacion"/>
+                            <field name="detalle_abonos_liquidacion" class="oe-bordered-editor" style="margin-bottom:20px;" options="{'collaborative':True,'resizable':True,'codeview':true}"/>
                         </div>                  
                     </group>              
                 </xpath> 

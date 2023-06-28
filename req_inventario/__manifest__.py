@@ -21,7 +21,7 @@
     'license': 'LGPL-3',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock'],
+    'depends': ['base','stock','l10n_cl_edi_stock'],
 
     # always loaded
     'data': [
@@ -40,5 +40,6 @@
         'views/product_name_location_list.xml',
         'views/tree_view_columns_product.xml',
         'views/picking_type_and_locations_form_view.xml',
+        'views/form_delivery_guide_view.xml',
     ],    
 }

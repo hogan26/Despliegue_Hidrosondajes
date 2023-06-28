@@ -9,7 +9,10 @@
             <field name="arch" type="xml">                
                 <xpath expr="//field[@name='ot_origen']" position="after">
                     <button name="autocomplete_from_ot_code" string="Autocompletar" type="object" help="Este botón autocompletará los campos 'Documento origen', 'Contacto', 'Servicio reservado' y 'Dirección destino' en base al código de Orden de trabajo ingresado" class="btn-primary"/>
-                </xpath>                 
+                </xpath>
+                <xpath expr="//field[@name='service_shutdown_creator']" position="attributes">
+                    <attribute name="attrs">{'required':[('picking_type_code', '=', 'outgoing')]}</attribute>
+                </xpath>
             </field>
         </record>
     </data>
