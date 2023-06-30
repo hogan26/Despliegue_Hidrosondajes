@@ -7,10 +7,10 @@
         <xpath expr="//div[@id='informations']" position="replace"></xpath>
         <xpath expr="//div[hasclass('oe_structure')]" position="after">
             <div class="row">
-                <div class="col-8" style="text-align:right; margin-top:40px;" t-if="doc.x_servicios_requeridos">                    
+                <div class="col-8" style="text-align:right; margin-top:40px;" t-if="doc.x_servicios_requeridos and doc.state_settlement not in ['liquidar']">                    
                     <h2 class="mt16 mb16">
                         <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
-                            <span t-if="doc.state not in ['draft','sent']">Order Num: </span>
+                            <span t-if="doc.state not in ['draft','sent']">Pedido Num: </span>
                             <span t-if="doc.state in ['draft','sent']">Cotización</span>
                         </t>
                         <t t-if="env.context.get('proforma', False) or is_pro_forma">
@@ -37,8 +37,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="margin-top:30px; margin-bottom:30px;">                
-                <div class="col" t-foreach="doc.partner_id" t-as="p" t-if="doc.state!='liquidar'">
+            <div class="row" style="margin-top:30px; margin-bottom:30px;" t-if="doc.state_settlement not in ['liquidar']">
+                <div class="col" t-foreach="doc.partner_id" t-as="p">
                     <div>
                         <strong><span t-esc="'Sr/a '+p.name"></span></strong>
                     </div>
@@ -663,7 +663,10 @@
             <div style="margin-top:30px; margin-bottom:30px;">
                 <span t-field="doc.detalle_abonos_liquidacion"></span>
             </div>
-            <div t-foreach="doc.user_id" t-as="u" class="mt32 mb32" t-if="doc.state not in ['liquidar']">
+            <div t-if="doc.x_servicios_requeridos and doc.state_settlement in ['liquidar']" style="page-break-after: always;">
+                <br/>
+            </div>
+            <div t-foreach="doc.user_id" t-as="u" class="mt32 mb32" t-if="doc.state_settlement not in ['liquidar']">
                 <strong>Atentamente:</strong>
                 <div t-if="u.name" t-field="u.name"></div>
                 <div t-if="u.email" t-field="u.email"></div>
