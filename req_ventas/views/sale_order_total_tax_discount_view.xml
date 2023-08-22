@@ -13,8 +13,8 @@
            <xpath expr="//field[@name='tax_totals_json']" position="before">
               <field name="total_tax_discount"/>            
               <field name="total_tax_amount_discount"/>
-              <!-- <field name="untaxed_percentage_discount"/>
-              <field name="untaxed_amount_discount"/> -->
+              <!-- <field name="untaxed_percentage_discount"/> -->
+              <!-- <field name="untaxed_amount_discount" force_save="1"/>  -->
           </xpath>
           <xpath expr="//field[@name='tax_totals_json']" position="after">
               <div class="oe_subtotal_footer_separator oe_inline o_td_label">
