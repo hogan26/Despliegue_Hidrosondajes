@@ -663,9 +663,9 @@
             <div style="margin-top:30px; margin-bottom:30px;">
                 <span t-field="doc.detalle_abonos_liquidacion"></span>
             </div>
-            <div t-if="doc.x_servicios_requeridos and doc.state_settlement in ['liquidar']" style="page-break-after: always;">
+            <!-- <div t-if="doc.x_servicios_requeridos and doc.state_settlement in ['liquidar']" style="page-break-after: always;">
                 <br/>
-            </div>
+            </div> -->
             <div t-foreach="doc.user_id" t-as="u" class="mt32 mb32" t-if="doc.state_settlement not in ['liquidar']">
                 <strong>Atentamente:</strong>
                 <div t-if="u.name" t-field="u.name"></div>

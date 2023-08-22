@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 class SaleOrder(models.Model):
     _inherit='sale.order'
     
+    
     def action_liquidation(self):
         #ESTA FUNCION DEBE REALIZAR LAS SIGUIENTES OPERACIONES:
         #1 - CAMBIAR EL ESTADO DEL FORMULARIO DE CIERRE A 'LIQUIDADO'
@@ -69,7 +70,7 @@ class SaleOrder(models.Model):
             else:
                 opportunity_id.write({'pending_settlements':False,
                                       'color_settlement':0})
-    
+
     def load_settlements_products(self):
         #PASO 1: TRATAMIENTO DE OPCIONES A LIQUIDAR, LA SELECCION POR DEFECTO VENDRÁ DADA POR UN CALCULO AL MOMENTO DE CREAR EL FORMULARIO
         if self.opportunity_id:
@@ -81,8 +82,7 @@ class SaleOrder(models.Model):
             else: settlement_services.append(self.pending_settlements_select)
 
             #VALIDACION
-            if settlement_services == 'no':
-                raise ValidationError("Error al cargar productos, al parecer no hay servicios pendientes por liquidar")
+            if settlement_services == 'no': raise ValidationError("No hay servicios pendientes por liquidar")
             else:
                 #PASO 2: PROCESAR LAS COTIZACIONES CONFIRMADAS DEL REQUERIMIENTO, EL FORMULARIO DE LIQUIDACION ESTA VINCULADO AL REQUERIMIENTO
                 opportunity_id = self.env['crm.lead'].search([('id','=',self.opportunity_id.id)])
@@ -136,8 +136,8 @@ class SaleOrder(models.Model):
                                         service_index = service_index + 1
                                         
                             #ITERACION PARA COMPROBAR SI RANGOS DE SECCIONES ESTAN CALCULADOS CORRECTAMENTE (FALTA CALCULAR CON 3 SERVICIOS)
-#                             for verification_section_array in section_range:
-#                                 _logger.info('start = {}, end = {}, type = {}'.format(verification_section_array['start'],verification_section_array['end'],verification_section_array['type']))
+                            for verification_section_array in section_range:
+                                _logger.info('start = {}, end = {}, type = {}'.format(verification_section_array['start'],verification_section_array['end'],verification_section_array['type']))
 
                             #PASO 7: CARGAR LAS LINEAS DE LA COTIZACION AL FORMULARIO DE LIQUIDACION SOLICITADAS POR EL SELECT SETTLEMENTS_SERVICES
 
@@ -152,28 +152,52 @@ class SaleOrder(models.Model):
                                             line_index += 1
                                             continue
                                         elif line_index >= section_line['start'] and line_index<=section_line['end']:
-                                            self.write({
-                                                'order_line': [(0, 0, {
-                                                    'product_id': settlement_line.product_id.id,
-                                                    'name': settlement_line.name,
-                                                    'product_uom_qty': settlement_line.product_uom_qty,
-                                                    'sale_qty': settlement_line.product_uom_qty,
-                                                    'product_uom': settlement_line.product_uom.id,
-                                                    'price_unit': settlement_line.price_unit,
-                                                    'utilidad_porcentaje': settlement_line.utilidad_porcentaje,
-                                                    'precio_venta': settlement_line.precio_venta,
-                                                    'tax_id': settlement_line.tax_id,
-                                                    'last_update_price_date': settlement_line.last_update_price_date,
-                                                    'last_update_price_partner': settlement_line.last_update_price_partner,
-                                                    'last_update_type_selector': settlement_line.last_update_type_selector,
-                                                    'number_days_context': settlement_line.number_days_context,
-                                                    'discount': settlement_line.discount,
-                                                    'price_subtotal': settlement_line.price_subtotal,
-                                                    'margen_total': settlement_line.margen_total,
-                                                    'settlement_line': True,
-                                                    'customer_lead': settlement_line.customer_lead,
-                                                })]
-                                            })
+                                            if settlement_line.product_id.type == 'service':
+                                                self.write({
+                                                    'order_line': [(0, 0, {
+                                                        'product_id': settlement_line.product_id.id,
+                                                        'name': settlement_line.name,
+                                                        'product_uom_qty': settlement_line.product_uom_qty,
+                                                        'sale_qty': settlement_line.product_uom_qty,
+                                                        'product_uom': settlement_line.product_uom.id,
+                                                        'price_unit': settlement_line.price_unit,
+                                                        'utilidad_porcentaje': settlement_line.utilidad_porcentaje,
+                                                        'precio_venta': settlement_line.precio_venta,
+                                                        'tax_id': settlement_line.tax_id,
+                                                        'last_update_price_date': settlement_line.last_update_price_date,
+                                                        'last_update_price_partner': settlement_line.last_update_price_partner,
+                                                        'last_update_type_selector': settlement_line.last_update_type_selector,
+                                                        'number_days_context': settlement_line.number_days_context,
+                                                        'discount': settlement_line.discount,
+                                                        'price_subtotal': settlement_line.price_subtotal,
+                                                        'margen_total': settlement_line.margen_total,
+                                                        'settlement_line': True,
+                                                        'customer_lead': settlement_line.customer_lead,
+                                                    })]
+                                                })
+                                            else:
+                                                self.write({
+                                                    'order_line': [(0, 0, {
+                                                        'product_id': settlement_line.product_id.id,
+                                                        'name': settlement_line.name,
+                                                        'product_uom_qty': 0,
+                                                        'sale_qty': settlement_line.product_uom_qty,
+                                                        'product_uom': settlement_line.product_uom.id,
+                                                        'price_unit': settlement_line.price_unit,
+                                                        'utilidad_porcentaje': settlement_line.utilidad_porcentaje,
+                                                        'precio_venta': settlement_line.precio_venta,
+                                                        'tax_id': settlement_line.tax_id,
+                                                        'last_update_price_date': settlement_line.last_update_price_date,
+                                                        'last_update_price_partner': settlement_line.last_update_price_partner,
+                                                        'last_update_type_selector': settlement_line.last_update_type_selector,
+                                                        'number_days_context': settlement_line.number_days_context,
+                                                        'discount': settlement_line.discount,
+                                                        'price_subtotal': settlement_line.price_subtotal,
+                                                        'margen_total': settlement_line.margen_total,
+                                                        'settlement_line': True,
+                                                        'customer_lead': settlement_line.customer_lead,
+                                                    })]
+                                                })
                                             if line_index == section_line['end']: break
                                             else: line_index += 1
                             
@@ -187,7 +211,8 @@ class SaleOrder(models.Model):
                                 # closure_pickings = self.env['stock.picking'].search([('id','!=',picking_id.id),('servicio_reservado','=',picking_id.servicio_reservado),('origin','=',sale_order.name),('service_shutdown_creator','!=',False),('state','=','done')])
                                 closure_pickings = self.env['stock.picking'].search([('id','!=',picking_id.id),('servicio_reservado','=',picking_id.servicio_reservado),('origin','=',sale_order.name),('service_shutdown_creator','!=',False)])
                                 if closure_pickings:
-                                    for closure_picking in closure_pickings:                                        
+                                    for closure_picking in closure_pickings:
+                                        # _logger.info('name = {}'.format(closure_picking.name))
                                         if not(closure_picking.settlement_code) and closure_picking.servicio_reservado in settlement_services:
                                             #PASO 9: SI EL PRODUCTO DE LA COTIZACION ESTA EN EL PICKING SE ACTUALIZA LA CANTIDAD, SI EL PRODUCTO
                                             #ESTA EN EL PICKING Y NO EN LA COTIZACION Y NO CORRESPONDE A UN PRODUCTO DE SERVICIO 1, SE DEBE AÑADIR,
@@ -263,20 +288,23 @@ class SaleOrder(models.Model):
                                                                     })
                                                     else: continue
                                             else:
+                                                
                                                 #PASO 15: SI EL PICKING QUE SE ESTA ANALIZANDO NO ES DE SERVICIO 1, ENTONCES SE DEBE ACTUALIZAR LA
                                                 #CANTIDAD DE TODOS LOS PRODUCTOS QUE ESTEN EN LA LIQUIDACION CON LA CANTIDAD DE LOS PRODUCTOS DEL
                                                 #PICKING, SI UN PRODUCTO ESTA EN EL PICKING DE CIERRE Y NO EN LA LIQUIDACION, SE DEBEN AÑADIR
                                                 for section_line in section_range:
+                                                    _logger.info('section_line = {}'.format(section_line))
                                                     #VERIFICAMOS QUE SE HARA RECORRIDO SOLO DE LOS PRODUCTOS DE LA LIQUIDACION QUE CORRESPONDEN CON
                                                     #EL SERVICIO DEL PICKING DE CIERRE A ANALIZAR
                                                     if section_line['type'] == closure_picking.servicio_reservado:
+                                                        _logger.info('servicio reservado = {}'.format(closure_picking.servicio_reservado))
                                                         #CREAMOS UN ARRAY PARA ALMACENAR LOS PRODUCT_ID YA REVISADOS PARA EVITAR REPETIR EL PROCESO
                                                         #DE ACTUALIZACION DE CANTIDAD EN PRODUCTOS QUE SE REPITEN EN LA LIQUIDACION
                                                         product_id_list = []
                                                         number_lines = (section_line['end'] - section_line['start']) + 1
                                                         lines_limit = section_line['end']
                                                         line_start = lines_limit - number_lines
-                                                        for picking_line in closure_picking.move_line_ids_without_package:
+                                                        for picking_line in closure_picking.move_line_ids_without_package:                  
                                                             encontrado = False
                                                             line_index = 1                                                                
                                                             for order_line in self.order_line:
@@ -327,6 +355,11 @@ class SaleOrder(models.Model):
                                                                     })]
                                                                 })
                                 else: continue
+                            # _logger.info('nombre del pedido {}'.format(self.name))
+                            # sale_order = self.env['sale.order'].search([('name','=',self.name)])
+                            for order_line in self.order_line:
+                                if order_line.product_uom_qty < 1: order_line.unlink()
+                                else: continue
                 else: raise ValidationError("No se pudo encontrar el requerimiento")
     
     
@@ -351,3 +384,4 @@ class SaleOrder(models.Model):
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)], 'cerrar': [('readonly', False)], 'liquidar': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="If you change the pricelist, only newly added lines will be affected.")
+    

@@ -53,6 +53,15 @@ class SaleOrder(models.Model):
             # sale_order_id = self.env['sale.order'].search([('name','=',order.name)])
             self.update({'code': 0})
 
+    @api.onchange('untaxed_amount_discount')
+    def _onchange_amount_discount(self):
+        for order in self:
+            if order.untaxed_amount_discount < 0:
+                order.untaxed_amount_discount = 0
+
+            total_amount = sum(line.price_subtotal for line in order.order_line)
+            order.amount_total = total_amount - order.untaxed_amount_discount + int(order.amount_tax)
+
 
     """ version anterior del código
 
